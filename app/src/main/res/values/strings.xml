@@ -1,3 +1,49 @@
 <resources>
     <string name="app_name">Foodzone</string>
+    <string name="action_settings">Settings</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="resend"><u>Resend</u></string>
+    <string name="network_error">Could not connect at the movement make sure your mobile has Internet connection, please  try again later</string>
+    <string name="more_reviews"><u>More reviews</u></string>
+    <string name="more_photos"><u>View More</u></string>
+    <string name="more_videos"><u>View More</u></string>
+    <string name="pick_image_intent_text">Choose an image</string>
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="select_option">Select an option</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="take_photo">Take Photo</string>
+
+    <string name="new_user_register">New User <u>REGISTER?</u></string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="continue_text"><u>C o n t i n u e</u></string>
+
+    <string-array name="unit_type">
+        <item>Select User Type</item>
+        <item>Independent</item>
+        <item>Apartment</item>
+        <item>Duplex</item>
+        <item>Triplex</item>
+    </string-array>
+    <string-array name="bed_rooms">
+        <item>Select Bed Rooms</item>
+        <item>1 BHK</item>
+        <item>2 BHK</item>
+        <item>3 BHK</item>
+        <item>4 BHK</item>
+    </string-array>
+    <string-array name="rating">
+        <item>Select Rating</item>
+        <item>1 </item>
+        <item>2 </item>
+        <item>3 </item>
+        <item>4 </item>
+        <item>5 </item>
+    </string-array>
 </resources>
