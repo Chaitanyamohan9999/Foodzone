@@ -1,4 +1,4 @@
-package com.food.foodzone;
+package com.food.foodzone.activities;
 
 import android.os.Handler;
 import android.util.Log;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.utils.GMailSender;
 
