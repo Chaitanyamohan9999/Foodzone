@@ -1,20 +1,16 @@
 package com.food.foodzone.activities;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.food.foodzone.R;
-import com.food.foodzone.common.AppConstants;
-import com.food.foodzone.utils.GMailSender;
 
-public class ForgotPasswordActivity extends com.food.foodzone.activities.BaseActivity {
+public class ForgotPasswordActivity extends BaseActivity {
 
     private View llGuestLogin;
-    private Button btnSendNewPassword;
-    private EditText etEmail;
+    private TextView tvLogin;
+    private EditText etEmail, etPassword, etRenterPassword;
 
     @Override
     public void initialise() {
@@ -22,15 +18,16 @@ public class ForgotPasswordActivity extends com.food.foodzone.activities.BaseAct
         addBodyView(llGuestLogin);
         lockMenu();
         tvTitle.setText("Forgot Password");
-        flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
         llToolbar.setVisibility(View.VISIBLE);
 
-        btnSendNewPassword      = llGuestLogin.findViewById(R.id.btnSendNewPassword);
+        tvLogin                 = llGuestLogin.findViewById(R.id.tvLogin);
         etEmail                 = llGuestLogin.findViewById(R.id.etEmail);
+        etPassword              = llGuestLogin.findViewById(R.id.etPassword);
+        etRenterPassword        = llGuestLogin.findViewById(R.id.etRenterPassword);
 
-        btnSendNewPassword.setOnClickListener(new View.OnClickListener() {
+        tvLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(etEmail.getText().toString().equalsIgnoreCase("")){
@@ -39,9 +36,24 @@ public class ForgotPasswordActivity extends com.food.foodzone.activities.BaseAct
                 else if(!isValidEmail(etEmail.getText().toString().trim())){
                     showErrorMessage("Please enter valid email");
                 }
+                else if(etPassword.getText().toString().trim().equalsIgnoreCase("")){
+                    showErrorMessage("Please enter password");
+                }
+                else if(etPassword.getText().toString().trim().length() < 6){
+                    showErrorMessage("Please enter password minimum 6 characters");
+                }
+                else if(etRenterPassword.getText().toString().trim().equalsIgnoreCase("")){
+                    showErrorMessage("Please re-enter password");
+                }
+                else if(etRenterPassword.getText().toString().trim().length() < 6){
+                    showErrorMessage("Please re-enter password minimum 6 characters");
+                }
+                else if(!etPassword.getText().toString().trim().equalsIgnoreCase(etRenterPassword.getText().toString().trim())){
+                    showErrorMessage("Please password and re-enter password are same");
+                }
                 else {
                     if(isNetworkConnectionAvailable(ForgotPasswordActivity.this)){
-                        sendMail("12345678");//new password will come from backend
+//                        setNewPassword();
                     }
                     else {
                         showInternetDialog("ForgotPassword");
@@ -51,31 +63,6 @@ public class ForgotPasswordActivity extends com.food.foodzone.activities.BaseAct
         });
     }
 
-    private void sendMail(String newPassword) {
-        try {
-            showLoader();
-            String emailBody = "Hi Foodian,\n\n" +
-                    "Your FOODZONE's new password is "+newPassword+"\n"+
-                    "Please use this code as a your new password to login into FOODZONE app\n\n\n" +
-                    "Thanks\n" +
-                    "FoodZone";
-            GMailSender sender = new GMailSender(AppConstants.GmailSenderMail, AppConstants.GmailSenderPassword);
-            sender.sendMail(AppConstants.EmailSubject, emailBody, AppConstants.GmailSenderMail, etEmail.getText().toString().trim());
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    hideLoader();
-                    showToast("The new password has been sent to your email");
-                    finish();
-                }
-            }, 5000);
-        }
-        catch (Exception e) {
-            Log.e("SendMail", e.getMessage(), e);
-            e.printStackTrace();
-        }
-
-    }
 
     @Override
     public void getData() {
