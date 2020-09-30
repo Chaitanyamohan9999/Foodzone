@@ -15,7 +15,7 @@
         android:drawablePadding="@dimen/margin_10"
         android:gravity="center_vertical"
         android:padding="@dimen/margin_10"
-        android:text="Pending Orders"
+        android:text="Favourites"
         android:textColor="@color/white" />
 
     <View
@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/margin_5"
         android:gravity="center_vertical"
         android:padding="@dimen/margin_10"
-        android:text="Orders History"
+        android:text="Events"
         android:textColor="@color/white"
         android:visibility="visible" />
 
@@ -40,14 +40,14 @@
         android:background="@color/white" />
 
     <TextView
-        android:id="@+id/tvProfile"
+        android:id="@+id/tvMeetings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_5"
         android:drawablePadding="@dimen/margin_10"
         android:gravity="center_vertical"
         android:padding="@dimen/margin_10"
-        android:text="Profile"
+        android:text="Meetings"
         android:textColor="@color/white" />
 
     <View
@@ -102,6 +102,6 @@
         android:drawablePadding="@dimen/margin_10"
         android:gravity="center"
         android:padding="@dimen/margin_10"
-        android:text="Version : 1.0.0"
+        android:text="Version : 1.0.23"
         android:textColor="@color/white" />
 </LinearLayout>
