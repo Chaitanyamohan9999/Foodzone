@@ -132,3 +132,151 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
         initialise();
     }
+
+    protected void lockMenu() {
+        dlCareer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+    }
+
+    private void initialiseControls() {
+        dlCareer                    = findViewById(R.id.dlCareer);
+        llDrawerLayout              = findViewById(R.id.llDrawerLayout);
+        llDrawerLayoutPrent         = findViewById(R.id.llDrawerLayoutPrent);
+        llBody                      = findViewById(R.id.llBody);
+
+        llToolbar                   = findViewById(R.id.llToolbar);
+        ivBack                      = findViewById(R.id.ivBack);
+        ivMenu                      = findViewById(R.id.ivMenu);
+        tvTitle                     = findViewById(R.id.tvTitle);
+        tvFavourites                = findViewById(R.id.tvFavourites);
+        tvEvents                    = findViewById(R.id.tvEvents);
+        tvMeetings                  = findViewById(R.id.tvMeetings);
+        tvSupport                   = findViewById(R.id.tvSupport);
+        tvLogout                    = findViewById(R.id.tvLogout);
+        tvVersion                   = findViewById(R.id.tvVersion);
+
+    }
+
+    protected void addBodyView(View body) {
+        llBody.addView(body, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        applyFont(body);
+    }
+
+    public void menuOperates() {
+        hideKeyBoard(llBody);
+        if (dlCareer.isDrawerOpen(Gravity.RIGHT)) {
+            dlCareer.closeDrawer(Gravity.RIGHT);
+        } else {
+            dlCareer.openDrawer(Gravity.RIGHT);
+        }
+    }
+
+    public abstract void initialise();
+
+    public abstract void getData();
+
+    public void showToast(String strMsg) {
+        Toast.makeText(BaseActivity.this, strMsg, Toast.LENGTH_LONG).show();
+    }
+
+    public static BaseActivity getInstance() {
+        return mInstance;
+    }
+
+    public void showAppCompatAlert(String mTitle, String mMessage, String posButton, String negButton, final String from, boolean isCancelable) {
+        if (alertDialog == null)
+            alertDialog = new AlertDialog.Builder(BaseActivity.this, R.style.AppCompatAlertDialogStyle);
+        alertDialog.setTitle(mTitle);
+        alertDialog.setMessage(mMessage);
+        alertDialog.setPositiveButton(posButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                onButtonYesClick(from);
+            }
+        });
+        if (negButton != null && !negButton.equalsIgnoreCase(""))
+            alertDialog.setNegativeButton(negButton, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    onButtonNoClick(from);
+                }
+            });
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+    }
+
+    public void onButtonNoClick(String from) {
+
+    }
+
+    public void onButtonYesClick(String from) {
+    }
+
+    public void hideKeyBoard(View view) {
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showSoftKeyboard(View view) {
+        try {
+            if (view.requestFocus()) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showInternetDialog(String from) {
+        showAppCompatAlert("", getResources().getString(R.string.network_error), "Ok", "Cancel", from, false);
+
+    }
+
+    protected boolean isValidEmail(String email) {
+        Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
+                "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                        "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                        "(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+");
+        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
+    }
+
+    //Method to Show loader without text
+    public void showLoader() {
+        runOnUiThread(new RunShowLoader(""));
+    }
+
+    //Method to show loader with text
+    public void showLoader(String msg) {
+        runOnUiThread(new RunShowLoader(msg));
+    }
+
+    public void hideLoader() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (dialog != null && dialog.isShowing())
+                        dialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void setFont(ViewGroup group, Typeface tf) {
+        int count = group.getChildCount();
+        View v;
+        for (int i = 0; i < count; i++) {
+            v = group.getChildAt(i);
+            if (v instanceof TextView || v instanceof Button /* etc. */)
+                ((TextView) v).setTypeface(tf);
+            else if (v instanceof ViewGroup)
+                setFont((ViewGroup) v, tf);
+        }
+
+    }
