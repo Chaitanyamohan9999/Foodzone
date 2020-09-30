@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llDrawerLayoutPrent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_20">
+
+    <TextView
+        android:id="@+id/tvFavourites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_5"
+        android:drawablePadding="@dimen/margin_10"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_10"
+        android:text="Pending Orders"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/tvEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_5"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_10"
+        android:text="Orders History"
+        android:textColor="@color/white"
+        android:visibility="visible" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/tvProfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_5"
+        android:drawablePadding="@dimen/margin_10"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_10"
+        android:text="Profile"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/tvSupport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_5"
+        android:drawablePadding="@dimen/margin_10"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_10"
+        android:text="Support"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/tvLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_5"
+        android:drawablePadding="@dimen/margin_10"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_10"
+        android:text="Logout"
+        android:textColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/white" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+    <TextView
+        android:id="@+id/tvVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/margin_5"
+        android:drawablePadding="@dimen/margin_10"
+        android:gravity="center"
+        android:padding="@dimen/margin_10"
+        android:text="Version : 1.0.0"
+        android:textColor="@color/white" />
+</LinearLayout>
