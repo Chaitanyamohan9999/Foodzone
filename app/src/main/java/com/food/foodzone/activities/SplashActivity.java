@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import com.food.foodzone.R;
 
 
-public class SplashActivity extends com.food.foodzone.activities.BaseActivity {
+public class SplashActivity extends BaseActivity {
 
     private LinearLayout llSplash;
 

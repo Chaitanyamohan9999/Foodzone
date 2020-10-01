@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class LoginActivity extends com.food.foodzone.activities.BaseActivity {
+public class LoginActivity extends BaseActivity {
 
     private View llLogin;
     private LinearLayout llUserType, llForCustomer;

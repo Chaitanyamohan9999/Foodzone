@@ -133,6 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         initialise();
     }
 
+
     protected void lockMenu() {
         dlCareer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
     }
@@ -280,3 +281,114 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
     }
+
+    private class RunShowLoader implements Runnable {
+        private String strMsg;
+
+        public RunShowLoader(String strMsg) {
+            this.strMsg = strMsg;
+        }
+
+        @Override
+        public void run() {
+            try {
+                dialog = new Dialog(BaseActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(false);
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                View view = LayoutInflater.from(context).inflate(R.layout.loader_custom, null);
+                ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+                progressBar.setIndeterminate(true);
+                progressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), android.graphics.PorterDuff.Mode.MULTIPLY);
+                dialog.setContentView(view);
+                if (!dialog.isShowing())
+                    dialog.show();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    public boolean isNetworkConnectionAvailable(Context context) {
+        boolean isNetworkConnectionAvailable = false;
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
+            if (activeNetworkInfo != null) {
+                isNetworkConnectionAvailable = activeNetworkInfo.getState() == NetworkInfo.State.CONNECTED;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return isNetworkConnectionAvailable;
+    }
+
+    public boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void applyFont(final View root) {
+        String fontName = AppConstants.GILL_SANS_TYPE_FACE;
+        try {
+            fontName = fontStyleName(fontName);
+            if (root instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) root;
+                for (int i = 0; i < viewGroup.getChildCount(); i++)
+                    applyFont(viewGroup.getChildAt(i));
+            }
+            else if (root instanceof TextView){
+                ((TextView) root).setTypeface(Typeface.createFromAsset(getAssets(), fontName));
+            }
+        } catch (Exception e) {
+            Log.e("KARYA", String.format("Error occured when trying to apply %s font for %s view", fontName, root));
+            e.printStackTrace();
+        }
+    }
+
+    public void applyFontFromSuccess(final View root, String fontName) {
+        try {
+            fontName = fontStyleName(fontName);
+            if (root instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) root;
+                for (int i = 0; i < viewGroup.getChildCount(); i++)
+                    applyFont(viewGroup.getChildAt(i));
+            }
+            else if (root instanceof TextView){
+                ((TextView) root).setTypeface(Typeface.createFromAsset(getAssets(), fontName));
+                ((TextView) root).setTypeface(((TextView) root).getTypeface(), Typeface.BOLD);
+            }
+        } catch (Exception e) {
+            Log.e("KARYA", String.format("Error occured when trying to apply %s font for %s view", fontName, root));
+            e.printStackTrace();
+        }
+    }
+
+    private String fontStyleName(String name){
+        String fontStyleName = "";
+        switch (name){
+            case AppConstants.GILL_SANS_TYPE_FACE:
+                fontStyleName =  "gillsansstd.otf";
+                break;
+            case AppConstants.MONTSERRAT_MEDIUM_TYPE_FACE:
+                fontStyleName =  "montserrat_medium.ttf";
+                break;
+            case "":
+                fontStyleName =  "gillsansstd.otf";
+                break;
+        }
+        return fontStyleName;
+    }
+
+    public void showErrorMessage(String message){
+        showAppCompatAlert("", message, "OK", "", "", false);
+    }
+}
+

@@ -24,7 +24,6 @@ public class UserTypeActivity extends BaseActivity {
         lockMenu();
         ivBack.setVisibility(View.GONE);
         ivMenu.setVisibility(View.GONE);
-        flCart.setVisibility(View.GONE);
         llToolbar.setVisibility(View.VISIBLE);
 
         btnCustomer         = llUserType.findViewById(R.id.btnCustomer);

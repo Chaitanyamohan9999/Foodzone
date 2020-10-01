@@ -77,7 +77,7 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-
+            <include layout="@layout/menu_drawer_layout" />
         </LinearLayout>
     </androidx.drawerlayout.widget.DrawerLayout>
 
