@@ -110,6 +110,100 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.5"
+                    android:orientation="vertical">
+
+
+                    <EditText
+                        android:id="@+id/etName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:lines="1"
+                        android:padding="@dimen/margin_10"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:lines="1"
+                        android:padding="@dimen/margin_10"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <EditText
+                        android:id="@+id/etContactNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:inputType="number"
+                        android:lines="1"
+                        android:maxLength="10"
+                        android:padding="@dimen/margin_10"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <EditText
+                        android:id="@+id/etCity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:lines="1"
+                        android:padding="@dimen/margin_10"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <EditText
+                        android:id="@+id/etState"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:lines="1"
+                        android:padding="@dimen/margin_10"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_15" />
+
+                    <EditText
+                        android:id="@+id/etCountry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_10"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:lines="1"
+                        android:padding="@dimen/margin_10"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_15" />
+
+                </LinearLayout>
             </LinearLayout>
 
             <Button
