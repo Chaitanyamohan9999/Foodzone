@@ -31,7 +31,7 @@ public class ProfileActivity extends BaseActivity {
     private EditText etName, etEmail, etContactNumber, etCity, etState, etCountry;
     private ImageView ivEdit;
     private Button btnUpdate;
-    private UserDo userDo;
+    private UserDo userDo = new UserDo();
     private Uri imageUri;
 
     @Override
@@ -41,7 +41,7 @@ public class ProfileActivity extends BaseActivity {
         lockMenu();
         ivBack.setVisibility(View.VISIBLE);
         llToolbar.setVisibility(View.VISIBLE);
-        flCart.setVisibility(View.VISIBLE);
+        flCart.setVisibility(View.GONE);
         tvTitle.setText("PROFILE");
         initialiseControls();
         civProfile.setEnabled(false);
@@ -53,6 +53,12 @@ public class ProfileActivity extends BaseActivity {
         etState.setEnabled(false);
         etCountry.setEnabled(false);
         btnUpdate.setVisibility(View.GONE);
+        etName.setBackgroundResource(R.drawable.edit_text_bg);
+        etEmail.setBackgroundResource(R.drawable.edit_text_bg);
+        etContactNumber.setBackgroundResource(R.drawable.edit_text_bg);
+        etCity.setBackgroundResource(R.drawable.edit_text_bg);
+        etState.setBackgroundResource(R.drawable.edit_text_bg);
+        etCountry.setBackgroundResource(R.drawable.edit_text_bg);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,12 +77,6 @@ public class ProfileActivity extends BaseActivity {
                 etCity.setEnabled(true);
                 etState.setEnabled(true);
                 etCountry.setEnabled(true);
-                etName.setBackgroundResource(R.drawable.edit_text_bg);
-                etEmail.setBackgroundResource(R.drawable.edit_text_bg);
-                etContactNumber.setBackgroundResource(R.drawable.edit_text_bg);
-                etCity.setBackgroundResource(R.drawable.edit_text_bg);
-                etState.setBackgroundResource(R.drawable.edit_text_bg);
-                etCountry.setBackgroundResource(R.drawable.edit_text_bg);
                 btnUpdate.setVisibility(View.VISIBLE);
             }
         });
@@ -194,6 +194,7 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void updateProfile(UserDo userDo){
+        finish();
     }
 
     @Override
