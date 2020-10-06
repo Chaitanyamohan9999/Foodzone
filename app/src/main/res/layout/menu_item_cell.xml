@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_5"
+    app:cardCornerRadius="@dimen/margin_5"
+    app:cardElevation="@dimen/margin_5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10">
+
+        <ImageView
+            android:layout_width="@dimen/margin_100"
+            android:layout_height="@dimen/margin_100"
+            android:layout_marginRight="@dimen/margin_20"
+            android:src="@drawable/table_icon" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Item Name"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Item Price : $12"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="normal" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
