@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.food.foodzone.R;
 
+
 public class SupportActivity extends BaseActivity {
+
     private TextView tvSubmit;
     private View llSupport;
     private EditText etName, etPhone, etComments;

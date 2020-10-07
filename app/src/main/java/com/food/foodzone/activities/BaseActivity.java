@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.food.foodzone.BuildConfig;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.utils.PreferenceUtils;
@@ -44,12 +45,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     public PreferenceUtils preferenceUtils;
     private Dialog dialog;
     private AlertDialog.Builder alertDialog;
-    public FrameLayout llToolbar;
+    public FrameLayout llToolbar, flCart;
     public LinearLayout llDrawerLayoutPrent, llDrawerLayout, llBody;
     private DrawerLayout dlCareer;
     public ImageView ivBack, ivMenu;
-    public TextView tvTitle;
-    private TextView tvFavourites, tvEvents, tvMeetings, tvSupport, tvLogout, tvVersion;
+    public TextView tvCartCount, tvTitle;
+    private TextView tvFavourites, tvEvents, tvProfile, tvChangePassword, tvSupport, tvLogout, tvVersion;
     public static BaseActivity mInstance;
 
     @Override
@@ -68,6 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         lockMenu();
+        tvVersion.setText("Version : "+BuildConfig.VERSION_NAME);
         ivMenu.setVisibility(View.INVISIBLE);
         ivBack.setVisibility(View.INVISIBLE);
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -94,8 +96,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 menuOperates();
             }
         });
-
-
         tvFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,26 +108,38 @@ public abstract class BaseActivity extends AppCompatActivity {
                 menuOperates();
             }
         });
-        tvMeetings.setOnClickListener(new View.OnClickListener() {
+        tvProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menuOperates();
+                Intent intent = new Intent(context, ProfileActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
+            }
+        });
+        tvChangePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                menuOperates();
+                Intent intent = new Intent(context, ChangePasswordActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
         tvSupport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menuOperates();
+                Intent intent = new Intent(context, SupportActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
         tvLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menuOperates();
-                Intent intent = new Intent(context, LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                overridePendingTransition(R.anim.enter, R.anim.exit);
+                showAppCompatAlert("", "Do you want ot logout from app?", "Logout", "Cancel", "Logout", false);
             }
         });
         initialise();
@@ -135,7 +147,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     protected void lockMenu() {
-        dlCareer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+        dlCareer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     private void initialiseControls() {
@@ -145,12 +163,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         llBody                      = findViewById(R.id.llBody);
 
         llToolbar                   = findViewById(R.id.llToolbar);
+        flCart                      = findViewById(R.id.flCart);
         ivBack                      = findViewById(R.id.ivBack);
         ivMenu                      = findViewById(R.id.ivMenu);
         tvTitle                     = findViewById(R.id.tvTitle);
+        tvCartCount                 = findViewById(R.id.tvCartCount);
         tvFavourites                = findViewById(R.id.tvFavourites);
         tvEvents                    = findViewById(R.id.tvEvents);
-        tvMeetings                  = findViewById(R.id.tvMeetings);
+        tvProfile                   = findViewById(R.id.tvProfile);
+        tvChangePassword            = findViewById(R.id.tvChangePassword);
         tvSupport                   = findViewById(R.id.tvSupport);
         tvLogout                    = findViewById(R.id.tvLogout);
         tvVersion                   = findViewById(R.id.tvVersion);
@@ -164,10 +185,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void menuOperates() {
         hideKeyBoard(llBody);
-        if (dlCareer.isDrawerOpen(Gravity.RIGHT)) {
-            dlCareer.closeDrawer(Gravity.RIGHT);
+        if (dlCareer.isDrawerOpen(Gravity.LEFT)) {
+            dlCareer.closeDrawer(Gravity.LEFT);
         } else {
-            dlCareer.openDrawer(Gravity.RIGHT);
+            dlCareer.openDrawer(Gravity.LEFT);
         }
     }
 
@@ -210,6 +231,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void onButtonYesClick(String from) {
+        if (from.equalsIgnoreCase("Logout")){
+            Intent intent = new Intent(context, UserTypeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.enter, R.anim.exit);
+        }
     }
 
     public void hideKeyBoard(View view) {

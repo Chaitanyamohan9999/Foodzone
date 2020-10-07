@@ -17,6 +17,7 @@ public class SplashActivity extends BaseActivity {
         llSplash = (LinearLayout) inflater.inflate(R.layout.activity_splash, null);
         addBodyView(llSplash);
         lockMenu();
+        flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.GONE);
         llToolbar.setVisibility(View.GONE);
         new Handler().postDelayed(new Runnable() {

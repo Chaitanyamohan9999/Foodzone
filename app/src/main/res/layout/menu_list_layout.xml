@@ -5,6 +5,7 @@
     android:background="@color/white"
     android:padding="@dimen/margin_10"
     android:orientation="vertical">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMenuList"
         android:layout_width="match_parent"

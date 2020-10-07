@@ -1,7 +1,6 @@
 package com.food.foodzone.activities;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.food.foodzone.R;
-import com.food.foodzone.common.*;
+import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.utils.PreferenceUtils;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,8 +60,8 @@ public class LoginActivity extends BaseActivity {
         userRolesList.add("Chef");
         userRolesList.add("Manager");
 
-        etEmail.setText("chaitanyamohan09@gmail.com");
-        etPassword.setText("1234567890");
+        etEmail.setText("yamini@gmail.com");
+        etPassword.setText("123456");
 
         spUserRole.setAdapter(new ArrayAdapter<String>(LoginActivity.this, R.layout.spinner_dropdown, userRolesList){
             @Override
@@ -99,7 +92,6 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                intent.putExtra(AppConstants.User_Type, userType);
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter, R.anim.exit);
 
@@ -135,7 +127,7 @@ public class LoginActivity extends BaseActivity {
                 }
                 else {
                     if (isNetworkConnectionAvailable(LoginActivity.this)) {
-                        doLogin();
+                         doLogin();
                     } else {
                         showInternetDialog("Login");
                     }
@@ -157,70 +149,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void doLogin(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Users);
-        showLoader();
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String userId = etEmail.getText().toString().trim().replace("@", "").replace(".", "");
-                if(dataSnapshot!=null && dataSnapshot.exists()){
-                    hideLoader();
-                    HashMap hashMap = (HashMap) ((HashMap) dataSnapshot.getValue()).get(userId);
-                    if (hashMap != null && hashMap.get("userId").toString().equalsIgnoreCase(userId)
-                            && hashMap.get("password").toString().equalsIgnoreCase(etPassword.getText().toString().trim())) {
-                        String loggedInUser = hashMap.get("userType").toString();
-                        if(loggedInUser.equalsIgnoreCase(userType)){
-                            preferenceUtils.saveString(PreferenceUtils.UserId, userId);
-                            preferenceUtils.saveString(PreferenceUtils.UserName, hashMap.get("name").toString());
-                            preferenceUtils.saveString(PreferenceUtils.EmailId, etEmail.getText().toString().trim());
-                            preferenceUtils.saveString(PreferenceUtils.PhoneNo, hashMap.get("phone").toString());
-                            preferenceUtils.saveString(PreferenceUtils.Password, etPassword.getText().toString().trim());
-
-                            Intent intent = new Intent(LoginActivity.this, CustomerDashboardActivity.class);
-                            intent.putExtra(AppConstants.User_Type, userType);
-                            AppConstants.LoggedIn_User_Type = userType;
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.enter, R.anim.exit);
-                            finish();
-                        }
-                        else {// invalid user type
-                            showAppCompatAlert("", "Invalid User Type", "Ok", "", "", false);
-                        }
-                    }
-                    else {
-                        //Username does not exist
-                        hideLoader();
-                        databaseReference.orderByChild("userId")
-                                .equalTo(etEmail.getText().toString().trim()).removeEventListener(this);
-//                        etPassword.setText("");
-                        showAppCompatAlert("", "The entered email and password are not exist.", "OK", "", "", true);
-                    }
-                }
-                else {
-                    //Username does not exist
-                    hideLoader();
-                    databaseReference.child(AppConstants.Table_Users).orderByChild("userId")
-                            .equalTo(etEmail.getText().toString().trim()).removeEventListener(this);
-//                    etPassword.setText("");
-                    showAppCompatAlert("", "The entered email and password are not exist.", "OK", "", "", true);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                hideLoader();
-                Log.e("LoginActivity", "Failed to reading email.", databaseError.toException());
-            }
-        });
-    }
-
-    private void moveToDashboard(){
         preferenceUtils.saveString(PreferenceUtils.EmailId, etEmail.getText().toString());
         preferenceUtils.saveString(PreferenceUtils.Password, etPassword.getText().toString());
-        Intent intent = new Intent(LoginActivity.this, CustomerDashboardActivity.class);
+        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         intent.putExtra(AppConstants.User_Role, userRole);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
