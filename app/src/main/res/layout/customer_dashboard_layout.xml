@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
     android:padding="@dimen/margin_10">
 
     <TextView
+        android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
         android:gravity="center_horizontal"
+        android:padding="@dimen/margin_10"
         android:text="Hi Yamini, Welcome to Food Zone"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimaryDark"
@@ -20,21 +22,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_100"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             app:cardCornerRadius="@dimen/margin_10"
             app:elevation="@dimen/margin_10">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
                 android:gravity="center">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:alpha="0.2"
+                    android:background="@drawable/dinein" />
 
                 <TextView
                     android:id="@+id/tvDineIn"
@@ -43,24 +53,32 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="Dine In"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_18" />
-            </LinearLayout>
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_100"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_20"
+            android:layout_weight="1"
             app:cardCornerRadius="@dimen/margin_10"
             app:elevation="@dimen/margin_10">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
                 android:gravity="center">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:alpha="0.2"
+                    android:background="@drawable/takeout" />
 
                 <TextView
                     android:id="@+id/tvTakeOut"
@@ -69,24 +87,32 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="Take Out"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_18" />
-            </LinearLayout>
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_100"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_20"
+            android:layout_weight="1"
             app:cardCornerRadius="@dimen/margin_10"
             app:elevation="@dimen/margin_10">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
                 android:gravity="center">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:alpha="0.2"
+                    android:background="@drawable/reservation" />
 
                 <TextView
                     android:id="@+id/tvReservation"
@@ -95,10 +121,11 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="Reservation"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_18" />
-            </LinearLayout>
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
         </androidx.cardview.widget.CardView>
     </LinearLayout>
-</FrameLayout>
+</LinearLayout>
