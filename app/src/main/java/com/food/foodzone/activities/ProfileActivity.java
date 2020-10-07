@@ -13,13 +13,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.food.foodzone.R;
-import com.food.foodzone.models.UserDo;
-import com.food.foodzone.utils.CircleImageView;
+import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.*;
+import com.food.foodzone.utils.*;
 import com.food.foodzone.utils.PreferenceUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
@@ -129,8 +143,8 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void initialiseControls(){
-        civProfile              = llProfile.findViewById(R.id.civProfile);
         ivEdit                  = llProfile.findViewById(R.id.ivEdit);
+        civProfile              = llProfile.findViewById(R.id.civProfile);
         etName                  = llProfile.findViewById(R.id.etName);
         etEmail                 = llProfile.findViewById(R.id.etEmail);
         etContactNumber         = llProfile.findViewById(R.id.etContactNumber);
@@ -191,14 +205,60 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void uploadProfilePic(){
-    }
-
-    private void updateProfile(UserDo userDo){
-        finish();
+        showLoader();
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId,"");
+        final String profileImgPath = AppConstants.Profiles_Storage_Path+userId+"_"+ System.currentTimeMillis();
+        storageReference.child(profileImgPath).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                uri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        hideLoader();
+                        String profileImgPath = uri.toString();
+                        userDo.profilePicUrl = profileImgPath;
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                hideLoader();
+                Log.e("Image Upload", "Exception : "+e.getMessage());
+                showToast("Error while uploading : "+e.getMessage());
+            }
+        });
     }
 
     @Override
     public void getData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Users);
+        showLoader();
+        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        databaseReference.orderByChild("userId").equalTo(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        hideLoader();
+                        if (dataSnapshot != null && dataSnapshot.exists()) {
+                            for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                                userDo = postSnapshot.getValue(UserDo.class);
+                                Log.e("Get Data", userDo.toString());
+                                bindData(userDo);
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        hideLoader();
+                        Log.e(TAG, "Failed to reading email.", databaseError.toException());
+                    }
+                });
     }
 
     private void bindData(UserDo userDo){
@@ -217,5 +277,21 @@ public class ProfileActivity extends BaseActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void updateProfile(UserDo userDo){
+        showLoader();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Users);
+        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        databaseReference.child(userId).setValue(userDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        showToast("Profile data updated.");
+                        finish();
+                    }
+                });
     }
 }

@@ -30,4 +30,12 @@ public class AppConstants
 	public static final String Table_Support    		 = "Support";
 
 	public static final String Profiles_Storage_Path 	 = "Profiles/";
+	public static final String GmailSenderMail				 = "yaminireddybanda@gmail.com";
+	public static final String GmailSenderPassword   		 = "Project2020";
+	public static final String EmailSubject         		 = "Foodzone New Password";
+	public static final String Exit							 = "Exit";
+    public static final String From							 = "From";
+    public static final String DiveIn						 = "DiveIn";
+    public static final String TakeOut   					 = "TakeOut";
+    public static final String Reservation					 = "Reservation";
 }

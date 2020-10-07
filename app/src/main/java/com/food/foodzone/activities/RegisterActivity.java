@@ -1,13 +1,26 @@
 package com.food.foodzone.activities;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.food.foodzone.R;
+import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.UserDo;
+import com.food.foodzone.utils.PreferenceUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import androidx.annotation.NonNull;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -17,7 +30,8 @@ public class RegisterActivity extends BaseActivity {
     private RadioButton rbFemale, rbMale;
     private Button btnRegister;
     private String gender = "";
-
+    private String userType = "";
+    private DatabaseReference mDatabase;
 
     @Override
     public void initialise() {
@@ -30,7 +44,10 @@ public class RegisterActivity extends BaseActivity {
         llToolbar.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
         initialiseControls();
-
+        if(getIntent().hasExtra(AppConstants.User_Type)){
+            userType = getIntent().getStringExtra(AppConstants.User_Type);
+        }
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         rgGender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -87,10 +104,10 @@ public class RegisterActivity extends BaseActivity {
                 }
                 else {
                     if(isNetworkConnectionAvailable(RegisterActivity.this)){
-//                        doRegistration();
+                        doRegistration();
                     }
                     else {
-                        showInternetDialog("Signup");
+                        showInternetDialog("Register");
                     }
                 }
             }
@@ -119,9 +136,72 @@ public class RegisterActivity extends BaseActivity {
 
     }
 
+    private void doRegistration(){
+        final String userId = etEmail.getText().toString().trim().replace("@", "").replace(".", "");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Users);
+        showLoader();
+        databaseReference.orderByChild("userId").equalTo(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot != null && dataSnapshot.exists()) {
+                            hideLoader();
+                            showAppCompatAlert("", "The entered email already exist, please register with different email", "OK", "", "", true);
+                        }
+                        else {
+                            //Username does not exist
+                            databaseReference.orderByChild("userId").equalTo(userId).removeEventListener(this);
+                            insertIntoDB(userId, databaseReference);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        hideLoader();
+                        Log.e("SignupActivity", "Failed to reading email.", databaseError.toException());
+                    }
+                });
+    }
+
+    private void insertIntoDB(String userId, DatabaseReference databaseReference){
+        final UserDo userDo = new UserDo(userId, etName.getText().toString().trim(), etEmail.getText().toString().trim(),
+                etPhone.getText().toString().trim(), etCountry.getText().toString().trim(), etState.getText().toString().trim(),
+                etCity.getText().toString().trim(), gender, etPassword.getText().toString().trim(), "", userType);
+
+        databaseReference.child(userId).setValue(userDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        showAppCompatAlert("", "Congratulations! You have successfully registered.", "OK", "", "Registration", false);
+                    }
+                });
+    }
+
     @Override
     public void onButtonYesClick(String from) {
         super.onButtonYesClick(from);
+        if(from.equalsIgnoreCase("Registration")){
+            preferenceUtils.saveString(PreferenceUtils.EmailId, etEmail.getText().toString().trim());
+            preferenceUtils.saveString(PreferenceUtils.Password, etPassword.getText().toString().trim());
+            AppConstants.LoggedIn_User_Type = userType;
+            Intent intent = null;
+            if(userType.equalsIgnoreCase(AppConstants.Customer_Role)){
+                intent = new Intent(RegisterActivity.this, CustomerDashboardActivity.class);
+            }
+            else {
+                intent = new Intent(RegisterActivity.this, EmployeeDashboardActivity.class);
+            }
+            intent.putExtra(AppConstants.User_Type, userType);
+            intent.putExtra("Email", etEmail.getText().toString().trim());
+            intent.putExtra("Phone", etPhone.getText().toString().trim());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.enter, R.anim.exit);
+            finish();
+        }
+
     }
 
     @Override

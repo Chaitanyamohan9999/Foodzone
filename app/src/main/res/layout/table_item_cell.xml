@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_5"
+    android:orientation="vertical"
+    app:cardElevation="@dimen/margin_5">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/table_icon"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_5">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@android:drawable/ic_menu_info_details"
+            android:visibility="gone"
+            app:tint="@color/colorPrimaryDark" />
+
+
+        <TextView
+            android:id="@+id/tvTableName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:gravity="center"
+            android:padding="@dimen/margin_10"
+            android:text="Table1"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/text_size_16"
+            android:textStyle="bold" />
+    </FrameLayout>
+</androidx.cardview.widget.CardView>

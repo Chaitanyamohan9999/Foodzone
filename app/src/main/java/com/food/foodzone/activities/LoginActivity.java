@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.utils.PreferenceUtils;
 
 import java.util.ArrayList;
 
@@ -24,7 +26,8 @@ public class LoginActivity extends BaseActivity {
     private View llLogin;
     private LinearLayout llUserType, llForCustomer;
     private EditText etEmail, etPassword;
-    private TextView tvForgotPassword, tvRegister, tvLogin, tvUserTypeLabel;
+    private Button btnLogin;
+    private TextView tvForgotPassword, tvRegister, tvUserTypeLabel;
     private Spinner spUserRole;
     private String userType = "", userRole = "";
 
@@ -34,6 +37,7 @@ public class LoginActivity extends BaseActivity {
         addBodyView(llLogin);
         lockMenu();
         tvTitle.setText("Login");
+        flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.GONE);
         ivMenu.setVisibility(View.GONE);
         llToolbar.setVisibility(View.VISIBLE);
@@ -55,6 +59,9 @@ public class LoginActivity extends BaseActivity {
         userRolesList.add("Select User Role");
         userRolesList.add("Chef");
         userRolesList.add("Manager");
+
+        etEmail.setText("yamini@gmail.com");
+        etPassword.setText("123456");
 
         spUserRole.setAdapter(new ArrayAdapter<String>(LoginActivity.this, R.layout.spinner_dropdown, userRolesList){
             @Override
@@ -84,6 +91,9 @@ public class LoginActivity extends BaseActivity {
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
 
             }
         });
@@ -96,7 +106,7 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        tvLogin.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideKeyBoard(v.getRootView());
@@ -135,10 +145,12 @@ public class LoginActivity extends BaseActivity {
         llForCustomer       = findViewById(R.id.llForCustomer);
         tvRegister          = findViewById(R.id.tvRegister);
         tvForgotPassword    = findViewById(R.id.tvForgotPassword);
-        tvLogin             = findViewById(R.id.tvLogin);
+        btnLogin            = findViewById(R.id.btnLogin);
     }
 
     private void doLogin(){
+        preferenceUtils.saveString(PreferenceUtils.EmailId, etEmail.getText().toString());
+        preferenceUtils.saveString(PreferenceUtils.Password, etPassword.getText().toString());
         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         intent.putExtra(AppConstants.User_Role, userRole);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
