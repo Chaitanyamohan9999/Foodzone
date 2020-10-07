@@ -7,7 +7,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.food.foodzone.R;
+import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.SupportDo;
+import com.food.foodzone.utils.PreferenceUtils;
+
+import java.text.DecimalFormat;
+import java.util.Calendar;
 
 public class SupportActivity extends BaseActivity {
     private TextView tvSubmit;
@@ -73,5 +81,28 @@ public class SupportActivity extends BaseActivity {
 
     private void postCommentsForSupport() {
         finish();
+    }
+}
+    private final DecimalFormat decimalFormat = new DecimalFormat("00");
+
+    private void postCommentsForSupport(){
+        showLoader();
+        final String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Support);
+        final String supportId = "Support_"+System.currentTimeMillis();
+        String commentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+":"+Calendar.getInstance().get(Calendar.MINUTE)+"  "
+                +Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+decimalFormat.format(Calendar.getInstance().get(Calendar.MONTH)+1)
+                + "-" +Calendar.getInstance().get(Calendar.YEAR);
+        SupportDo supportDo = new SupportDo(supportId, userId, etComments.getText().toString().trim(), commentDate);
+        databaseReference.child(supportId).setValue(supportDo)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        showToast("Your query has been submitted");
+                        finish();
+                    }
+                });
     }
 }
