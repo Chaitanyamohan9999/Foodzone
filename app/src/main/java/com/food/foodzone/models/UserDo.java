@@ -12,10 +12,11 @@ public class UserDo extends BaseDo {
     public String gender = "";
     public String password = "";
     public String profilePicUrl = "";
+    public String userType = "";
 
     public UserDo(){}
 
-    public UserDo(String userId, String name, String email, String phone, String country, String state, String city, String gender, String password, String profilePicUrl){
+    public UserDo(String userId, String name, String email, String phone, String country, String state, String city, String gender, String password, String profilePicUrl, String userType){
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -26,6 +27,6 @@ public class UserDo extends BaseDo {
         this.gender = gender ;
         this.password = password ;
         this.profilePicUrl = profilePicUrl;
-
+        this.userType = userType;
     }
 }
