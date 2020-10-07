@@ -67,8 +67,8 @@ public class LoginActivity extends BaseActivity {
         userRolesList.add("Chef");
         userRolesList.add("Manager");
 
-        etEmail.setText("kishoreganji11@gmail.com");
-        etPassword.setText("123456");
+        etEmail.setText("chaitanyamohan09@gmail.com");
+        etPassword.setText("1234567890");
 
         spUserRole.setAdapter(new ArrayAdapter<String>(LoginActivity.this, R.layout.spinner_dropdown, userRolesList){
             @Override
