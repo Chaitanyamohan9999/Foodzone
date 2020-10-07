@@ -7,11 +7,24 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.food.foodzone.R;
-import com.food.foodzone.common.AppConstants;
-import com.food.foodzone.utils.GMailSender;
+import com.food.foodzone.common.*;
+import com.food.foodzone.models.UserDo;
+import com.food.foodzone.utils.*;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Random;
+
+import androidx.annotation.NonNull;
 
 public class ForgotPasswordActivity extends BaseActivity {
 
+    private static final String TAG = "ForgotPassword";
     private View llGuestLogin;
     private Button btnSendNewPassword;
     private EditText etEmail;
@@ -41,7 +54,8 @@ public class ForgotPasswordActivity extends BaseActivity {
                 }
                 else {
                     if(isNetworkConnectionAvailable(ForgotPasswordActivity.this)){
-                        sendMail("12345678");//new password will come from backend
+                        String userId = etEmail.getText().toString().trim().replace("@", "").replace(".", "");
+                        getData();
                     }
                     else {
                         showInternetDialog("ForgotPassword");
@@ -49,6 +63,21 @@ public class ForgotPasswordActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void updateProfile(UserDo userDo, final String newPassword){
+        showLoader();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Users);
+        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        databaseReference.child(userId).setValue(userDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        sendMail(newPassword);//new password will come from backend
+                    }
+                });
     }
 
     private void sendMail(String newPassword) {
@@ -77,9 +106,49 @@ public class ForgotPasswordActivity extends BaseActivity {
 
     }
 
+    private String getNewPassword(String userId) {
+        String newPassword = "";
+        Random random = new Random();
+        newPassword = ""+random.nextInt();
+        return newPassword;
+    }
+
     @Override
     public void getData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Users);
+        showLoader();
+        String userId = etEmail.getText().toString().trim().replace("@", "").replace(".", "");
+        databaseReference.orderByChild("userId").equalTo(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        hideLoader();
+                        if (dataSnapshot != null && dataSnapshot.exists()) {
+                            for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                                UserDo userDo = postSnapshot.getValue(UserDo.class);
+                                Log.e("Get Data", userDo.toString());
+                                updatePassword(userDo);
+                                break;
+                            }
+                        }
+                        else {
+                            showAppCompatAlert("", "The entered email does not exist", "OK", "", "", false);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        hideLoader();
+                        Log.e(TAG, "Failed to reading email.", databaseError.toException());
+                    }
+                });
+    }
+
+    private void updatePassword(UserDo userDo) {
+        String newPassword = getNewPassword(userDo.userId);
+        userDo.password = newPassword;
+        updateProfile(userDo, newPassword);
     }
 
     @Override
