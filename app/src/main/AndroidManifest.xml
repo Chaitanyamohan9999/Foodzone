@@ -1,21 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.food.foodzone">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-feature android:name="CAMERA" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
+        android:name=".FoodZoneApplication"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".activities.SplashActivity"
             android:label="@string/app_name"
@@ -42,7 +45,11 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activities.DashboardActivity"
+            android:name=".activities.CustomerDashboardActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.EmployeeDashboardActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -66,5 +73,6 @@
             android:screenOrientation="portrait" />
 
     </application>
+
 
 </manifest>
