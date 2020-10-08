@@ -263,14 +263,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         showAppCompatAlert("", getResources().getString(R.string.network_error), "Ok", "Cancel", from, false);
 
     }
+     // regular expression for checking valid email
+     protected boolean isValidEmail(String email) {
 
-    protected boolean isValidEmail(String email) {
-        Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
-                "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-                        "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                        "(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+");
-        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
-    }
+         Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
+                 "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                         "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                         "(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+");
+         return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
+     }
 
     //Method to Show loader without text
     public void showLoader() {
