@@ -21,21 +21,22 @@ public class AppConstants
 	public static final String Chef_Role					 = "Chef";
 	public static final String Manager_Role   				 = "Manager";
 	public static final String Customer_Role  				 = "Customer";
-	public static final String User_Type     			 = "UserType";
-	public static final String User_Role     			 = "UserRole";
+	public static final String User_Type     			 = "UserType";//key
+	public static final String User_Role     			 = "UserRole";//key
 	public static String LoggedIn_User_Type     	     = "LoggedInUserType";
 	//tables
 	public static final String Table_Users				 = "Users";
 	public static final String Table_Rating      		 = "Rating";
 	public static final String Table_Support    		 = "Support";
+	public static final String Table_Tables      		 = "Tables";
 
 	public static final String Profiles_Storage_Path 	 = "Profiles/";
 	public static final String GmailSenderMail				 = "yaminireddybanda@gmail.com";
 	public static final String GmailSenderPassword   		 = "Project2020";
 	public static final String EmailSubject         		 = "Foodzone New Password";
 	public static final String Exit							 = "Exit";
-    public static final String From							 = "From";
-    public static final String DiveIn						 = "DiveIn";
-    public static final String TakeOut   					 = "TakeOut";
-    public static final String Reservation					 = "Reservation";
+	public static final String From							 = "From";
+	public static final String DiveIn						 = "DiveIn";
+	public static final String TakeOut   					 = "TakeOut";
+	public static final String Reservation					 = "Reservation";
 }

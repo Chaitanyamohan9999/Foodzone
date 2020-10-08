@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.food.foodzone.R;
+import com.food.foodzone.activities.BaseActivity;
+import com.food.foodzone.activities.MenuListActivity;
 import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.TableDo;
+import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +24,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class TablesListActivity extends BaseActivity {
@@ -59,26 +63,26 @@ public class TablesListActivity extends BaseActivity {
         showLoader();
         String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        hideLoader();
-                        ArrayList<TableDo> tableDos = new ArrayList<>();
-                        for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                            TableDo tableDo = postSnapshot.getValue(TableDo.class);
-                            Log.e("Get Data", tableDo.toString());
-                            tableDos.add(tableDo);
-                        }
-                        if(tableDos.size() > 0){
-                            tablesListAdapter.refreshAdapter(tableDos);
-                        }
-                    }
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                hideLoader();
+                ArrayList<TableDo> tableDos = new ArrayList<>();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    TableDo tableDo = postSnapshot.getValue(TableDo.class);
+                    Log.e("Get Data", tableDo.toString());
+                    tableDos.add(tableDo);
+                }
+                if(tableDos.size() > 0){
+                    tablesListAdapter.refreshAdapter(tableDos);
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        hideLoader();
-                        Log.e(TAG, "Failed to reading email.", databaseError.toException());
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                hideLoader();
+                Log.e(TAG, "Failed to reading email.", databaseError.toException());
+            }
+        });
     }
 
     private class TablesListAdapter extends RecyclerView.Adapter<TableHolder> {
