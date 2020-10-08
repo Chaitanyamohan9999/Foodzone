@@ -61,10 +61,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activities.TablesListActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".activities.MenuListActivity"
             android:screenOrientation="portrait" />
 
