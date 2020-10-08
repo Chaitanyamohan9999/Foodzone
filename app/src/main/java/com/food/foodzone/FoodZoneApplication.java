@@ -1,4 +1,4 @@
-ackage com.food.foodzone;
+package com.food.foodzone;
 
 import android.app.Application;
 
