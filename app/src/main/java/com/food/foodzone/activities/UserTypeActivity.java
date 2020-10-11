@@ -6,14 +6,13 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.food.foodzone.R;
-import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.common.*;
 
 
 public class UserTypeActivity extends BaseActivity {
 
     private View llUserType;
     private Button btnCustomer, btnEmployee;
-    private TextView tvContinue;
     private String userType = "";
 
     @Override
@@ -28,7 +27,6 @@ public class UserTypeActivity extends BaseActivity {
 
         btnCustomer         = llUserType.findViewById(R.id.btnCustomer);
         btnEmployee         = llUserType.findViewById(R.id.btnEmployee);
-        tvContinue          = llUserType.findViewById(R.id.tvContinue);
 
         btnCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,7 +36,7 @@ public class UserTypeActivity extends BaseActivity {
                 btnEmployee.setBackgroundResource(R.drawable.edit_text_bg);
                 btnEmployee.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 userType = btnCustomer.getText().toString();
-
+                moveToLogin();
             }
         });
         btnEmployee.setOnClickListener(new View.OnClickListener() {
@@ -49,17 +47,7 @@ public class UserTypeActivity extends BaseActivity {
                 btnCustomer.setBackgroundResource(R.drawable.edit_text_bg);
                 btnCustomer.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                 userType = btnEmployee.getText().toString();
-            }
-        });
-        tvContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(userType.equalsIgnoreCase("")){
-                    showToast("Please select user type");
-                }
-                else {
-                    moveToLogin();
-                }
+                moveToLogin();
             }
         });
     }
