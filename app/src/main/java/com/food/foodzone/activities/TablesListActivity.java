@@ -10,12 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.food.foodzone.R;
-import com.food.foodzone.activities.BaseActivity;
-import com.food.foodzone.activities.MenuListActivity;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.TableDo;
 import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.PreferenceUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +27,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,27 +37,48 @@ public class TablesListActivity extends BaseActivity {
     private static final String TAG = "TablesList";
     private View llTables;
     private RecyclerView rvTables;
+    private TextView tvNoData;
+    private FloatingActionButton fabAddTable;
     private TablesListAdapter tablesListAdapter;
     @Override
     public void initialise() {
         llTables =  inflater.inflate(R.layout.tables_list_layout, null);
         addBodyView(llTables);
         lockMenu();
-        flCart.setVisibility(View.VISIBLE);
+        flCart.setVisibility(View.GONE);
         llToolbar.setVisibility(View.VISIBLE);
         ivBack.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
-        tvTitle.setText("Book Table");
+
         initialiseControls();
+        if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)){
+            fabAddTable.setVisibility(View.GONE);
+            tvTitle.setText("Book Table");
+        }
+        else {
+            fabAddTable.setVisibility(View.VISIBLE);
+            tvTitle.setText("Tables List");
+        }
         rvTables.setLayoutManager(new GridLayoutManager(TablesListActivity.this, 2, GridLayoutManager.VERTICAL, false));
         tablesListAdapter = new TablesListAdapter(TablesListActivity.this, new ArrayList<TableDo>());
         rvTables.setAdapter(tablesListAdapter);
         getData();
+        fabAddTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TablesListActivity.this, AddTableActivity.class);
+                startActivityForResult(intent, 101);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
+            }
+        });
     }
 
     private void initialiseControls() {
-        rvTables                        = llTables.findViewById(R.id.rvTables);
+        rvTables                           = llTables.findViewById(R.id.rvTables);
+        tvNoData                           = llTables.findViewById(R.id.tvNoData);
+        fabAddTable                        = llTables.findViewById(R.id.fabAddTable);
     }
+
     @Override
     public void getData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -73,7 +96,13 @@ public class TablesListActivity extends BaseActivity {
                     tableDos.add(tableDo);
                 }
                 if(tableDos.size() > 0){
+                    tvNoData.setVisibility(View.GONE);
+                    rvTables.setVisibility(View.VISIBLE);
                     tablesListAdapter.refreshAdapter(tableDos);
+                }
+                else {
+                    tvNoData.setVisibility(View.VISIBLE);
+                    rvTables.setVisibility(View.GONE);
                 }
             }
 
@@ -83,6 +112,35 @@ public class TablesListActivity extends BaseActivity {
                 Log.e(TAG, "Failed to reading email.", databaseError.toException());
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 101 && resultCode == 101) {
+            getData();
+        }
+    }
+
+    private void deleteTable(String tableId) {
+        showLoader();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
+        databaseReference.child(tableId).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                hideLoader();
+                showAppCompatAlert("", "Congratulations! You have successfully deleted a Table.", "OK", "", "DeleteTable", false);
+            }
+        });
+    }
+
+    @Override
+    public void onButtonYesClick(String from) {
+        super.onButtonYesClick(from);
+        if (from.equalsIgnoreCase("DeleteTable")) {
+            getData();
+        }
     }
 
     private class TablesListAdapter extends RecyclerView.Adapter<TableHolder> {
@@ -105,25 +163,46 @@ public class TablesListActivity extends BaseActivity {
             this.tableDos = tableDos;
             notifyDataSetChanged();
         }
-        private final DecimalFormat decimalFormat = new DecimalFormat("00");
         @Override
-        public void onBindViewHolder(@NonNull TableHolder holder, int position) {
+        public void onBindViewHolder(@NonNull TableHolder holder, final int position) {
             holder.tvTableName.setText(tableDos.get(position).tableName);
-            holder.tvTableCapacity.setText(""+decimalFormat.format(tableDos.get(position).tableCapacity));
-            if(tableDos.get(position).reservedBy.equalsIgnoreCase("")){
-                holder.ivReserved.setVisibility(View.GONE);
-                holder.itemView.setEnabled(true);
+            holder.tvTableCapacity.setText(""+AppConstants.decimalFormat.format(tableDos.get(position).tableCapacity));
+
+            if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+                holder.ivDeleteTable.setVisibility(View.GONE);
+                holder.ivDeleteTable.setEnabled(false);
+                if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
+                    holder.ivReserved.setVisibility(View.GONE);
+                    holder.itemView.setEnabled(true);
+                }
+                else {
+                    holder.ivReserved.setVisibility(View.VISIBLE);
+                    holder.itemView.setEnabled(false);
+                }
+            }
+            else if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Manager_Role)) {
+                if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
+                    holder.ivReserved.setVisibility(View.GONE);
+                    holder.ivDeleteTable.setVisibility(View.VISIBLE);
+                }
+                else {
+                    holder.ivReserved.setVisibility(View.VISIBLE);
+                    holder.ivDeleteTable.setVisibility(View.GONE);
+                }
             }
             else {
-                holder.ivReserved.setVisibility(View.VISIBLE);
-                holder.itemView.setEnabled(false);
+                holder.ivDeleteTable.setVisibility(View.GONE);
+                if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
+                    holder.ivReserved.setVisibility(View.GONE);
+                }
+                else {
+                    holder.ivReserved.setVisibility(View.VISIBLE);
+                }
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.ivDeleteTable.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, MenuListActivity.class);
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.enter, R.anim.exit);
+                public void onClick(View v) {
+                    deleteTable(tableDos.get(position).tableId);
                 }
             });
         }
@@ -136,12 +215,13 @@ public class TablesListActivity extends BaseActivity {
 
     private static class TableHolder extends RecyclerView.ViewHolder {
         private TextView tvTableName, tvTableCapacity;
-        private ImageView ivReserved;
+        private ImageView ivDeleteTable, ivReserved;
         public TableHolder(@NonNull View itemView) {
             super(itemView);
             tvTableName             = itemView.findViewById(R.id.tvTableName);
             tvTableCapacity         = itemView.findViewById(R.id.tvTableCapacity);
             ivReserved              = itemView.findViewById(R.id.ivReserved);
+            ivDeleteTable           = itemView.findViewById(R.id.ivDeleteTable);
         }
     }
 }
