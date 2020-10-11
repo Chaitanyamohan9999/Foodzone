@@ -14,36 +14,35 @@ public class EmployeeDashboardActivity extends BaseActivity {
 
     @Override
     public void initialise() {
-        llDashboard = inflater.inflate(R.layout.customer_dashboard_layout, null);
+        llDashboard = inflater.inflate(R.layout.employee_dashboard_layout, null);
         addBodyView(llDashboard);
         lockMenu();
-        flCart.setVisibility(View.VISIBLE);
+        flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.GONE);
-        ivMenu.setVisibility(View.VISIBLE);
+        ivMenu.setVisibility(View.GONE);
         llToolbar.setVisibility(View.VISIBLE);
         initialiseControls();
-        tvDineIn.setOnClickListener(new View.OnClickListener() {
+        tvManageEmployees.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EmployeeDashboardActivity.this, TablesListActivity.class);
-                intent.putExtra(AppConstants.From, AppConstants.DiveIn);
+                Intent intent = new Intent(EmployeeDashboardActivity.this, EmployeesListActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
-        tvTakeOut.setOnClickListener(new View.OnClickListener() {
+        tvManageTables.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EmployeeDashboardActivity.this, MenuListActivity.class);
+                Intent intent = new Intent(EmployeeDashboardActivity.this, TablesListActivity.class);
                 intent.putExtra(AppConstants.From, AppConstants.TakeOut);
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
-        tvReservation.setOnClickListener(new View.OnClickListener() {
+        tvManageMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(EmployeeDashboardActivity.this, TablesListActivity.class);
+                Intent intent = new Intent(EmployeeDashboardActivity.this, MenuListActivity.class);
                 intent.putExtra(AppConstants.From, AppConstants.Reservation);
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter, R.anim.exit);
@@ -52,9 +51,9 @@ public class EmployeeDashboardActivity extends BaseActivity {
     }
 
     private void initialiseControls() {
-        tvDineIn             = llDashboard.findViewById(R.id.tvDineIn);
-        tvTakeOut            = llDashboard.findViewById(R.id.tvTakeOut);
-        tvReservation        = llDashboard.findViewById(R.id.tvReservation);
+        tvManageEmployees    = llDashboard.findViewById(R.id.tvManageEmployees);
+        tvManageTables       = llDashboard.findViewById(R.id.tvManageTables);
+        tvManageMenu         = llDashboard.findViewById(R.id.tvManageMenu);
     }
     @Override
     public void getData() {
@@ -63,7 +62,7 @@ public class EmployeeDashboardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        menuOperates();
+        dlCareer.closeDrawer(Gravity.LEFT);
         showAppCompatAlert("", "Do you want to exit from app?", "Exit", "Cancel", AppConstants.Exit, false);
     }
 
