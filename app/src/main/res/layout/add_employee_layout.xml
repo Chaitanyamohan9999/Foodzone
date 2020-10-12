@@ -93,6 +93,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:text="PROVINCE"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/etState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_bg"
+            android:inputType="text"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="CITY"
             android:textColor="@android:color/black" />
 
@@ -104,6 +120,39 @@
             android:background="@drawable/edit_text_bg"
             android:inputType="text"
             android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/tvUserTypeLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            android:text="USER TYPE"
+            android:textColor="@android:color/black" />
+
+        <LinearLayout
+            android:id="@+id/llUserType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_5"
+            android:background="@drawable/edit_text_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingRight="@dimen/margin_5">
+
+            <Spinner
+                android:id="@+id/spUserRole"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:entries="@array/unit_type" />
+
+            <ImageView
+                android:layout_width="@dimen/margin_20"
+                android:layout_height="@dimen/margin_20"
+                android:rotation="270"
+                android:src="@drawable/back_arrow" />
+        </LinearLayout>
 
         <RadioGroup
             android:id="@+id/rgGender"
@@ -118,10 +167,24 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FEMALE"
+                android:textColor="@android:color/black" />
+
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MALE"
+                android:textColor="@android:color/black" />
 
 
             <View
@@ -138,6 +201,22 @@
 
         <EditText
             android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edit_text_bg"
+            android:inputType="textPassword"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="RE-ENTER PASSWORD"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/etRenterPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
