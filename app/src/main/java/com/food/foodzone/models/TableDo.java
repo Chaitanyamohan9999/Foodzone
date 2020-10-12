@@ -10,9 +10,11 @@ public class TableDo extends BaseDo {
 
     public TableDo() {}
 
-    public TableDo(String tableId, String tableName, int tableCapacity) {
+    public TableDo(String tableId, String tableName, int tableCapacity, String reservedBy, String reservedAt) {
         this.tableId = tableId;
         this.tableName = tableName;
         this.tableCapacity = tableCapacity;
+        this.reservedBy = reservedBy;
+        this.reservedAt = reservedAt;
     }
 }
