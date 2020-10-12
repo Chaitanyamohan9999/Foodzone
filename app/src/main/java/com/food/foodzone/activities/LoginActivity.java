@@ -67,8 +67,8 @@ public class LoginActivity extends BaseActivity {
         userRolesList.add("Chef");
         userRolesList.add("Manager");
 
-        etEmail.setText("chaitanyamohan09@gmail.com");
-        etPassword.setText("chaitanya");
+        etEmail.setText("yaminireddy@gmail.com");
+        etPassword.setText("yamini");
 
         spUserRole.setAdapter(new ArrayAdapter<String>(LoginActivity.this, R.layout.spinner_dropdown, userRolesList){
             @Override
@@ -83,10 +83,10 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
                 if(position > 0){
-                    userRole = userRolesList.get(position);
+                    userType = userRole = userRolesList.get(position);
                 }
                 else {
-                    userRole = "";
+                    userType = userRole = "";
                 }
             }
 
@@ -135,7 +135,7 @@ public class LoginActivity extends BaseActivity {
                 }
                 else {
                     if (isNetworkConnectionAvailable(LoginActivity.this)) {
-                        doLogin();
+                         doLogin();
                     }
                     else {
                         showInternetDialog("Login");
@@ -177,8 +177,13 @@ public class LoginActivity extends BaseActivity {
                             preferenceUtils.saveString(PreferenceUtils.EmailId, etEmail.getText().toString().trim());
                             preferenceUtils.saveString(PreferenceUtils.PhoneNo, hashMap.get("phone").toString());
                             preferenceUtils.saveString(PreferenceUtils.Password, etPassword.getText().toString().trim());
-
-                            Intent intent = new Intent(LoginActivity.this, CustomerDashboardActivity.class);
+                            Intent intent = null;
+                            if(loggedInUser.equalsIgnoreCase(AppConstants.Customer_Role)) {
+                                intent = new Intent(LoginActivity.this, CustomerDashboardActivity.class);
+                            }
+                            else {
+                                intent = new Intent(LoginActivity.this, EmployeeDashboardActivity.class);
+                            }
                             intent.putExtra(AppConstants.User_Type, userType);
                             AppConstants.LoggedIn_User_Type = userType;
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
