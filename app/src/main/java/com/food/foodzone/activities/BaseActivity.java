@@ -26,10 +26,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.food.foodzone.BuildConfig;
 import com.food.foodzone.R;
 import com.food.foodzone.common.*;
 import com.food.foodzone.utils.PreferenceUtils;
-import com.squareup.picasso.BuildConfig;
 
 import java.util.regex.Pattern;
 
@@ -50,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public DrawerLayout dlCareer;
     public ImageView ivBack, ivMenu;
     public TextView tvCartCount, tvTitle;
-    private TextView tvFavourites, tvEvents, tvProfile, tvChangePassword, tvSupport, tvLogout, tvVersion;
+    private TextView tvOrders, tvPendingOrders, tvOrdersHistory, tvProfile, tvChangePassword, tvSupport, tvLogout, tvVersion;
     public static BaseActivity mInstance;
 
     @Override
@@ -96,15 +96,22 @@ public abstract class BaseActivity extends AppCompatActivity {
                 menuOperates();
             }
         });
-        tvFavourites.setOnClickListener(new View.OnClickListener() {
+        tvPendingOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menuOperates();
             }
         });
-        tvEvents.setOnClickListener(new View.OnClickListener() {
+        tvOrdersHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                menuOperates();
+            }
+        });
+
+        tvOrders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 menuOperates();
             }
         });
@@ -145,6 +152,33 @@ public abstract class BaseActivity extends AppCompatActivity {
         initialise();
     }
 
+    protected void employeeLeftMenu () {
+        tvPendingOrders.setVisibility(View.GONE);
+        tvOrdersHistory.setVisibility(View.GONE);
+        findViewById(R.id.vwPendingOrders).setVisibility(View.GONE);
+        findViewById(R.id.vwOrdersHistory).setVisibility(View.GONE);
+        tvOrders.setVisibility(View.VISIBLE);
+        findViewById(R.id.vwOrders).setVisibility(View.VISIBLE);
+        tvProfile.setVisibility(View.VISIBLE);
+        tvChangePassword.setVisibility(View.VISIBLE);
+        tvSupport.setVisibility(View.VISIBLE);
+        tvLogout.setVisibility(View.VISIBLE);
+        tvVersion.setVisibility(View.VISIBLE);
+    }
+
+    protected void customerLeftMenu() {
+        tvPendingOrders.setVisibility(View.VISIBLE);
+        tvOrdersHistory.setVisibility(View.VISIBLE);
+        findViewById(R.id.vwPendingOrders).setVisibility(View.VISIBLE);
+        findViewById(R.id.vwOrdersHistory).setVisibility(View.VISIBLE);
+        tvOrders.setVisibility(View.GONE);
+        findViewById(R.id.vwOrders).setVisibility(View.GONE);
+        tvProfile.setVisibility(View.VISIBLE);
+        tvChangePassword.setVisibility(View.VISIBLE);
+        tvSupport.setVisibility(View.VISIBLE);
+        tvLogout.setVisibility(View.VISIBLE);
+        tvVersion.setVisibility(View.VISIBLE);
+    }
 
     protected void lockMenu() {
         dlCareer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
@@ -168,8 +202,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         ivMenu                      = findViewById(R.id.ivMenu);
         tvTitle                     = findViewById(R.id.tvTitle);
         tvCartCount                 = findViewById(R.id.tvCartCount);
-        tvFavourites                = findViewById(R.id.tvFavourites);
-        tvEvents                    = findViewById(R.id.tvEvents);
+        tvOrders                    = findViewById(R.id.tvOrders);
+        tvPendingOrders             = findViewById(R.id.tvPendingOrders);
+        tvOrdersHistory             = findViewById(R.id.tvOrdersHistory);
         tvProfile                   = findViewById(R.id.tvProfile);
         tvChangePassword            = findViewById(R.id.tvChangePassword);
         tvSupport                   = findViewById(R.id.tvSupport);

@@ -1,6 +1,7 @@
 package com.food.foodzone.activities;
 
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,17 +11,17 @@ import com.food.foodzone.common.AppConstants;
 public class EmployeeDashboardActivity extends BaseActivity {
 
     private View llDashboard;
-    private TextView tvDineIn, tvTakeOut, tvReservation;
+    private TextView tvManageEmployees, tvManageTables, tvManageMenu;
 
     @Override
     public void initialise() {
         llDashboard = inflater.inflate(R.layout.employee_dashboard_layout, null);
         addBodyView(llDashboard);
-        lockMenu();
         flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.GONE);
-        ivMenu.setVisibility(View.GONE);
+        ivMenu.setVisibility(View.VISIBLE);
         llToolbar.setVisibility(View.VISIBLE);
+        employeeLeftMenu();
         initialiseControls();
         tvManageEmployees.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,16 +51,7 @@ public class EmployeeDashboardActivity extends BaseActivity {
         });
     }
 
-    private void initialiseControls() {
-        tvManageEmployees    = llDashboard.findViewById(R.id.tvManageEmployees);
-        tvManageTables       = llDashboard.findViewById(R.id.tvManageTables);
-        tvManageMenu         = llDashboard.findViewById(R.id.tvManageMenu);
-    }
-    @Override
-    public void getData() {
-
-    }
-
+ 
     @Override
     public void onBackPressed() {
         dlCareer.closeDrawer(Gravity.LEFT);
@@ -74,3 +66,4 @@ public class EmployeeDashboardActivity extends BaseActivity {
         }
     }
 }
+

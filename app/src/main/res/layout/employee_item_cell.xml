@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_5"
+    app:cardCornerRadius="@dimen/margin_5"
+    app:cardElevation="@dimen/margin_5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10">
+
+        <com.food.foodzone.utils.CircleImageView
+            android:id="@+id/civProfile"
+            android:layout_width="@dimen/margin_100"
+            android:layout_height="@dimen/margin_100"
+            android:layout_marginRight="@dimen/margin_20"
+            android:src="@drawable/user_icon" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvEmpName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Employee Name"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvEmpPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Phone : 4202499485"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="normal" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvEmpEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Email : yamini@gmail.com"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivDeleteEmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/margin_10"
+            android:paddingRight="@dimen/margin_10"
+            android:src="@android:drawable/ic_menu_delete"
+            android:visibility="visible"
+            app:tint="@color/colorPrimaryDark" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
