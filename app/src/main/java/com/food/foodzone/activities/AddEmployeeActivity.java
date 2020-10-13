@@ -154,6 +154,9 @@ public class AddEmployeeActivity extends BaseActivity {
                     else if(etPhone.getText().toString().trim().length() !=10){
                         showErrorMessage("Please enter valid phone number");
                     }
+                    else if(!isValidEmail(etEmail.getText().toString().trim())){
+                        showErrorMessage("Please enter email");
+                    }
                     else if(etCountry.getText().toString().equalsIgnoreCase("")){
                         showErrorMessage("Please enter country");
                     }
@@ -163,14 +166,20 @@ public class AddEmployeeActivity extends BaseActivity {
                     else if(etState.getText().toString().equalsIgnoreCase("")){
                         showErrorMessage("Please enter province");
                     }
+                    else if(gender.equalsIgnoreCase("")){
+                        showErrorMessage("Please select gender");
+                    }
                     else if(etPassword.getText().toString().equalsIgnoreCase("")){
                         showErrorMessage("Please enter password");
                     }
-                    else if(!etPassword.getText().toString().equalsIgnoreCase(etRenterPassword.getText().toString())){
-                        showErrorMessage("Please enter password and Re-enter password are same");
-                    }
                     else if(etPassword.getText().toString().length() < 6){
                         showErrorMessage("Please enter password minimum 6 characters");
+                    }
+                    else if(etRenterPassword.getText().toString().equalsIgnoreCase("")){
+                        showErrorMessage("Please Re-enter password");
+                    }
+                    else if(!etPassword.getText().toString().equalsIgnoreCase(etRenterPassword.getText().toString())){
+                        showErrorMessage("Please enter password and Re-enter password are same");
                     }
                     else {
                         if(isNetworkConnectionAvailable(AddEmployeeActivity.this)){
@@ -232,6 +241,21 @@ public class AddEmployeeActivity extends BaseActivity {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         hideLoader();
                         Log.e("SignupActivity", "Failed to reading email.", databaseError.toException());
+                    }
+                });
+    }
+
+    private void insertIntoDB(String userId, DatabaseReference databaseReference){
+        final UserDo userDo = new UserDo(userId, etName.getText().toString().trim(), etEmail.getText().toString().trim(),
+                etPhone.getText().toString().trim(), etCountry.getText().toString().trim(), etState.getText().toString().trim(),
+                etCity.getText().toString().trim(), gender, etPassword.getText().toString().trim(), "", userType);
+
+        databaseReference.child(userId).setValue(userDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        showAppCompatAlert("", "Congratulations! You have successfully added an Employee.", "OK", "", "AddEmployee", false);
                     }
                 });
     }
