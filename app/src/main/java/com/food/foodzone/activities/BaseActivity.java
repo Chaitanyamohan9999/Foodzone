@@ -26,10 +26,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.food.foodzone.BuildConfig;
 import com.food.foodzone.R;
-import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.common.*;
 import com.food.foodzone.utils.PreferenceUtils;
+import com.squareup.picasso.BuildConfig;
 
 import java.util.regex.Pattern;
 
@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private AlertDialog.Builder alertDialog;
     public FrameLayout llToolbar, flCart;
     public LinearLayout llDrawerLayoutPrent, llDrawerLayout, llBody;
-    private DrawerLayout dlCareer;
+    public DrawerLayout dlCareer;
     public ImageView ivBack, ivMenu;
     public TextView tvCartCount, tvTitle;
     private TextView tvFavourites, tvEvents, tvProfile, tvChangePassword, tvSupport, tvLogout, tvVersion;
@@ -69,7 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         lockMenu();
-        tvVersion.setText("Version : "+BuildConfig.VERSION_NAME);
+        tvVersion.setText("Version : "+ BuildConfig.VERSION_NAME);
         ivMenu.setVisibility(View.INVISIBLE);
         ivBack.setVisibility(View.INVISIBLE);
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -263,15 +263,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         showAppCompatAlert("", getResources().getString(R.string.network_error), "Ok", "Cancel", from, false);
 
     }
-     // regular expression for checking valid email
-     protected boolean isValidEmail(String email) {
 
-         Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
-                 "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-                         "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                         "(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+");
-         return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
-     }
+    protected boolean isValidEmail(String email) {
+        Pattern EMAIL_ADDRESS_PATTERN = Pattern.compile(
+                "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                        "\\@[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                        "(\\.[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25})+");
+        return EMAIL_ADDRESS_PATTERN.matcher(email).matches();
+    }
 
     //Method to Show loader without text
     public void showLoader() {
