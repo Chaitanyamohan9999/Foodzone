@@ -65,8 +65,6 @@ public class EmployeesListActivity extends BaseActivity {
         });
     }
 
-
-    
     private void initialiseControls() {
         rvEmployees                           = llTables.findViewById(R.id.rvEmployees);
         tvNoData                              = llTables.findViewById(R.id.tvNoData);
