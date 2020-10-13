@@ -51,16 +51,7 @@ public class EmployeeDashboardActivity extends BaseActivity {
         });
     }
 
-    private void initialiseControls() {
-        tvManageEmployees    = llDashboard.findViewById(R.id.tvManageEmployees);
-        tvManageTables       = llDashboard.findViewById(R.id.tvManageTables);
-        tvManageMenu         = llDashboard.findViewById(R.id.tvManageMenu);
-    }
-    @Override
-    public void getData() {
-
-    }
-
+ 
     @Override
     public void onBackPressed() {
         dlCareer.closeDrawer(Gravity.LEFT);
@@ -75,3 +66,4 @@ public class EmployeeDashboardActivity extends BaseActivity {
         }
     }
 }
+
