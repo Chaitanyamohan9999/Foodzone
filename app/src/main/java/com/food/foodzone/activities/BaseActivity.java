@@ -155,9 +155,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void employeeLeftMenu () {
         tvPendingOrders.setVisibility(View.GONE);
         tvOrdersHistory.setVisibility(View.GONE);
-
+        findViewById(R.id.vwPendingOrders).setVisibility(View.GONE);
+        findViewById(R.id.vwOrdersHistory).setVisibility(View.GONE);
         tvOrders.setVisibility(View.VISIBLE);
-
+        findViewById(R.id.vwOrders).setVisibility(View.VISIBLE);
         tvProfile.setVisibility(View.VISIBLE);
         tvChangePassword.setVisibility(View.VISIBLE);
         tvSupport.setVisibility(View.VISIBLE);
@@ -168,9 +169,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void customerLeftMenu() {
         tvPendingOrders.setVisibility(View.VISIBLE);
         tvOrdersHistory.setVisibility(View.VISIBLE);
-
+        findViewById(R.id.vwPendingOrders).setVisibility(View.VISIBLE);
+        findViewById(R.id.vwOrdersHistory).setVisibility(View.VISIBLE);
         tvOrders.setVisibility(View.GONE);
-
+        findViewById(R.id.vwOrders).setVisibility(View.GONE);
         tvProfile.setVisibility(View.VISIBLE);
         tvChangePassword.setVisibility(View.VISIBLE);
         tvSupport.setVisibility(View.VISIBLE);
@@ -200,7 +202,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         ivMenu                      = findViewById(R.id.ivMenu);
         tvTitle                     = findViewById(R.id.tvTitle);
         tvCartCount                 = findViewById(R.id.tvCartCount);
-
+        tvOrders                    = findViewById(R.id.tvOrders);
+        tvPendingOrders             = findViewById(R.id.tvPendingOrders);
+        tvOrdersHistory             = findViewById(R.id.tvOrdersHistory);
         tvProfile                   = findViewById(R.id.tvProfile);
         tvChangePassword            = findViewById(R.id.tvChangePassword);
         tvSupport                   = findViewById(R.id.tvSupport);
