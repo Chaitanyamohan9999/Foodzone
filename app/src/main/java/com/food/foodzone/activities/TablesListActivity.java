@@ -205,6 +205,17 @@ public class TablesListActivity extends BaseActivity {
                     deleteTable(tableDos.get(position).tableId);
                 }
             });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+                        Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
+                        startActivityForResult(intent, 1001);
+                        overridePendingTransition(R.anim.enter, R.anim.exit);
+                    }
+                }
+            });
         }
 
         @Override

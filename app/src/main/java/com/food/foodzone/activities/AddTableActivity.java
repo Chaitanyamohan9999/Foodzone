@@ -62,6 +62,7 @@ public class AddTableActivity extends BaseActivity {
 
     }
 
+
     private void addTable() {
         showLoader();
         String tableId = "T"+new Random().nextInt();
