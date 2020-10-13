@@ -1,6 +1,7 @@
 package com.food.foodzone.activities;
 
 import android.content.Intent;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,11 +18,11 @@ public class CustomerDashboardActivity extends BaseActivity {
     public void initialise() {
         llDashboard = inflater.inflate(R.layout.customer_dashboard_layout, null);
         addBodyView(llDashboard);
-        lockMenu();
         flCart.setVisibility(View.VISIBLE);
         ivBack.setVisibility(View.GONE);
         ivMenu.setVisibility(View.VISIBLE);
         llToolbar.setVisibility(View.VISIBLE);
+        customerLeftMenu();
         initialiseControls();
         String welcomeText = "Hi "+preferenceUtils.getStringFromPreference(PreferenceUtils.UserName, "")+", Welcome to Food Zone";
         tvUserName.setText(welcomeText);
@@ -67,7 +68,7 @@ public class CustomerDashboardActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        menuOperates();
+        dlCareer.closeDrawer(Gravity.LEFT);
         showAppCompatAlert("", "Do you want to exit from app?", "Exit", "Cancel", AppConstants.Exit, false);
     }
 
