@@ -188,10 +188,10 @@ public class RegisterActivity extends BaseActivity {
             AppConstants.LoggedIn_User_Type = userType;
             Intent intent = null;
             if(userType.equalsIgnoreCase(AppConstants.Customer_Role)){
-                intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                intent = new Intent(RegisterActivity.this, CustomerDashboardActivity.class);
             }
             else {
-                intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                intent = new Intent(RegisterActivity.this, EmployeeDashboardActivity.class);
             }
             intent.putExtra(AppConstants.User_Type, userType);
             intent.putExtra("Email", etEmail.getText().toString().trim());
