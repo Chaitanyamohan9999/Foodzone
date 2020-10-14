@@ -6,20 +6,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.SupportDo;
-import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.DecimalFormat;
 import java.util.Calendar;
-
-import androidx.annotation.NonNull;
 
 
 public class SupportActivity extends BaseActivity {
@@ -108,25 +106,4 @@ public class SupportActivity extends BaseActivity {
                 });
     }
 
-}
-//    private void createTable(int i) {
-//        showLoader();
-//        final String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
-//        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
-//        final String supportId = "Tables_"+i;
-//        String commentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+":"+Calendar.getInstance().get(Calendar.MINUTE)+"  "
-//                +Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+decimalFormat.format(Calendar.getInstance().get(Calendar.MONTH)+1)
-//                + "-" +Calendar.getInstance().get(Calendar.YEAR);
-//
-//        TableDo tableDo = new TableDo(supportId,"Table One", 6);
-//        databaseReference.child(supportId).setValue(tableDo)
-//                .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        hideLoader();
-//                        showToast("Your query has been submitted");
-//                    }
-//                });
-//    }
 }
