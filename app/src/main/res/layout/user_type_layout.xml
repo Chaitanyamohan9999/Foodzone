@@ -78,6 +78,7 @@
             android:layout_marginTop="@dimen/margin_20"
             android:gravity="center"
             android:padding="@dimen/margin_10"
+            android:visibility="gone"
             android:text="@string/continue_text"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/text_size_16" />
