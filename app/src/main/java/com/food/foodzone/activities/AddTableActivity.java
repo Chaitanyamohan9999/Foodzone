@@ -4,17 +4,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.TableDo;
+import com.food.foodzone.models.UserDo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Random;
+
+import androidx.annotation.NonNull;
 
 
 public class AddTableActivity extends BaseActivity {
@@ -61,7 +62,6 @@ public class AddTableActivity extends BaseActivity {
     public void getData() {
 
     }
-
 
     private void addTable() {
         showLoader();
