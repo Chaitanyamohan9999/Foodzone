@@ -56,19 +56,20 @@ public class LoginActivity extends BaseActivity {
             tvUserTypeLabel.setVisibility(View.GONE);
             llUserType.setVisibility(View.GONE);
             llForCustomer.setVisibility(View.VISIBLE);
+            etEmail.setText("yamini@gmail.com");
+            etPassword.setText("1234567890");
         }
         else {
             tvUserTypeLabel.setVisibility(View.VISIBLE);
             llUserType.setVisibility(View.VISIBLE);
             llForCustomer.setVisibility(View.GONE);
+            etEmail.setText("yaminireddy@gmail.com");
+            etPassword.setText("yamini");
         }
         final ArrayList<String> userRolesList = new ArrayList<>();
         userRolesList.add("Select User Role");
         userRolesList.add("Chef");
         userRolesList.add("Manager");
-
-        etEmail.setText("yaminireddy@gmail.com");
-        etPassword.setText("yamini");
 
         spUserRole.setAdapter(new ArrayAdapter<String>(LoginActivity.this, R.layout.spinner_dropdown, userRolesList){
             @Override
@@ -135,7 +136,7 @@ public class LoginActivity extends BaseActivity {
                 }
                 else {
                     if (isNetworkConnectionAvailable(LoginActivity.this)) {
-                         doLogin();
+                        doLogin();
                     }
                     else {
                         showInternetDialog("Login");
