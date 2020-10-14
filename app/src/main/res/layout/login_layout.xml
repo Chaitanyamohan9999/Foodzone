@@ -85,11 +85,11 @@
                 android:id="@+id/llUserType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_5"
                 android:background="@drawable/edit_text_bg"
                 android:gravity="center_vertical"
-                android:layout_marginTop="@dimen/margin_5"
                 android:orientation="horizontal"
-                android:paddingRight="@dimen/margin_5" >
+                android:paddingRight="@dimen/margin_5">
 
                 <Spinner
                     android:id="@+id/spUserRole"
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:entries="@array/unit_type"  />
+                    android:entries="@array/unit_type" />
 
                 <ImageView
                     android:layout_width="@dimen/margin_20"
