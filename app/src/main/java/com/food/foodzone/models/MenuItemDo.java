@@ -20,4 +20,3 @@ public class MenuItemDo extends BaseDo {
         this.isAvailable = isAvailable;
     }
 }
-
