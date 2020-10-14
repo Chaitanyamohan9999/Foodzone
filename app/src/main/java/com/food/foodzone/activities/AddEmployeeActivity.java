@@ -13,11 +13,9 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.TableDo;
 import com.food.foodzone.models.UserDo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +26,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 public class AddEmployeeActivity extends BaseActivity {
