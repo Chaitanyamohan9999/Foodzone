@@ -8,7 +8,24 @@
     android:padding="@dimen/margin_20">
 
     <TextView
-        android:id="@+id/tvFavourites"
+        android:id="@+id/tvOrders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_5"
+        android:drawablePadding="@dimen/margin_10"
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin_10"
+        android:text="Orders"
+        android:textColor="@color/white" />
+
+    <View
+        android:id="@+id/vwOrders"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_1"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/tvPendingOrders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_5"
@@ -19,12 +36,13 @@
         android:textColor="@color/white" />
 
     <View
+        android:id="@+id/vwPendingOrders"
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_1"
         android:background="@color/white" />
 
     <TextView
-        android:id="@+id/tvEvents"
+        android:id="@+id/tvOrdersHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_5"
@@ -35,6 +53,7 @@
         android:visibility="visible" />
 
     <View
+        android:id="@+id/vwOrdersHistory"
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_1"
         android:background="@color/white" />
