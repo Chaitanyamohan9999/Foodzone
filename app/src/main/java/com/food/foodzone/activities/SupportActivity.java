@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.SupportDo;
+import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -84,7 +85,7 @@ public class SupportActivity extends BaseActivity {
 
     }
 
-    private final DecimalFormat decimalFormat = new DecimalFormat("00");
+
 
     private void postCommentsForSupport(){
         showLoader();
@@ -93,7 +94,7 @@ public class SupportActivity extends BaseActivity {
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Support);
         final String supportId = "Support_"+System.currentTimeMillis();
         String commentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+":"+Calendar.getInstance().get(Calendar.MINUTE)+"  "
-                +Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+decimalFormat.format(Calendar.getInstance().get(Calendar.MONTH)+1)
+                +Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+AppConstants.decimalFormat.format(Calendar.getInstance().get(Calendar.MONTH)+1)
                 + "-" +Calendar.getInstance().get(Calendar.YEAR);
         SupportDo supportDo = new SupportDo(supportId, userId, etComments.getText().toString().trim(), commentDate);
         databaseReference.child(supportId).setValue(supportDo)
@@ -107,6 +108,7 @@ public class SupportActivity extends BaseActivity {
                 });
     }
 
+}
 //    private void createTable(int i) {
 //        showLoader();
 //        final String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
