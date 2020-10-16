@@ -7,15 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.TableDo;
-import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.PreferenceUtils;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,7 +22,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -38,19 +36,31 @@ public class TablesListActivity extends BaseActivity {
     private View llTables;
     private RecyclerView rvTables;
     private TextView tvNoData;
+    private RadioGroup rgDineInType;
+    private RadioButton rbNow, rbLater;
     private FloatingActionButton fabAddTable;
     private TablesListAdapter tablesListAdapter;
+    private String from = "", dineInType = AppConstants.DineInNow;
+    private ArrayList<TableDo> tableDos;
+
     @Override
     public void initialise() {
         llTables =  inflater.inflate(R.layout.tables_list_layout, null);
         addBodyView(llTables);
         lockMenu();
-        flCart.setVisibility(View.GONE);
         llToolbar.setVisibility(View.VISIBLE);
         ivBack.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
-
+        if (getIntent().hasExtra("From")){
+            from = getIntent().getStringExtra("From");
+        }
         initialiseControls();
+        if(from.equalsIgnoreCase(AppConstants.DineIn)) {
+            flCart.setVisibility(View.VISIBLE);
+        }
+        else {
+            flCart.setVisibility(View.GONE);
+        }
         if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)){
             fabAddTable.setVisibility(View.GONE);
             tvTitle.setText("Book Table");
@@ -63,6 +73,29 @@ public class TablesListActivity extends BaseActivity {
         tablesListAdapter = new TablesListAdapter(TablesListActivity.this, new ArrayList<TableDo>());
         rvTables.setAdapter(tablesListAdapter);
         getData();
+        rgDineInType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ArrayList<TableDo> tableDos = new ArrayList<>();
+                if(checkedId == R.id.rbNow){
+                    dineInType = AppConstants.DineInNow;
+                    tableDos = dineInNowTables(dineInType);
+                }
+                else if(checkedId == R.id.rbLater){
+                    dineInType = AppConstants.DineInLater;
+                    tableDos = dineInNowTables(dineInType);
+                }
+                if(tableDos != null && tableDos.size() > 0){
+                    tvNoData.setVisibility(View.GONE);
+                    rvTables.setVisibility(View.VISIBLE);
+                    tablesListAdapter.refreshAdapter(tableDos);
+                }
+                else {
+                    tvNoData.setVisibility(View.VISIBLE);
+                    rvTables.setVisibility(View.GONE);
+                }
+            }
+        });
         fabAddTable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +107,9 @@ public class TablesListActivity extends BaseActivity {
     }
 
     private void initialiseControls() {
+        rgDineInType                       = llTables.findViewById(R.id.rgDineInType);
+        rbNow                              = llTables.findViewById(R.id.rbNow);
+        rbLater                            = llTables.findViewById(R.id.rbLater);
         rvTables                           = llTables.findViewById(R.id.rvTables);
         tvNoData                           = llTables.findViewById(R.id.tvNoData);
         fabAddTable                        = llTables.findViewById(R.id.fabAddTable);
@@ -89,21 +125,36 @@ public class TablesListActivity extends BaseActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 hideLoader();
-                ArrayList<TableDo> tableDos = new ArrayList<>();
+                tableDos = new ArrayList<>();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     TableDo tableDo = postSnapshot.getValue(TableDo.class);
                     Log.e("Get Data", tableDo.toString());
                     tableDos.add(tableDo);
                 }
-                if(tableDos.size() > 0){
+//                        if(from.equalsIgnoreCase(AppConstants.DineIn)) {
+                ArrayList<TableDo>  dineInTableDos = dineInNowTables(dineInType);
+                if(dineInTableDos != null && dineInTableDos.size() > 0){
                     tvNoData.setVisibility(View.GONE);
                     rvTables.setVisibility(View.VISIBLE);
-                    tablesListAdapter.refreshAdapter(tableDos);
+                    tablesListAdapter.refreshAdapter(dineInTableDos);
                 }
                 else {
                     tvNoData.setVisibility(View.VISIBLE);
                     rvTables.setVisibility(View.GONE);
                 }
+//                        }
+//                        else {
+//                            if(tableDos != null && tableDos.size() > 0){
+//                                tvNoData.setVisibility(View.GONE);
+//                                rvTables.setVisibility(View.VISIBLE);
+//                                tablesListAdapter.refreshAdapter(tableDos);
+//                            }
+//                            else {
+//                                tvNoData.setVisibility(View.VISIBLE);
+//                                rvTables.setVisibility(View.GONE);
+//                            }
+//                        }
+
             }
 
             @Override
@@ -114,6 +165,18 @@ public class TablesListActivity extends BaseActivity {
         });
     }
 
+
+    private ArrayList<TableDo> dineInNowTables(String dineInType) {
+        ArrayList<TableDo> dineInFilteredTables = new ArrayList<>();
+        if(tableDos != null && tableDos.size() > 0){
+            for (int i=0;i<tableDos.size();i++) {
+                if(tableDos.get(i).tableType.equalsIgnoreCase(dineInType)) {
+                    dineInFilteredTables.add(tableDos.get(i));
+                }
+            }
+        }
+        return dineInFilteredTables;
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -165,14 +228,19 @@ public class TablesListActivity extends BaseActivity {
         }
         @Override
         public void onBindViewHolder(@NonNull TableHolder holder, final int position) {
-            holder.tvTableName.setText(tableDos.get(position).tableName);
-            holder.tvTableCapacity.setText(""+AppConstants.decimalFormat.format(tableDos.get(position).tableCapacity));
+            holder.tvTableName.setText("Table Number : "+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableNumber));
+            holder.tvTableCapacity.setText(""+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableCapacity));
+            if(tableDos.get(position).tableType.equalsIgnoreCase(AppConstants.DineInNow)) {
 
+            }
+            else {
+
+            }
             if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
-                holder.ivDeleteTable.setVisibility(View.GONE);
+                holder.ivDeleteTable.setVisibility(View.INVISIBLE);
                 holder.ivDeleteTable.setEnabled(false);
                 if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
-                    holder.ivReserved.setVisibility(View.GONE);
+                    holder.ivReserved.setVisibility(View.INVISIBLE);
                     holder.itemView.setEnabled(true);
                 }
                 else {
@@ -182,12 +250,12 @@ public class TablesListActivity extends BaseActivity {
             }
             else if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Manager_Role)) {
                 if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
-                    holder.ivReserved.setVisibility(View.GONE);
+                    holder.ivReserved.setVisibility(View.INVISIBLE);
                     holder.ivDeleteTable.setVisibility(View.VISIBLE);
                 }
                 else {
                     holder.ivReserved.setVisibility(View.VISIBLE);
-                    holder.ivDeleteTable.setVisibility(View.GONE);
+                    holder.ivDeleteTable.setVisibility(View.INVISIBLE);
                 }
             }
             else {
@@ -211,6 +279,7 @@ public class TablesListActivity extends BaseActivity {
                 public void onClick(View v) {
                     if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
                         Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
+                        intent.putExtra(AppConstants.From, from);
                         startActivityForResult(intent, 1001);
                         overridePendingTransition(R.anim.enter, R.anim.exit);
                     }
