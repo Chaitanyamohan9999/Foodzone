@@ -2,11 +2,20 @@ package com.food.foodzone.activities;
 
 import android.content.Intent;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
@@ -20,17 +29,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import androidx.annotation.NonNull;
+import java.util.ArrayList;
 
 public class RegisterActivity extends BaseActivity {
 
     private View llSignup;
-    private EditText etName, etEmail, etPhone, etCountry, etCity, etState, etPassword, etRenterPassword;
+    private EditText etName, etEmail, etPhone, etPassword, etRenterPassword;
     private RadioGroup rgGender;
     private RadioButton rbFemale, rbMale;
     private Button btnRegister;
+    private Spinner spCountry, spProvince, spCity;
     private String gender = "";
     private String userType = "";
+    private String country = "";
+    private String province = "";
+    private String city = "";
     private DatabaseReference mDatabase;
 
     @Override
@@ -60,6 +73,87 @@ public class RegisterActivity extends BaseActivity {
             }
         });
 
+        final ArrayList<String> countryList = AppConstants.getCountryList();
+        spCountry.setAdapter(new ArrayAdapter<String>(RegisterActivity.this, R.layout.spinner_dropdown, countryList){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(RegisterActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = (TextView)row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(countryList.get(position));
+                return row;
+            }
+        });
+        spCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position > 0){
+                    country = countryList.get(position);
+                }
+                else {
+                    country = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        final ArrayList<String> provinceList = AppConstants.getProvince();
+        spProvince.setAdapter(new ArrayAdapter<String>(RegisterActivity.this, R.layout.spinner_dropdown, provinceList){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(RegisterActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = (TextView)row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(provinceList.get(position));
+                return row;
+            }
+        });
+        spProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position > 0){
+                    province = provinceList.get(position);
+                }
+                else {
+                    province = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        final ArrayList<String> CityList = AppConstants.getCity();
+        spCity.setAdapter(new ArrayAdapter<String>(RegisterActivity.this, R.layout.spinner_dropdown, CityList){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(RegisterActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = (TextView)row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(CityList.get(position));
+                return row;
+            }
+        });
+        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position > 0){
+                    city = CityList.get(position);
+                }
+                else {
+                    city = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,14 +172,14 @@ public class RegisterActivity extends BaseActivity {
                 else if(!isValidEmail(etEmail.getText().toString().trim())){
                     showErrorMessage("Please enter email");
                 }
-                else if(etCountry.getText().toString().equalsIgnoreCase("")){
-                    showErrorMessage("Please enter country");
+                else if(country.equalsIgnoreCase("")){
+                    showErrorMessage("Please select country");
                 }
-                else if(etCity.getText().toString().equalsIgnoreCase("")){
-                    showErrorMessage("Please enter city");
+                else if(city.equalsIgnoreCase("")){
+                    showErrorMessage("Please select city");
                 }
-                else if(etState.getText().toString().equalsIgnoreCase("")){
-                    showErrorMessage("Please enter province");
+                else if(province.equalsIgnoreCase("")){
+                    showErrorMessage("Please select province");
                 }
                 else if(gender.equalsIgnoreCase("")){
                     showErrorMessage("Please select gender");
@@ -123,9 +217,9 @@ public class RegisterActivity extends BaseActivity {
         etName                              = llSignup.findViewById(R.id.etName);
         etEmail                             = llSignup.findViewById(R.id.etEmail);
         etPhone                             = llSignup.findViewById(R.id.etPhone);
-        etCountry                           = llSignup.findViewById(R.id.etCountry);
-        etState                             = llSignup.findViewById(R.id.etState);
-        etCity                              = llSignup.findViewById(R.id.etCity);
+        spCountry                            = llSignup.findViewById(R.id.spCountry);
+        spProvince                          = llSignup.findViewById(R.id.spProvince);
+        spCity                              = llSignup.findViewById(R.id.spCity);
         etPassword                          = llSignup.findViewById(R.id.etPassword);
         etRenterPassword                    = llSignup.findViewById(R.id.etRenterPassword);
         btnRegister                          = llSignup.findViewById(R.id.btnRegister);
@@ -166,8 +260,8 @@ public class RegisterActivity extends BaseActivity {
 
     private void insertIntoDB(String userId, DatabaseReference databaseReference){
         final UserDo userDo = new UserDo(userId, etName.getText().toString().trim(), etEmail.getText().toString().trim(),
-                etPhone.getText().toString().trim(), etCountry.getText().toString().trim(), etState.getText().toString().trim(),
-                etCity.getText().toString().trim(), gender, etPassword.getText().toString().trim(), "", userType);
+                etPhone.getText().toString().trim(), country, province, city, gender,
+                etPassword.getText().toString().trim(), "", userType);
 
         databaseReference.child(userId).setValue(userDo).
                 addOnCompleteListener(new OnCompleteListener<Void>() {
