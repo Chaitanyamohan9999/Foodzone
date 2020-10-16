@@ -230,7 +230,7 @@ public class AddEmployeeActivity extends BaseActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot != null && dataSnapshot.exists()) {
                             hideLoader();
-                            showAppCompatAlert("", "The entered email already exist", "OK", "", "", true);
+                            showAppCompatAlert("", "The entered email is already exist", "OK", "", "", true);
                         }
                         else {
                             //Username does not exist
