@@ -7,10 +7,28 @@
     android:orientation="vertical"
     android:padding="@dimen/margin_10">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMenuList"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMenuList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btnContinue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@drawable/btn_bg"
+            android:gravity="center"
+            android:text="Continue"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvNoData"
