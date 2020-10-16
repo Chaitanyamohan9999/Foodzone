@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,31 +7,70 @@
     android:orientation="vertical"
     android:padding="@dimen/margin_10">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTables"
+    <RadioGroup
+        android:id="@+id/rgDineInType"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <TextView
-        android:id="@+id/tvNoData"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:padding="@dimen/margin_10"
-        android:text="No Data Found"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_15" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddTable"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/margin_20"
-        android:src="@android:drawable/ic_input_add"
-        android:tint="@color/white"
-        app:fabSize="normal"
-        app:rippleColor="@color/white" />
+        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginRight="@dimen/margin_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10">
 
-</FrameLayout>
+        <RadioButton
+            android:id="@+id/rbNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Now" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/rbLater"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:text="Later" />
+
+
+    </RadioGroup>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTables"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tvNoData"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/margin_10"
+            android:text="No Data Found"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_15" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/margin_20"
+            android:src="@android:drawable/ic_input_add"
+            android:tint="@color/white"
+            app:fabSize="normal"
+            app:rippleColor="@color/white" />
+
+    </FrameLayout>
+
+</LinearLayout>
