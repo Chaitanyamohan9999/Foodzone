@@ -131,7 +131,7 @@ public class AddMenuItemActivity extends BaseActivity {
                         String itemId = "I_"+new Random().nextInt();
                         double price = Double.parseDouble(etItemPrice.getText().toString().trim());
                         final MenuItemDo menuItemDo = new MenuItemDo(itemId, etItemName.getText().toString().trim(), price, etItemDescription.getText().toString().trim(),
-                                "", true);
+                                "", true, 0);
                         if(imageUri!=null) {
                             uploadMenuItemPic(menuItemDo, "Congratulations! You have successfully added a Menu Item.");
                         }
