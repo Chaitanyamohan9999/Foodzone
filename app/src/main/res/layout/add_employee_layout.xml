@@ -72,7 +72,6 @@
             android:maxLength="10"
             android:padding="10dp" />
 
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,14 +79,30 @@
             android:text="COUNTRY"
             android:textColor="@android:color/black" />
 
-        <EditText
-            android:id="@+id/etCountry"
+        <LinearLayout
+            android:id="@+id/llCountry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/margin_5"
             android:background="@drawable/edit_text_bg"
-            android:inputType="text"
-            android:padding="10dp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingRight="@dimen/margin_5">
+
+            <Spinner
+                android:id="@+id/spCountry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:entries="@array/country_list" />
+
+            <ImageView
+                android:layout_width="@dimen/margin_20"
+                android:layout_height="@dimen/margin_20"
+                android:rotation="270"
+                android:src="@drawable/back_arrow" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -96,14 +111,30 @@
             android:text="PROVINCE"
             android:textColor="@android:color/black" />
 
-        <EditText
-            android:id="@+id/etState"
+        <LinearLayout
+            android:id="@+id/llProvince"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/margin_5"
             android:background="@drawable/edit_text_bg"
-            android:inputType="text"
-            android:padding="10dp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingRight="@dimen/margin_5">
+
+            <Spinner
+                android:id="@+id/spProvince"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:entries="@array/province_list" />
+
+            <ImageView
+                android:layout_width="@dimen/margin_20"
+                android:layout_height="@dimen/margin_20"
+                android:rotation="270"
+                android:src="@drawable/back_arrow" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -145,7 +176,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:entries="@array/unit_type" />
+                android:entries="@array/user_type_list" />
 
             <ImageView
                 android:layout_width="@dimen/margin_20"
