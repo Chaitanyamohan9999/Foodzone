@@ -36,13 +36,15 @@ public class AddEmployeeActivity extends BaseActivity {
 
     private static final String TAG = "AddEmployee";
     private View llEmployees;
-    private EditText etName, etEmail, etPhone, etCountry, etCity, etState, etPassword, etRenterPassword;
+    private EditText etName, etEmail, etPhone, etCity, etPassword, etRenterPassword;
     private RadioGroup rgGender;
     private RadioButton rbFemale, rbMale;
     private Button btnRegister;
     private String gender = "";
     private String userType = "";
-    private Spinner spUserRole;
+    private String country = "";
+    private String province = "";
+    private Spinner spUserRole, spCountry, spProvince;
     private UserDo userDo;
 
     @Override
@@ -60,14 +62,14 @@ public class AddEmployeeActivity extends BaseActivity {
             userDo = (UserDo) getIntent().getSerializableExtra("UserDo");
         }
         final ArrayList<String> userRolesList = new ArrayList<>();
+        ArrayList<String> countryList = new ArrayList<>();
+        ArrayList<String> provinceList = new ArrayList<>();
 
         if(userDo !=null){
             etName.setEnabled(false);
             etEmail.setEnabled(false);
             etPhone.setEnabled(false);
-            etCountry.setEnabled(false);
             etCity.setEnabled(false);
-            etState.setEnabled(false);
             etPassword.setEnabled(false);
             etRenterPassword.setEnabled(false);
             rbFemale.setEnabled(false);
@@ -77,9 +79,7 @@ public class AddEmployeeActivity extends BaseActivity {
             etName.setText(userDo.name);
             etEmail.setText(userDo.email);
             etPhone.setText(userDo.phone);
-            etCountry.setText(userDo.country);
             etCity.setText(userDo.city);
-            etState.setText(userDo.state);
             etPassword.setText(userDo.password);
             etRenterPassword.setText(userDo.password);
 
@@ -93,12 +93,70 @@ public class AddEmployeeActivity extends BaseActivity {
                 rbFemale.setChecked(true);
             }
             userRolesList.add(userDo.userType);
+            countryList.add(userDo.country);
+            provinceList.add(userDo.state);
+
         }
         else {
             userRolesList.add("Select User Role");
             userRolesList.add("Chef");
             userRolesList.add("Manager");
+            countryList = AppConstants.getCountryList();
+            provinceList = AppConstants.getProvince();
         }
+
+        final ArrayList<String> finalCountryList = countryList;
+        spCountry.setAdapter(new ArrayAdapter<String>(AddEmployeeActivity.this, R.layout.spinner_dropdown, finalCountryList){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(AddEmployeeActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = (TextView)row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(finalCountryList.get(position));
+                return row;
+            }
+        });
+        spCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position > 0){
+                    country = finalCountryList.get(position-1);
+                }
+                else {
+                    country = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        final ArrayList<String> finalProvinceList = provinceList;
+        spProvince.setAdapter(new ArrayAdapter<String>(AddEmployeeActivity.this, R.layout.spinner_dropdown, finalProvinceList){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(AddEmployeeActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = (TextView)row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(finalProvinceList.get(position));
+                return row;
+            }
+        });
+        spProvince.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position > 0){
+                    province = finalProvinceList.get(position-1);
+                }
+                else {
+                    province = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         spUserRole.setAdapter(new ArrayAdapter<String>(AddEmployeeActivity.this, R.layout.spinner_dropdown, userRolesList){
             @Override
@@ -159,14 +217,14 @@ public class AddEmployeeActivity extends BaseActivity {
                     else if(!isValidEmail(etEmail.getText().toString().trim())){
                         showErrorMessage("Please enter email");
                     }
-                    else if(etCountry.getText().toString().equalsIgnoreCase("")){
-                        showErrorMessage("Please enter country");
+                    else if(country.equalsIgnoreCase("")){
+                        showErrorMessage("Please select country");
                     }
                     else if(etCity.getText().toString().equalsIgnoreCase("")){
                         showErrorMessage("Please enter city");
                     }
-                    else if(etState.getText().toString().equalsIgnoreCase("")){
-                        showErrorMessage("Please enter province");
+                    else if(province.equalsIgnoreCase("")){
+                        showErrorMessage("Please select province");
                     }
                     else if(gender.equalsIgnoreCase("")){
                         showErrorMessage("Please select gender");
@@ -206,8 +264,8 @@ public class AddEmployeeActivity extends BaseActivity {
         etName                              = llEmployees.findViewById(R.id.etName);
         etEmail                             = llEmployees.findViewById(R.id.etEmail);
         etPhone                             = llEmployees.findViewById(R.id.etPhone);
-        etCountry                           = llEmployees.findViewById(R.id.etCountry);
-        etState                             = llEmployees.findViewById(R.id.etState);
+        spCountry                           = llEmployees.findViewById(R.id.spCountry);
+        spProvince                          = llEmployees.findViewById(R.id.spProvince);
         etCity                              = llEmployees.findViewById(R.id.etCity);
         spUserRole                          = findViewById(R.id.spUserRole);
         etPassword                          = llEmployees.findViewById(R.id.etPassword);
@@ -249,7 +307,7 @@ public class AddEmployeeActivity extends BaseActivity {
 
     private void insertIntoDB(String userId, DatabaseReference databaseReference){
         final UserDo userDo = new UserDo(userId, etName.getText().toString().trim(), etEmail.getText().toString().trim(),
-                etPhone.getText().toString().trim(), etCountry.getText().toString().trim(), etState.getText().toString().trim(),
+                etPhone.getText().toString().trim(), country, province,
                 etCity.getText().toString().trim(), gender, etPassword.getText().toString().trim(), "", userType);
 
         databaseReference.child(userId).setValue(userDo).
