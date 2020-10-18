@@ -7,18 +7,21 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
-import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
@@ -50,7 +54,9 @@ public class AddMenuItemActivity extends BaseActivity {
     private Button btnAddItem;
     private ImageView ivItemImage;
     private MenuItemDo menuItemDo;
+    private Spinner spCategory;
     private Uri imageUri;
+    private String selectedCategory = "";
 
     @Override
     public void initialise() {
@@ -66,10 +72,12 @@ public class AddMenuItemActivity extends BaseActivity {
         if(getIntent().hasExtra("MenuItemDo")) {
             menuItemDo = (MenuItemDo) getIntent().getSerializableExtra("MenuItemDo");
         }
+        final ArrayList<String> categoryList = new ArrayList<>();
         if(menuItemDo != null){
+            categoryList.add(menuItemDo.itemCategory);
+            selectedCategory = menuItemDo.itemCategory;
             llAvailable.setVisibility(View.VISIBLE);
             etItemName.setText(menuItemDo.itemName);
-            etItemName.setEnabled(false);
             etItemPrice.setText(""+menuItemDo.itemPrice);
             etItemDescription.setText(menuItemDo.itemDescription);
             swAvailable.setChecked(menuItemDo.isAvailable);
@@ -80,12 +88,39 @@ public class AddMenuItemActivity extends BaseActivity {
             btnAddItem.setText("Update Item");
         }
         else {
+            categoryList.add("Select Category");
+            categoryList.add("Appetizers");
+            categoryList.add("Drinks");
+            categoryList.add("Main Dishes");
+            categoryList.add("Sides");
             llAvailable.setVisibility(View.GONE);
             btnAddItem.setText("Add Item");
         }
-        swAvailable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        spCategory.setAdapter(new ArrayAdapter<String>(AddMenuItemActivity.this, R.layout.spinner_dropdown, categoryList){
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(AddMenuItemActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = (TextView)row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(categoryList.get(position));
+                return row;
+            }
+        });
+        spCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position > 0){
+                    selectedCategory = categoryList.get(position);
+                }
+                else {
+                    if(menuItemDo == null) {
+                        selectedCategory = "";
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
@@ -104,7 +139,10 @@ public class AddMenuItemActivity extends BaseActivity {
         btnAddItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(etItemName.getText().toString().equalsIgnoreCase("")){
+                if(selectedCategory.equalsIgnoreCase("")){
+                    showErrorMessage("Please select Item Category");
+                }
+                else if(etItemName.getText().toString().equalsIgnoreCase("")){
                     showErrorMessage("Please enter Item Name");
                 }
                 else if(etItemPrice.getText().toString().equalsIgnoreCase("")){
@@ -116,6 +154,7 @@ public class AddMenuItemActivity extends BaseActivity {
                 else {
                     if(menuItemDo != null) {
                         double price = Double.parseDouble(etItemPrice.getText().toString().trim());
+                        menuItemDo.itemCategory = selectedCategory;
                         menuItemDo.itemName = etItemName.getText().toString().trim();
                         menuItemDo.itemPrice = price;
                         menuItemDo.itemDescription = etItemDescription.getText().toString().trim();
@@ -130,7 +169,7 @@ public class AddMenuItemActivity extends BaseActivity {
                     else {
                         String itemId = "I_"+new Random().nextInt();
                         double price = Double.parseDouble(etItemPrice.getText().toString().trim());
-                        final MenuItemDo menuItemDo = new MenuItemDo(itemId, etItemName.getText().toString().trim(), price, etItemDescription.getText().toString().trim(),
+                        final MenuItemDo menuItemDo = new MenuItemDo(itemId, selectedCategory, etItemName.getText().toString().trim(), price, etItemDescription.getText().toString().trim(),
                                 "", true, 0);
                         if(imageUri!=null) {
                             uploadMenuItemPic(menuItemDo, "Congratulations! You have successfully added a Menu Item.");
@@ -145,6 +184,7 @@ public class AddMenuItemActivity extends BaseActivity {
     }
 
     private void initialiseControls() {
+        spCategory                             = llTables.findViewById(R.id.spCategory);
         etItemName                             = llTables.findViewById(R.id.etItemName);
         etItemPrice                            = llTables.findViewById(R.id.etItemPrice);
         etItemDescription                      = llTables.findViewById(R.id.etItemDescription);
@@ -153,6 +193,7 @@ public class AddMenuItemActivity extends BaseActivity {
         llAvailable                            = llTables.findViewById(R.id.llAvailable);
         swAvailable                            = llTables.findViewById(R.id.swAvailable);
     }
+
     @Override
     public void getData() {
 
