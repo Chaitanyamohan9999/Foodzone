@@ -2,10 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical"
     android:padding="@dimen/margin_10">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_10"
+        android:text="Item Category"
+        android:textColor="@android:color/black" />
+
+    <LinearLayout
+        android:id="@+id/llCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_5"
+        android:background="@drawable/edit_text_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/margin_5">
+
+        <Spinner
+            android:id="@+id/spCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:entries="@array/category_list" />
+
+        <ImageView
+            android:layout_width="@dimen/margin_20"
+            android:layout_height="@dimen/margin_20"
+            android:rotation="270"
+            android:src="@drawable/back_arrow" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
