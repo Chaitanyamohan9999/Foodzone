@@ -229,7 +229,7 @@ public class TablesListActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(@NonNull TableHolder holder, final int position) {
             holder.tvTableName.setText("Table Number : "+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableNumber));
-            holder.tvTableCapacity.setText(""+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableCapacity));
+            holder.tvTableCapacity.setText("Table Capacity : "+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableCapacity));
             if(tableDos.get(position).tableType.equalsIgnoreCase(AppConstants.DineInNow)) {
 
             }
@@ -279,7 +279,7 @@ public class TablesListActivity extends BaseActivity {
                 public void onClick(View v) {
                     if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
                         Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
-                        intent.putExtra(AppConstants.From, from);
+                        intent.putExtra(AppConstants.From, dineInType);
                         startActivityForResult(intent, 1001);
                         overridePendingTransition(R.anim.enter, R.anim.exit);
                     }
