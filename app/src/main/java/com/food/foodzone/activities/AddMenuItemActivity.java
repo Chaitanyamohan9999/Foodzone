@@ -167,7 +167,7 @@ public class AddMenuItemActivity extends BaseActivity {
                         }
                     }
                     else {
-                        String itemId = "I_"+new Random().nextInt();
+                        String itemId = "I"+System.currentTimeMillis();
                         double price = Double.parseDouble(etItemPrice.getText().toString().trim());
                         final MenuItemDo menuItemDo = new MenuItemDo(itemId, selectedCategory, etItemName.getText().toString().trim(), price, etItemDescription.getText().toString().trim(),
                                 "", true, 0);
