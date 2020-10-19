@@ -38,7 +38,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements AddToCartListener {
 
     public Context context;
     public LayoutInflater inflater;
@@ -50,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public DrawerLayout dlCareer;
     public ImageView ivBack, ivMenu;
     public TextView tvCartCount, tvTitle;
-    private TextView tvOrders, tvPendingOrders, tvOrdersHistory, tvProfile, tvChangePassword, tvSupport, tvLogout, tvVersion;
+    private TextView tvOrders, tvReservations, tvOrdersHistory, tvProfile, tvChangePassword, tvSupport, tvLogout, tvVersion;
     public static BaseActivity mInstance;
 
     @Override
@@ -96,7 +96,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 menuOperates();
             }
         });
-        tvPendingOrders.setOnClickListener(new View.OnClickListener() {
+        tvReservations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menuOperates();
@@ -153,7 +153,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void employeeLeftMenu () {
-        tvPendingOrders.setVisibility(View.GONE);
+        tvReservations.setVisibility(View.GONE);
         tvOrdersHistory.setVisibility(View.GONE);
         findViewById(R.id.vwPendingOrders).setVisibility(View.GONE);
         findViewById(R.id.vwOrdersHistory).setVisibility(View.GONE);
@@ -167,7 +167,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void customerLeftMenu() {
-        tvPendingOrders.setVisibility(View.VISIBLE);
+        tvReservations.setVisibility(View.VISIBLE);
         tvOrdersHistory.setVisibility(View.VISIBLE);
         findViewById(R.id.vwPendingOrders).setVisibility(View.VISIBLE);
         findViewById(R.id.vwOrdersHistory).setVisibility(View.VISIBLE);
@@ -187,7 +187,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+            addToCart();
+        }
     }
 
     private void initialiseControls() {
@@ -203,7 +205,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         tvTitle                     = findViewById(R.id.tvTitle);
         tvCartCount                 = findViewById(R.id.tvCartCount);
         tvOrders                    = findViewById(R.id.tvOrders);
-        tvPendingOrders             = findViewById(R.id.tvPendingOrders);
+        tvReservations             = findViewById(R.id.tvReservations);
         tvOrdersHistory             = findViewById(R.id.tvOrdersHistory);
         tvProfile                   = findViewById(R.id.tvProfile);
         tvChangePassword            = findViewById(R.id.tvChangePassword);
@@ -224,6 +226,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             dlCareer.closeDrawer(Gravity.LEFT);
         } else {
             dlCareer.openDrawer(Gravity.LEFT);
+        }
+    }
+
+    @Override
+    public void addToCart() {
+        if(AppConstants.Cart_Items != null && AppConstants.Cart_Items.size() > 0) {
+            tvCartCount.setText(""+AppConstants.Cart_Items.size());
         }
     }
 
