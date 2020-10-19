@@ -37,6 +37,17 @@
 
     </RadioGroup>
 
+    <TextView
+        android:id="@+id/tvPickupTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/margin_10"
+        android:text="Your order will be ready at 10 : 30"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_13"
+        android:textStyle="normal" />
+
     <LinearLayout
         android:id="@+id/llPaymentBody"
         android:layout_width="match_parent"
@@ -84,7 +95,8 @@
             android:hint="@string/card_holder_name"
             android:imeOptions="actionNext"
             android:inputType="textPersonName"
-            android:letterSpacing="0.1"
+            android:letterSpacing="0.15"
+            android:maxLength="30"
             android:padding="10dp"
             android:singleLine="true"
             android:textAllCaps="true"
