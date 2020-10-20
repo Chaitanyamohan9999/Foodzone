@@ -123,6 +123,18 @@ public class ReservationsListActivity extends BaseActivity {
                     tvNoData.setVisibility(View.VISIBLE);
                     rvTables.setVisibility(View.GONE);
                 }
+//                        }
+//                        else {
+//                            if(tableDos != null && tableDos.size() > 0){
+//                                tvNoData.setVisibility(View.GONE);
+//                                rvTables.setVisibility(View.VISIBLE);
+//                                tablesListAdapter.refreshAdapter(tableDos);
+//                            }
+//                            else {
+//                                tvNoData.setVisibility(View.VISIBLE);
+//                                rvTables.setVisibility(View.GONE);
+//                            }
+//                        }
 
             }
 
@@ -136,6 +148,26 @@ public class ReservationsListActivity extends BaseActivity {
 
 
     private ArrayList<TableDo> dineInNowTables(String dineInType) {
+        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        ArrayList<TableDo> dineInFilteredTables = new ArrayList<>();
+        if(tableDos != null && tableDos.size() > 0){
+            for (int i=0;i<tableDos.size();i++) {
+                if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+                    if(userId.equalsIgnoreCase(tableDos.get(i).reservedBy) && !tableDos.get(i).reservedBy.equalsIgnoreCase("")
+                            && dineInType.equalsIgnoreCase(tableDos.get(i).tableType)) {
+                        dineInFilteredTables.add(tableDos.get(i));
+                    }
+                }
+                else {
+                    if(!tableDos.get(i).reservedBy.equalsIgnoreCase("")
+                            &&dineInType.equalsIgnoreCase(tableDos.get(i).tableType)) {
+                        dineInFilteredTables.add(tableDos.get(i));
+                    }
+                }
+            }
+        }
+        return dineInFilteredTables;
+    }
 
     private final ArrayList<OrderDo> orderDos = new ArrayList<>();
     private void getOrdersOnTable(TableDo tableDo) {
@@ -201,7 +233,27 @@ public class ReservationsListActivity extends BaseActivity {
             this.tableDos = tableDos;
             notifyDataSetChanged();
         }
+        @Override
+        public void onBindViewHolder(@NonNull TableHolder holder, final int position) {
+            holder.tvTableName.setText("Table Number : "+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableNumber));
+            holder.tvTableCapacity.setText("Table Capacity : "+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableCapacity));
+            if(tableDos.get(position).tableType.equalsIgnoreCase(AppConstants.DineInNow)) {
 
+            }
+            else {
+
+            }
+            holder.itemView.setEnabled(true);
+            holder.ivReserved.setVisibility(View.VISIBLE);
+            holder.ivDeleteTable.setVisibility(View.INVISIBLE);
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getOrdersOnTable(tableDos.get(position));
+                }
+            });
+        }
 
         @Override
         public int getItemCount() {
