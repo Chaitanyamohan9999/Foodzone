@@ -278,10 +278,20 @@ public class TablesListActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
-                        Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
-                        intent.putExtra(AppConstants.From, dineInType);
-                        startActivityForResult(intent, 1001);
-                        overridePendingTransition(R.anim.enter, R.anim.exit);
+                        if(dineInType.equalsIgnoreCase(AppConstants.DineInLater)) {
+                            Intent intent = new Intent(TablesListActivity.this, ScheduleTimeActivity.class);
+                            intent.putExtra(AppConstants.From, dineInType);
+                            intent.putExtra("TableDo", tableDos.get(position));
+                            startActivityForResult(intent, 1001);
+                            overridePendingTransition(R.anim.enter, R.anim.exit);
+                        }
+                        else {
+                            Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
+                            intent.putExtra(AppConstants.From, dineInType);
+                            intent.putExtra("TableDo", tableDos.get(position));
+                            startActivityForResult(intent, 1001);
+                            overridePendingTransition(R.anim.enter, R.anim.exit);
+                        }
                     }
                 }
             });
