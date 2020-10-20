@@ -6,21 +6,54 @@
     android:orientation="vertical"
     android:padding="@dimen/margin_10">
 
+    <RadioGroup
+        android:id="@+id/rgDineInType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginRight="@dimen/margin_10"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10">
+
+        <RadioButton
+            android:id="@+id/rbNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Now" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/rbSchedule"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:text="Schedule" />
+
+    </RadioGroup>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_10"
-        android:text="Table Name"
-        android:textColor="@android:color/black" />
+        android:text="Table Number"
+        android:textColor="@android:color/black"  />
 
     <EditText
-        android:id="@+id/etTableName"
+        android:id="@+id/etTableNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_5"
         android:background="@drawable/edit_text_bg"
-        android:inputType="textPersonName"
-        android:padding="10dp" />
+        android:inputType="number"
+        android:imeOptions="actionNext"
+        android:digits="0123456789"
+        android:padding="10dp"  />
 
     <TextView
         android:layout_width="match_parent"
@@ -36,6 +69,7 @@
         android:layout_marginTop="@dimen/margin_5"
         android:background="@drawable/edit_text_bg"
         android:hint=""
+        android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="1"
         android:padding="10dp"
