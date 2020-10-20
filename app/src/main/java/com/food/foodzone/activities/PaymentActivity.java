@@ -7,14 +7,24 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.OrderDo;
 import com.food.foodzone.models.PaymentDo;
+import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.PreferenceUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Calendar;
 import java.util.Random;
+
+import androidx.annotation.NonNull;
 
 public class PaymentActivity extends BaseActivity {
 
@@ -24,7 +34,8 @@ public class PaymentActivity extends BaseActivity {
     private LinearLayout llPaymentBody;
     private RadioButton rbPayByCard, rbPayByCash;
     private RadioGroup rgPaymentType;
-    private String paymentType = "Card", from = "";
+    private TextView tvPickupTime;
+    private String paymentType = "Card", from = "", pickupTime = "", pickupMessage = "";
     private double amount;
 
     @Override
@@ -43,8 +54,15 @@ public class PaymentActivity extends BaseActivity {
         if (getIntent().hasExtra("From")){
             from = getIntent().getStringExtra("From");
         }
+        if (getIntent().hasExtra("PickupTime")){
+            pickupTime = getIntent().getStringExtra("PickupTime");
+        }
+        if (getIntent().hasExtra("PickupMessage")){
+            pickupMessage = getIntent().getStringExtra("PickupMessage");
+        }
         initialiseControls();
-        if(from.equalsIgnoreCase("DineInNow")) {
+        tvPickupTime.setText(pickupMessage);
+        if(from.equalsIgnoreCase(AppConstants.DineInNow)) {
             rgPaymentType.setVisibility(View.VISIBLE);
         }
         else {
@@ -73,19 +91,11 @@ public class PaymentActivity extends BaseActivity {
                         Toast.makeText(PaymentActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     }
                     else {
-                        Toast.makeText(PaymentActivity.this, "Your order has been placed successfully!", Toast.LENGTH_LONG).show();
-                        AppConstants.Cart_Items.clear();
-                        Intent intent = new Intent(PaymentActivity.this, CustomerDashboardActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
+                        placeOrder();
                     }
                 }
                 else {
-                    Toast.makeText(PaymentActivity.this, "Your order has been placed successfully!", Toast.LENGTH_LONG).show();
-                    AppConstants.Cart_Items.clear();
-                    Intent intent = new Intent(PaymentActivity.this, CustomerDashboardActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    placeOrder();
                 }
             }
         });
@@ -99,6 +109,7 @@ public class PaymentActivity extends BaseActivity {
         etCVV           = findViewById(R.id.etCVV);
         rbPayByCard     = findViewById(R.id.rbPayByCard);
         rbPayByCash     = findViewById(R.id.rbPayByCash);
+        tvPickupTime    = findViewById(R.id.tvPickupTime);
         rgPaymentType   = findViewById(R.id.rgPaymentType);
         llPaymentBody   = findViewById(R.id.llPaymentBody);
     }
@@ -114,7 +125,6 @@ public class PaymentActivity extends BaseActivity {
         etExpiryDate.setText("");
         etCVV.setText("");
     }
-
 
     @Override
     public void getData() {}
@@ -136,11 +146,42 @@ public class PaymentActivity extends BaseActivity {
         return errorMsg;
     }
 
-    private void insertPaymentDetails() {
-        String paymentId = "P"+new Random().nextInt();
-        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
-        String userName = preferenceUtils.getStringFromPreference(PreferenceUtils.UserName, "");
-        PaymentDo paymentDo = new PaymentDo(paymentId, paymentType, userId, userName, etCardNumber.getText().toString().trim(),
-                etExpiryDate.getText().toString().trim(), etCVV.getText().toString().trim(), amount);
+    private void placeOrder() {
+        final OrderDo orderDo = new OrderDo();
+        orderDo.orderId = ""+System.currentTimeMillis();
+        orderDo.customerEmail = preferenceUtils.getStringFromPreference(PreferenceUtils.EmailId, "");
+        orderDo.customerName = preferenceUtils.getStringFromPreference(PreferenceUtils.UserName, "");
+        orderDo.customerId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        orderDo.customerPhone = preferenceUtils.getStringFromPreference(PreferenceUtils.PhoneNo, "");
+        orderDo.pickupTime = pickupTime;
+        orderDo.orderType = from;
+        orderDo.paymentType = paymentType;
+        orderDo.totalAmount = amount;
+        orderDo.orderStatus = AppConstants.Status_Pending;
+        orderDo.menuItemDos = AppConstants.Cart_Items;
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
+        showLoader();
+        databaseReference.child(orderDo.orderId).setValue(orderDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        showAppCompatAlert("", "Your order has been placed successfully!", "OK", "", "PlaceOrder", false);
+                    }
+                });
+    }
+
+    @Override
+    public void onButtonYesClick(String from) {
+        super.onButtonYesClick(from);
+        if (from.equalsIgnoreCase("PlaceOrder")) {
+            AppConstants.Cart_Items.clear();
+            Intent intent = new Intent(PaymentActivity.this, CustomerDashboardActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            overridePendingTransition(R.anim.enter, R.anim.exit);
+        }
     }
 }
