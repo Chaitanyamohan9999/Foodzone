@@ -1,5 +1,7 @@
 package com.food.foodzone.activities;
 
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -9,13 +11,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.TimePicker.OnTimeChangedListener;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
+import com.food.foodzone.utils.RangeTimePickerDialog;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,9 +34,12 @@ public class CartListActivity extends BaseActivity {
     private static final String TAG = "CartList";
     private View llMenu;
     private RecyclerView rvCartList;
-    private TextView tvPrice, tvDiscount, tvDeliveryCharges, tvTotalAmount;
+    private TextView tvItemsCount, tvPrice, tvDiscountLabel, tvDiscount, tvChargesLabel, tvCharges, tvTotalAmount;
     private Button btnPlaceOrder;
+    private LinearLayout llDiscount;
     private CartListAdapter cartListAdapter;
+    private double totalAmount;
+    private String from = "";
 
     @Override
     public void initialise() {
@@ -41,6 +50,9 @@ public class CartListActivity extends BaseActivity {
         ivBack.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
         tvTitle.setText("Cart");
+        if (getIntent().hasExtra("From")){
+            from = getIntent().getStringExtra("From");
+        }
         initialiseControls();
         rvCartList.setLayoutManager(new LinearLayoutManager(CartListActivity.this));
         cartListAdapter = new CartListAdapter(CartListActivity.this, new ArrayList<MenuItemDo>());
@@ -48,19 +60,54 @@ public class CartListActivity extends BaseActivity {
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final Calendar calendar = Calendar.getInstance();
+                TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hour, int minute) {
+                        pickupTime = ""+calendar.get(Calendar.DAY_OF_MONTH)+""+AppConstants.TwoDigitsNumber.format(calendar.get(Calendar.MONTH)+1)+""+calendar.get(Calendar.YEAR)
+                                +""+AppConstants.TwoDigitsNumber.format(hour)+""+AppConstants.TwoDigitsNumber.format(minute);
+                        pickupMessage = "Your order will be ready at "+AppConstants.TwoDigitsNumber.format(hour)+" : "+AppConstants.TwoDigitsNumber.format(minute)+" to pickup";
+                        showAppCompatAlert("", pickupMessage, "Ok", "Cancel", "Takeout_Pickup", false);
+                    }
+                };
+//
+//                final TimePickerDialog timePickerDialog = new TimePickerDialog(CartListActivity.this,timePickerListener,
+//                        calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE)+AppConstants.Pickup_Min_Time,true);
+//                timePickerDialog.show();
+                RangeTimePickerDialog rangeTimePickerDialog = new RangeTimePickerDialog(CartListActivity.this, timePickerListener,
+                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)+30, true);
+                rangeTimePickerDialog.setMin(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)+30);
+                rangeTimePickerDialog.setMax(calendar.get(Calendar.HOUR_OF_DAY)+AppConstants.Pickup_Max_Time, 0);
+                rangeTimePickerDialog.show();
             }
         });
         getData();
     }
 
+    private String pickupTime = "", pickupMessage = "";
+    private void placeOrder() {
+        Intent intent = new Intent(CartListActivity.this, PaymentActivity.class);
+        intent.putExtra("From", from);
+        intent.putExtra("Amount", totalAmount);
+        intent.putExtra("PickupTime", pickupTime);
+        intent.putExtra("PickupMessage", pickupMessage);
+        startActivity(intent);
+        overridePendingTransition(R.anim.enter, R.anim.exit);
+
+
+    }
+
     private void initialiseControls() {
         rvCartList                  = llMenu.findViewById(R.id.rvCartList);
+        tvItemsCount                = llMenu.findViewById(R.id.tvItemsCount);
         tvPrice                     = llMenu.findViewById(R.id.tvPrice);
+        tvDiscountLabel             = llMenu.findViewById(R.id.tvDiscountLabel);
         tvDiscount                  = llMenu.findViewById(R.id.tvDiscount);
-        tvDeliveryCharges           = llMenu.findViewById(R.id.tvDeliveryCharges);
+        tvChargesLabel               = llMenu.findViewById(R.id.tvChargesLabel);
+        llDiscount                  = llMenu.findViewById(R.id.llDiscount);
+        tvCharges                   = llMenu.findViewById(R.id.tvCharges);
         tvTotalAmount               = llMenu.findViewById(R.id.tvTotalAmount);
-        btnPlaceOrder                 = llMenu.findViewById(R.id.btnPlaceOrder);
+        btnPlaceOrder               = llMenu.findViewById(R.id.btnPlaceOrder);
     }
 
     @Override
@@ -69,10 +116,29 @@ public class CartListActivity extends BaseActivity {
     }
 
     private void calcTotalAmount(ArrayList<MenuItemDo> menuItemDos) {
-        tvDeliveryCharges.setText("");
-        tvPrice.setText("");
-        tvDiscount.setText("");
-        tvTotalAmount.setText("");
+        if(menuItemDos!=null && menuItemDos.size()>0){
+            double price = 0;
+            for (int i=0;i<menuItemDos.size();i++) {
+                price = price +(menuItemDos.get(i).itemPrice*menuItemDos.get(i).quantity);
+            }
+            double discount = 0;
+            tvItemsCount.setText("Price ("+menuItemDos.size()+" Items)");
+            tvPrice.setText("$"+AppConstants.Decimal_Number.format(price));
+            if(AppConstants.Discount > 0){
+                llDiscount.setVisibility(View.VISIBLE);
+                tvDiscountLabel.setText("Discount("+AppConstants.Discount+"%)");
+                discount = (price*AppConstants.Discount)/100;
+                tvDiscount.setText("$"+AppConstants.Decimal_Number.format(discount));
+            }
+            else {
+                llDiscount.setVisibility(View.GONE);
+            }
+            tvChargesLabel.setText("Charges("+AppConstants.Charges+"%)");
+            double charges = (price*AppConstants.Charges)/100;
+            tvCharges.setText("$"+AppConstants.Decimal_Number.format(charges));
+            totalAmount = price - discount + charges;
+            tvTotalAmount.setText("$"+AppConstants.Decimal_Number.format(totalAmount));
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -87,6 +153,9 @@ public class CartListActivity extends BaseActivity {
         super.onButtonYesClick(from);
         if (from.equalsIgnoreCase("DeleteItem")) {
             getData();
+        }
+        else if(from.equalsIgnoreCase("Takeout_Pickup")) {
+            placeOrder();
         }
     }
 
@@ -114,6 +183,7 @@ public class CartListActivity extends BaseActivity {
 
         @Override
         public void onBindViewHolder(@NonNull final MenuHolder holder, final int position) {
+            holder.tvCategoryName.setVisibility(View.GONE);
             holder.tvItemName.setText(menuItemDos.get(position).itemName);
             holder.tvItemPrice.setText("Price : $"+menuItemDos.get(position).itemPrice);
             holder.tvItemDescription.setText(""+menuItemDos.get(position).itemDescription);
@@ -155,12 +225,13 @@ public class CartListActivity extends BaseActivity {
     }
     private static class MenuHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvItemName, tvItemPrice, tvItemDescription, tvMinus, tvPlus, tvQty;
+        private TextView tvCategoryName, tvItemName, tvItemPrice, tvItemDescription, tvMinus, tvPlus, tvQty;
         private ImageView ivItemImage, ivDeleteItem,ivUnAvailable;
         private LinearLayout llAddToCart;
 
         public MenuHolder(@NonNull View itemView) {
             super(itemView);
+            tvCategoryName              = itemView.findViewById(R.id.tvCategoryName);
             tvItemName                  = itemView.findViewById(R.id.tvItemName);
             tvItemPrice                 = itemView.findViewById(R.id.tvItemPrice);
             tvItemDescription           = itemView.findViewById(R.id.tvItemDescription);
@@ -173,4 +244,5 @@ public class CartListActivity extends BaseActivity {
             tvQty                       = itemView.findViewById(R.id.tvQty);
         }
     }
+
 }
