@@ -12,8 +12,8 @@ import java.util.Collections;
 
 public class AppConstants
 {
-	public static double FoodZone_Lattitude              = 18.1124;
-	public static double FoodZone_Longitude              = 79.0193;
+	public static double FoodZone_Lattitude              = 45.4912;
+	public static double FoodZone_Longitude              = -73.5864;
 
 	public static final String GILL_SANS_TYPE_FACE			= "Gill Sans";
 	public static final String MONTSERRAT_MEDIUM_TYPE_FACE  = "montserrat_medium";
