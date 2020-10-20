@@ -121,7 +121,7 @@ public class AddTableActivity extends BaseActivity {
 
     private void addTable() {
         showLoader();
-        String tableId = "T"+new Random().nextInt();
+        String tableId = "T"+System.currentTimeMillis();
         int tableNumber = Integer.parseInt(etTableNumber.getText().toString().trim());
         int tableCapacity = Integer.parseInt(etTableCapacity.getText().toString().trim());
         final TableDo tableDo = new TableDo(tableId, tableNumber, dineInType, tableCapacity, "", "");

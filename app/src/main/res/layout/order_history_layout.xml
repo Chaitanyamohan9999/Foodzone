@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llOrderFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_10">
+
+        <CheckBox
+            android:id="@+id/cbPending"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pending"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <CheckBox
+            android:id="@+id/cbAccepted"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Accepted"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <CheckBox
+            android:id="@+id/cbRejected"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rejected"
+            android:textColor="@color/colorPrimaryDark" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOrderHistory"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin_10"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tvNoData"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="@dimen/margin_10"
+        android:text="No Data Found"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15" />
+
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_1"
+        android:background="@drawable/btn_bg"
+        android:gravity="center"
+        android:text="Close"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>
