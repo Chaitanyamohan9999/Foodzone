@@ -1,7 +1,14 @@
 package com.food.foodzone.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +33,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,27 +53,26 @@ public class TablesListActivity extends BaseActivity {
 
     @Override
     public void initialise() {
-        llTables =  inflater.inflate(R.layout.tables_list_layout, null);
+        llTables = inflater.inflate(R.layout.tables_list_layout, null);
         addBodyView(llTables);
         lockMenu();
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         llToolbar.setVisibility(View.VISIBLE);
         ivBack.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
-        if (getIntent().hasExtra("From")){
+        if (getIntent().hasExtra("From")) {
             from = getIntent().getStringExtra("From");
         }
         initialiseControls();
-        if(from.equalsIgnoreCase(AppConstants.DineIn)) {
+        if (from.equalsIgnoreCase(AppConstants.DineIn)) {
             flCart.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             flCart.setVisibility(View.GONE);
         }
-        if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)){
+        if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
             fabAddTable.setVisibility(View.GONE);
             tvTitle.setText("Book Table");
-        }
-        else {
+        } else {
             fabAddTable.setVisibility(View.VISIBLE);
             tvTitle.setText("Tables List");
         }
@@ -77,20 +84,18 @@ public class TablesListActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 ArrayList<TableDo> tableDos = new ArrayList<>();
-                if(checkedId == R.id.rbNow){
+                if (checkedId == R.id.rbNow) {
                     dineInType = AppConstants.DineInNow;
                     tableDos = dineInNowTables(dineInType);
-                }
-                else if(checkedId == R.id.rbLater){
+                } else if (checkedId == R.id.rbLater) {
                     dineInType = AppConstants.DineInLater;
                     tableDos = dineInNowTables(dineInType);
                 }
-                if(tableDos != null && tableDos.size() > 0){
+                if (tableDos != null && tableDos.size() > 0) {
                     tvNoData.setVisibility(View.GONE);
                     rvTables.setVisibility(View.VISIBLE);
                     tablesListAdapter.refreshAdapter(tableDos);
-                }
-                else {
+                } else {
                     tvNoData.setVisibility(View.VISIBLE);
                     rvTables.setVisibility(View.GONE);
                 }
@@ -104,6 +109,19 @@ public class TablesListActivity extends BaseActivity {
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                    !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                showAppCompatAlert("GPS is settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+            }
+            else {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            }
+        }
+        else {
+            ActivityCompat.requestPermissions(TablesListActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
+        }
     }
 
     private void initialiseControls() {
@@ -115,6 +133,65 @@ public class TablesListActivity extends BaseActivity {
         fabAddTable                        = llTables.findViewById(R.id.fabAddTable);
     }
 
+    private LocationManager locationManager;
+    private LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+            showAppCompatAlert("GPS is settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            mLocation = location;
+        }
+    };
+
+    private Location mLocation;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 1210) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                        !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                    showAppCompatAlert("GPS is settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+                }
+                else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                }
+            }
+            else {
+                ActivityCompat.requestPermissions(TablesListActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
+            }
+        }
+    }
+
+    public boolean isFoodZoneArea() {
+        if(mLocation!=null) {
+            double latitude1 = mLocation.getLatitude();
+            double longitude1 = mLocation.getLongitude();
+
+            Location locationA = new Location("UserLocation");
+            locationA.setLatitude(latitude1);
+            locationA.setLongitude(longitude1);
+
+            Location locationB = new Location("FoodZoneLocation");
+            locationB.setLatitude(AppConstants.FoodZone_Latitude);
+            locationB.setLongitude(AppConstants.FoodZone_Longitude);
+            return locationA.distanceTo(locationB) < AppConstants.FoodZone_Area;
+        }
+
+        return false;
+    }
     @Override
     public void getData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -204,6 +281,10 @@ public class TablesListActivity extends BaseActivity {
         if (from.equalsIgnoreCase("DeleteTable")) {
             getData();
         }
+        else if (from.equalsIgnoreCase("EnableGPS")) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
     }
 
     private class TablesListAdapter extends RecyclerView.Adapter<TableHolder> {
@@ -284,6 +365,18 @@ public class TablesListActivity extends BaseActivity {
                             intent.putExtra("TableDo", tableDos.get(position));
                             startActivityForResult(intent, 1001);
                             overridePendingTransition(R.anim.enter, R.anim.exit);
+                        }
+                        else if(dineInType.equalsIgnoreCase(AppConstants.DineInNow)) {
+                            if(isFoodZoneArea()) {
+                                Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
+                                intent.putExtra(AppConstants.From, dineInType);
+                                intent.putExtra("TableDo", tableDos.get(position));
+                                startActivityForResult(intent, 1001);
+                                overridePendingTransition(R.anim.enter, R.anim.exit);
+                            }
+                            else {
+                                showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
+                            }
                         }
                         else {
                             Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
