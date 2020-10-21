@@ -12,8 +12,9 @@ import java.util.Collections;
 
 public class AppConstants
 {
-	public static double FoodZone_Lattitude              = 45.4912;
-	public static double FoodZone_Longitude              = -73.5864;
+	public static double FoodZone_Latitude              = 45.4912;
+	public static double FoodZone_Longitude              = -73.5863;
+	public static final double FoodZone_Area			= 100;
 
 	public static final String GILL_SANS_TYPE_FACE			= "Gill Sans";
 	public static final String MONTSERRAT_MEDIUM_TYPE_FACE  = "montserrat_medium";
@@ -35,8 +36,8 @@ public class AppConstants
 	public static final String Table_Rating      		 = "Rating";
 	public static final String Table_Support    		 = "Support";
 	public static final String Table_Tables      		 = "Tables";
-	public static final String Table_Employees   		 = "Employees";
 	public static final String Table_Item				 = "Items";
+	public static final String Table_Orders				 = "Orders";
 
 	public static final String Profiles_Storage_Path 	 = "Profiles/";
 	public static final String Food_Storage_Path     	 = "Food/";
@@ -51,11 +52,20 @@ public class AppConstants
 	public static final String TakeOut   					 = "TakeOut";
 	public static final String Menu     					 = "Menu";
 	public static final String ManageMenu     				 = "ManageMenu";
+	public static final String Status_Pending     			 = "Pending";
+	public static final String Status_Started      			 = "Started";
+	public static final String Status_Rejected     			 = "Rejected";
+	public static final String Status_Cancelled     	     = "Cancelled";
+	public static final String Status_Accepted       	     = "Accepted";
 
 	public static ArrayList<MenuItemDo> Cart_Items			= new ArrayList<>();
 
-	public static final String Table_Names[]				= {"Table One", "Table Two", "Table Three", "Table Four", "Table Five", "Table Six", "Table Seven", "Table Eight", "Table Nine", "Table Ten"};
-	public static final int Table_Capacity[]				= {2,4,6,2,4,6,6,4,2,6};
+	public static final double Discount					    = 1.00;
+	public static final double Charges					    = 15.00;
+
+	public static String from								= "";
+	public static final int Pickup_Min_Time					= 30;// 30 mins
+	public static final int Pickup_Max_Time					= 12;
 
 	public static ArrayList<String> getCountryList() {
 		ArrayList<String> countryList = new ArrayList<>();
@@ -66,6 +76,12 @@ public class AppConstants
 		countryList.add("AUSTRALIA");
 		countryList.add("UK");
 		countryList.add("ITALY");
+		countryList.add("GERMANY");
+		countryList.add("RUSSIA");
+		countryList.add("FRANCE");
+		countryList.add("AFRICA");
+		countryList.add("BRAZIL");
+		countryList.add("MEXICO");
 		Collections.sort(countryList);
 		countryList.add(0, "Select Country");
 		return countryList;
@@ -91,19 +107,15 @@ public class AppConstants
 		return provinceList;
 	}
 
-
 	public static ArrayList<String> getCity() {
-		ArrayList<String> cityList = new ArrayList<>();
+		ArrayList<String> provinceList = new ArrayList<>();
 		cityList.add("Montreal");
-		cityList.add("Laval");
-		cityList.add("Quebec City");
-		cityList.add("Toronto");
+		cityList.add("Montmerency");
 		cityList.add("Ottawa");
-		cityList.add("London");
-		cityList.add("Vancover");
-		cityList.add("Niagara City");
-		Collections.sort(cityList);
-		cityList.add(0, "Select City");
+		cityList.add("Quebec city");
+		cityList.add("Laval");
+		Collections.sort(provinceList);
+		provinceList.add(0, "Select City");
 		return cityList;
 	}
 }
