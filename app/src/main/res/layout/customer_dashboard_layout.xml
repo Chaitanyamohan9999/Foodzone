@@ -112,15 +112,15 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:alpha="0.2"
-                    android:background="@drawable/reservation" />
+                    android:background="@drawable/manage_menu" />
 
                 <TextView
-                    android:id="@+id/tvReservation"
+                    android:id="@+id/tvMenu"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Reservation"
+                    android:text="Menu"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="30sp"
                     android:textStyle="bold" />

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.OrderDo;
 import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,14 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class TablesListActivity extends BaseActivity {
+public class ReservationsListActivity extends BaseActivity {
 
-    private static final String TAG = "TablesList";
+    private static final String TAG = "ReserveList";
     private View llTables;
     private RecyclerView rvTables;
     private TextView tvNoData;
@@ -51,26 +51,15 @@ public class TablesListActivity extends BaseActivity {
         llToolbar.setVisibility(View.VISIBLE);
         ivBack.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
+        tvTitle.setText("Reservations");
+        flCart.setVisibility(View.GONE);
+        initialiseControls();
         if (getIntent().hasExtra("From")){
             from = getIntent().getStringExtra("From");
         }
-        initialiseControls();
-        if(from.equalsIgnoreCase(AppConstants.DineIn)) {
-            flCart.setVisibility(View.VISIBLE);
-        }
-        else {
-            flCart.setVisibility(View.GONE);
-        }
-        if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)){
-            fabAddTable.setVisibility(View.GONE);
-            tvTitle.setText("Book Table");
-        }
-        else {
-            fabAddTable.setVisibility(View.VISIBLE);
-            tvTitle.setText("Tables List");
-        }
-        rvTables.setLayoutManager(new GridLayoutManager(TablesListActivity.this, 2, GridLayoutManager.VERTICAL, false));
-        tablesListAdapter = new TablesListAdapter(TablesListActivity.this, new ArrayList<TableDo>());
+        fabAddTable.setVisibility(View.GONE);
+        rvTables.setLayoutManager(new GridLayoutManager(ReservationsListActivity.this, 2, GridLayoutManager.VERTICAL, false));
+        tablesListAdapter = new TablesListAdapter(ReservationsListActivity.this, new ArrayList<TableDo>());
         rvTables.setAdapter(tablesListAdapter);
         getData();
         rgDineInType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -96,14 +85,6 @@ public class TablesListActivity extends BaseActivity {
                 }
             }
         });
-        fabAddTable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TablesListActivity.this, AddTableActivity.class);
-                startActivityForResult(intent, 101);
-                overridePendingTransition(R.anim.enter, R.anim.exit);
-            }
-        });
     }
 
     private void initialiseControls() {
@@ -120,7 +101,6 @@ public class TablesListActivity extends BaseActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         showLoader();
-        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -132,8 +112,9 @@ public class TablesListActivity extends BaseActivity {
                     tableDos.add(tableDo);
                 }
 //                        if(from.equalsIgnoreCase(AppConstants.DineIn)) {
-                ArrayList<TableDo>  dineInTableDos = dineInNowTables(dineInType);
-                if(dineInTableDos != null && dineInTableDos.size() > 0){
+                getOrdersOnTable(null);
+                ArrayList<TableDo> dineInTableDos = dineInNowTables(dineInType);
+                if (dineInTableDos != null && dineInTableDos.size() > 0) {
                     tvNoData.setVisibility(View.GONE);
                     rvTables.setVisibility(View.VISIBLE);
                     tablesListAdapter.refreshAdapter(dineInTableDos);
@@ -167,43 +148,69 @@ public class TablesListActivity extends BaseActivity {
 
 
     private ArrayList<TableDo> dineInNowTables(String dineInType) {
+        String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
         ArrayList<TableDo> dineInFilteredTables = new ArrayList<>();
         if(tableDos != null && tableDos.size() > 0){
             for (int i=0;i<tableDos.size();i++) {
-                if(tableDos.get(i).tableType.equalsIgnoreCase(dineInType)) {
-                    dineInFilteredTables.add(tableDos.get(i));
+                if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+                    if(userId.equalsIgnoreCase(tableDos.get(i).reservedBy) && !tableDos.get(i).reservedBy.equalsIgnoreCase("")
+                            && dineInType.equalsIgnoreCase(tableDos.get(i).tableType)) {
+                        dineInFilteredTables.add(tableDos.get(i));
+                    }
+                }
+                else {
+                    if(!tableDos.get(i).reservedBy.equalsIgnoreCase("")
+                            &&dineInType.equalsIgnoreCase(tableDos.get(i).tableType)) {
+                        dineInFilteredTables.add(tableDos.get(i));
+                    }
                 }
             }
         }
         return dineInFilteredTables;
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 101 && resultCode == 101) {
-            getData();
-        }
-    }
 
-    private void deleteTable(String tableId) {
-        showLoader();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
-        databaseReference.child(tableId).removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                hideLoader();
-                showAppCompatAlert("", "Congratulations! You have successfully deleted a Table.", "OK", "", "DeleteTable", false);
+    private final ArrayList<OrderDo> orderDos = new ArrayList<>();
+    private void getOrdersOnTable(TableDo tableDo) {
+        if(tableDo == null) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    hideLoader();
+                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                        OrderDo orderDo = postSnapshot.getValue(OrderDo.class);
+                        Log.e("Get Data", orderDo.toString());
+                        orderDos.add(orderDo);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    hideLoader();
+                    Log.e(TAG, "Failed to reading email.", databaseError.toException());
+                }
+            });
+        }
+        else {
+            if(orderDos!=null && orderDos.size()>0) {
+                for (int i=0;i<orderDos.size();i++) {
+                    if(tableDo.tableId.equalsIgnoreCase(orderDos.get(i).tableId)) {
+                        Intent intent = new Intent(ReservationsListActivity.this, OrderDetailsActivity.class);
+                        intent.putExtra(AppConstants.From, dineInType);
+                        intent.putExtra("TableDo", tableDo);
+                        intent.putExtra("OrderDo", orderDos.get(i));
+                        startActivityForResult(intent, 5001);
+                        overridePendingTransition(R.anim.enter, R.anim.exit);
+                    }
+                }
             }
-        });
+        }
     }
 
     @Override
     public void onButtonYesClick(String from) {
         super.onButtonYesClick(from);
-        if (from.equalsIgnoreCase("DeleteTable")) {
-            getData();
-        }
     }
 
     private class TablesListAdapter extends RecyclerView.Adapter<TableHolder> {
@@ -236,63 +243,14 @@ public class TablesListActivity extends BaseActivity {
             else {
 
             }
-            if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
-                holder.ivDeleteTable.setVisibility(View.INVISIBLE);
-                holder.ivDeleteTable.setEnabled(false);
-                if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
-                    holder.ivReserved.setVisibility(View.INVISIBLE);
-                    holder.itemView.setEnabled(true);
-                }
-                else {
-                    holder.ivReserved.setVisibility(View.VISIBLE);
-                    holder.itemView.setEnabled(false);
-                }
-            }
-            else if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Manager_Role)) {
-                if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
-                    holder.ivReserved.setVisibility(View.INVISIBLE);
-                    holder.ivDeleteTable.setVisibility(View.VISIBLE);
-                }
-                else {
-                    holder.ivReserved.setVisibility(View.VISIBLE);
-                    holder.ivDeleteTable.setVisibility(View.INVISIBLE);
-                }
-            }
-            else {
-                holder.ivDeleteTable.setVisibility(View.GONE);
-                if(tableDos.get(position).reservedBy.trim().equalsIgnoreCase("")){
-                    holder.ivReserved.setVisibility(View.GONE);
-                }
-                else {
-                    holder.ivReserved.setVisibility(View.VISIBLE);
-                }
-            }
-            holder.ivDeleteTable.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteTable(tableDos.get(position).tableId);
-                }
-            });
+            holder.itemView.setEnabled(true);
+            holder.ivReserved.setVisibility(View.VISIBLE);
+            holder.ivDeleteTable.setVisibility(View.INVISIBLE);
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
-                        if(dineInType.equalsIgnoreCase(AppConstants.DineInLater)) {
-                            Intent intent = new Intent(TablesListActivity.this, ScheduleTimeActivity.class);
-                            intent.putExtra(AppConstants.From, dineInType);
-                            intent.putExtra("TableDo", tableDos.get(position));
-                            startActivityForResult(intent, 1001);
-                            overridePendingTransition(R.anim.enter, R.anim.exit);
-                        }
-                        else {
-                            Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
-                            intent.putExtra(AppConstants.From, dineInType);
-                            intent.putExtra("TableDo", tableDos.get(position));
-                            startActivityForResult(intent, 1001);
-                            overridePendingTransition(R.anim.enter, R.anim.exit);
-                        }
-                    }
+                    getOrdersOnTable(tableDos.get(position));
                 }
             });
         }

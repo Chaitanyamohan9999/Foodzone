@@ -3,6 +3,7 @@ package com.food.foodzone.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +13,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
 import com.food.foodzone.models.OrderDo;
+import com.food.foodzone.models.TableDo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class OrderDetailsActivity extends BaseActivity {
@@ -37,10 +42,10 @@ public class OrderDetailsActivity extends BaseActivity {
     private TextView tvOrderId, tvAmount, tvCustomerName, tvPickupTime, tvCustomerPhone,
             tvCustomerEmail, tvPaymentType, tvOrderType, tvOrderStatus;
     private Button btnCancel, btnApprove;
-    private LinearLayout llPhone, llEmail;
+    private LinearLayout llPhone, llEmail, llPickup;
     private MenuListAdapter menuListAdapter;
     private OrderDo orderDo;
-    
+
     @Override
     public void initialise() {
         llDetails = (LinearLayout) inflater.inflate(R.layout.order_details_layout, null);
@@ -54,35 +59,64 @@ public class OrderDetailsActivity extends BaseActivity {
             orderDo = (OrderDo) getIntent().getSerializableExtra("OrderDo");
         }
         initialiseControls();
+        btnCancel.setVisibility(View.GONE);
         if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
-            btnApprove.setText("CLOSE");
-            btnCancel.setText("CANCEL ORDER");
+            if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
+                if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)) {
+                    btnApprove.setVisibility(View.VISIBLE);
+                    btnApprove.setText("ARRIVE");
+                } else if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInNow)) {
+                    btnApprove.setVisibility(View.VISIBLE);
+                    btnApprove.setText("CANCEL");
+                } else {
+                    btnApprove.setVisibility(View.VISIBLE);
+                    btnApprove.setText("CANCEL");
+                }
+            }
+            else {
+                btnApprove.setVisibility(View.GONE);
+                btnApprove.setText("");
+            }
         }
         else {
-            btnApprove.setText("ACCEPT ORDER");
-            btnCancel.setText("REJECT ORDER");
+            if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)){
+                btnApprove.setVisibility(View.VISIBLE);
+                btnApprove.setText("ACCEPT ORDER");
+                btnCancel.setVisibility(View.VISIBLE);
+                btnCancel.setText("REJECT");
+            }
+            else {
+                btnApprove.setVisibility(View.GONE);
+                btnApprove.setText("");
+                btnCancel.setVisibility(View.GONE);
+                btnCancel.setText("");
+            }
         }
         bindData();
         btnApprove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
-                    finish();
+                    if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
+                        if(orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)) {
+                            actionOnOrder(AppConstants.Status_Started);
+                        }
+                        else {
+                            actionOnOrder(AppConstants.Status_Cancelled);
+                        }
+                    }
                 }
                 else {
-                    actionOnOrder(AppConstants.Status_Accepted);
+                    if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
+                        actionOnOrder(AppConstants.Status_Accepted);
+                    }
                 }
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
-                    actionOnOrder(AppConstants.Status_Cancelled);
-                }
-                else {
-                    actionOnOrder(AppConstants.Status_Rejected);
-                }
+                actionOnOrder(AppConstants.Status_Rejected);
             }
         });
         llPhone.setOnClickListener(new View.OnClickListener() {
@@ -100,11 +134,11 @@ public class OrderDetailsActivity extends BaseActivity {
         llEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
                 emailIntent.setType("text/plain");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{  orderDo.customerEmail});
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "FoodZone Order Status");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi,\n Your FoodZone order");
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{  orderDo.customerEmail});
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "FoodZone Order Status");
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Hi,\n Your FoodZone order");
                 emailIntent.setType("message/rfc822");
                 try {
                     startActivity(Intent.createChooser(emailIntent, "Sending email..."));
@@ -127,15 +161,22 @@ public class OrderDetailsActivity extends BaseActivity {
         tvOrderStatus               = llDetails.findViewById(R.id.tvOrderStatus);
         llPhone                     = llDetails.findViewById(R.id.llPhone);
         llEmail                     = llDetails.findViewById(R.id.llEmail);
+        llPickup                    = llDetails.findViewById(R.id.llPickup);
         rvMenuList                  = llDetails.findViewById(R.id.rvMenuList);
         btnCancel                   = llDetails.findViewById(R.id.btnCancel);
         btnApprove                  = llDetails.findViewById(R.id.btnApprove);
     }
-    
+
     private void bindData() {
         tvOrderId.setText(orderDo.orderId);
-        tvAmount.setText("$"+ AppConstants.Decimal_Number.format(orderDo.totalAmount));
-        tvCustomerName.setText(""+orderDo.customerName);
+        tvAmount.setText("$"+AppConstants.Decimal_Number.format(orderDo.totalAmount));
+        tvCustomerName.setText("C.Name : "+orderDo.customerName);
+        if(orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)) {
+            llPickup.setVisibility(View.VISIBLE);
+        }
+        else {
+            llPickup.setVisibility(View.GONE);
+        }
         tvPickupTime.setText(getPickupTime(orderDo.pickupTime));
         tvCustomerPhone.setText(orderDo.customerPhone);;
         tvCustomerEmail.setText(orderDo.customerPhone);;
@@ -159,6 +200,13 @@ public class OrderDetailsActivity extends BaseActivity {
 
     private void actionOnOrder(String orderAction) {
         orderDo.orderStatus = orderAction;
+        if (AppConstants.Status_Rejected.equalsIgnoreCase(orderAction)
+                || AppConstants.Status_Cancelled.equalsIgnoreCase(orderAction)){
+            getTableByOrder(orderDo.tableId, "", 0);
+        }
+        else {
+            getTableByOrder(orderDo.tableId, orderAction, System.currentTimeMillis());
+        }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
         showLoader();
@@ -168,6 +216,49 @@ public class OrderDetailsActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         hideLoader();
                         showAppCompatAlert("", "The order has been Accepted successfully!", "OK", "", "AcceptOrder", false);
+                    }
+                });
+    }
+
+    private void getTableByOrder(final String tableId, final String tableStatus, final long actionTime) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
+        showLoader();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                hideLoader();
+                ArrayList<TableDo> tableDos = new ArrayList<>();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    TableDo tableDo = postSnapshot.getValue(TableDo.class);
+                    Log.e("Get Data", tableDo.toString());
+                    if (tableDo.tableId.equalsIgnoreCase(tableId)){
+                        updateStatus(tableDo, tableStatus, actionTime);
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                hideLoader();
+            }
+        });
+    }
+
+    private void updateStatus(final TableDo tableDo, String tableStatus, long actionTime) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        tableDo.tableStatus = tableStatus;
+        if(actionTime == 0) {
+            tableDo.reservedBy = "";
+            tableDo.reservedAt = 0;
+        }
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
+        databaseReference.child(tableDo.tableId).setValue(tableDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
                     }
                 });
     }
@@ -215,6 +306,7 @@ public class OrderDetailsActivity extends BaseActivity {
             holder.tvCategoryName.setText(menuItemDos.get(position).itemCategory);
             holder.tvItemName.setText(menuItemDos.get(position).itemName);
             holder.tvItemPrice.setText("$"+menuItemDos.get(position).itemPrice);
+            holder.tvQty.setText(""+AppConstants.TwoDigitsNumber.format(menuItemDos.get(position).quantity));
             holder.tvItemDescription.setText(""+menuItemDos.get(position).itemDescription);
             if(!menuItemDos.get(position).itemImage.equalsIgnoreCase("")){
                 Picasso.get().load(menuItemDos.get(position).itemImage).placeholder(R.drawable.food_placeholder)
@@ -227,7 +319,7 @@ public class OrderDetailsActivity extends BaseActivity {
             holder.ivDeleteItem.setVisibility(View.GONE);
             holder.tvMinus.setVisibility(View.GONE);
             holder.tvPlus.setVisibility(View.GONE);
-            
+
         }
 
         @Override
@@ -260,5 +352,5 @@ public class OrderDetailsActivity extends BaseActivity {
             tvQty                       = itemView.findViewById(R.id.tvQty);
         }
     }
-    
+
 }
