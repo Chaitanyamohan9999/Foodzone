@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -61,7 +62,55 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".activities.TablesListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.AddTableActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.EmployeesListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.AddEmployeeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".activities.MenuListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.AddMenuItemActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.CartListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ScheduleTimeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.PaymentActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.OrdersHistoryActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.OrderDetailsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ReservationsListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.OrdersManageActivity"
             android:screenOrientation="portrait" />
 
         <activity
