@@ -17,6 +17,7 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
+import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.RangeTimePickerDialog;
 import com.squareup.picasso.Picasso;
 
@@ -40,6 +41,7 @@ public class CartListActivity extends BaseActivity {
     private CartListAdapter cartListAdapter;
     private double totalAmount;
     private String from = "";
+    private TableDo tableDo;
 
     @Override
     public void initialise() {
@@ -53,6 +55,9 @@ public class CartListActivity extends BaseActivity {
         if (getIntent().hasExtra("From")){
             from = getIntent().getStringExtra("From");
         }
+        if (getIntent().hasExtra("TableDo")){
+            tableDo = (TableDo) getIntent().getSerializableExtra("TableDo");
+        }
         initialiseControls();
         rvCartList.setLayoutManager(new LinearLayoutManager(CartListActivity.this));
         cartListAdapter = new CartListAdapter(CartListActivity.this, new ArrayList<MenuItemDo>());
@@ -60,25 +65,27 @@ public class CartListActivity extends BaseActivity {
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar calendar = Calendar.getInstance();
-                TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hour, int minute) {
-                        pickupTime = ""+calendar.get(Calendar.DAY_OF_MONTH)+""+AppConstants.TwoDigitsNumber.format(calendar.get(Calendar.MONTH)+1)+""+calendar.get(Calendar.YEAR)
-                                +""+AppConstants.TwoDigitsNumber.format(hour)+""+AppConstants.TwoDigitsNumber.format(minute);
-                        pickupMessage = "Your order will be ready at "+AppConstants.TwoDigitsNumber.format(hour)+" : "+AppConstants.TwoDigitsNumber.format(minute)+" to pickup";
-                        showAppCompatAlert("", pickupMessage, "Ok", "Cancel", "Takeout_Pickup", false);
-                    }
-                };
+                if(from.equalsIgnoreCase(AppConstants.TakeOut)) {
+                    final Calendar calendar = Calendar.getInstance();
+                    TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hour, int minute) {
+                            pickupTime = ""+calendar.get(Calendar.DAY_OF_MONTH)+""+AppConstants.TwoDigitsNumber.format(calendar.get(Calendar.MONTH)+1)+""+calendar.get(Calendar.YEAR)
+                                    +""+AppConstants.TwoDigitsNumber.format(hour)+""+AppConstants.TwoDigitsNumber.format(minute);
+                            pickupMessage = "Your order will be ready at "+AppConstants.TwoDigitsNumber.format(hour)+" : "+AppConstants.TwoDigitsNumber.format(minute)+" to pickup";
+                            showAppCompatAlert("", pickupMessage, "Ok", "Cancel", "Takeout_Pickup", false);
+                        }
+                    };
 //
-//                final TimePickerDialog timePickerDialog = new TimePickerDialog(CartListActivity.this,timePickerListener,
-//                        calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE)+AppConstants.Pickup_Min_Time,true);
-//                timePickerDialog.show();
-                RangeTimePickerDialog rangeTimePickerDialog = new RangeTimePickerDialog(CartListActivity.this, timePickerListener,
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)+30, true);
-                rangeTimePickerDialog.setMin(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)+30);
-                rangeTimePickerDialog.setMax(calendar.get(Calendar.HOUR_OF_DAY)+AppConstants.Pickup_Max_Time, 0);
-                rangeTimePickerDialog.show();
+                    RangeTimePickerDialog rangeTimePickerDialog = new RangeTimePickerDialog(CartListActivity.this, timePickerListener,
+                            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)+30, true);
+                    rangeTimePickerDialog.setMin(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)+30);
+                    rangeTimePickerDialog.setMax(calendar.get(Calendar.HOUR_OF_DAY)+AppConstants.Pickup_Max_Time, 0);
+                    rangeTimePickerDialog.show();
+                }
+                else {
+                    placeOrder();
+                }
             }
         });
         getData();
@@ -86,7 +93,11 @@ public class CartListActivity extends BaseActivity {
 
     private String pickupTime = "", pickupMessage = "";
     private void placeOrder() {
-        Intent intent = new Intent(CartListActivity.this, PaymentActivity.class);
+        Intent intent = null;
+        intent = new Intent(CartListActivity.this, PaymentActivity.class);
+        if(!from.equalsIgnoreCase(AppConstants.TakeOut)) {
+            intent.putExtra("TableDo", tableDo);
+        }
         intent.putExtra("From", from);
         intent.putExtra("Amount", totalAmount);
         intent.putExtra("PickupTime", pickupTime);
