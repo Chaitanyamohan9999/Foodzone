@@ -5,5 +5,5 @@
     android:padding="@dimen/margin_10"
     android:orientation="vertical">
 
-    
+
 </LinearLayout>
