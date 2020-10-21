@@ -100,19 +100,28 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
             @Override
             public void onClick(View view) {
                 menuOperates();
+                Intent intent = new Intent(context, ReservationsListActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
-        tvOrdersHistory.setOnClickListener(new View.OnClickListener() {
+        tvOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 menuOperates();
+                Intent intent = new Intent(context, OrdersHistoryActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
 
-        tvOrders.setOnClickListener(new View.OnClickListener() {
+        tvOrdersHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 menuOperates();
+                Intent intent = new Intent(context, OrdersHistoryActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
         tvProfile.setOnClickListener(new View.OnClickListener() {
@@ -149,11 +158,24 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
                 showAppCompatAlert("", "Do you want ot logout from app?", "Logout", "Cancel", "Logout", false);
             }
         });
+        flCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(AppConstants.Cart_Items!=null && AppConstants.Cart_Items.size()>0) {
+                    if(!(context instanceof CartListActivity)) {
+                        Intent intent = new Intent(context, CartListActivity.class);
+                        intent.putExtra("From", AppConstants.from);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.enter, R.anim.exit);
+                    }
+                }
+            }
+        });
         initialise();
     }
 
     protected void employeeLeftMenu () {
-        tvReservations.setVisibility(View.GONE);
+        tvReservations.setVisibility(View.VISIBLE);
         tvOrdersHistory.setVisibility(View.GONE);
         findViewById(R.id.vwPendingOrders).setVisibility(View.GONE);
         findViewById(R.id.vwOrdersHistory).setVisibility(View.GONE);
@@ -233,6 +255,9 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
     public void addToCart() {
         if(AppConstants.Cart_Items != null && AppConstants.Cart_Items.size() > 0) {
             tvCartCount.setText(""+AppConstants.Cart_Items.size());
+        }
+        else {
+            tvCartCount.setText("0");
         }
     }
 
@@ -460,6 +485,19 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
 
     public void showErrorMessage(String message){
         showAppCompatAlert("", message, "OK", "", "", false);
+    }
+
+    public static String getPickupTime(String dateTime) {
+        String pickupTime = "";
+        if(dateTime.length() == 12) {
+            try {
+                pickupTime = dateTime.substring(0, 2)+":"+dateTime.substring(2, 4)+":"+dateTime.substring(4, 8)+"  "
+                        +dateTime.substring(8, 10)+":"+dateTime.substring(10, 12);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return pickupTime;
     }
 }
 
