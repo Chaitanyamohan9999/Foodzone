@@ -13,16 +13,12 @@ import android.widget.Toast;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.OrderDo;
-import com.food.foodzone.models.PaymentDo;
-import com.food.foodzone.models.UserDo;
+import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Calendar;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 
@@ -37,6 +33,7 @@ public class PaymentActivity extends BaseActivity {
     private TextView tvPickupTime;
     private String paymentType = "Card", from = "", pickupTime = "", pickupMessage = "";
     private double amount;
+    private TableDo tableDo;
 
     @Override
     public void initialise() {
@@ -50,6 +47,9 @@ public class PaymentActivity extends BaseActivity {
         tvTitle.setText("Payment");
         if (getIntent().hasExtra("Amount")){
             amount = getIntent().getDoubleExtra("Amount", 0);
+        }
+        if (getIntent().hasExtra("TableDo")){
+            tableDo = (TableDo) getIntent().getSerializableExtra("TableDo");
         }
         if (getIntent().hasExtra("From")){
             from = getIntent().getStringExtra("From");
@@ -91,16 +91,44 @@ public class PaymentActivity extends BaseActivity {
                         Toast.makeText(PaymentActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     }
                     else {
-                        placeOrder();
+                        if(from.equalsIgnoreCase(AppConstants.TakeOut)) {
+                            placeOrder();
+                        }
+                        else {
+                            reserveTable();
+                        }
                     }
                 }
                 else {
-                    placeOrder();
+                    if(from.equalsIgnoreCase(AppConstants.TakeOut)) {
+                        placeOrder();
+                    }
+                    else {
+                        reserveTable();
+                    }
                 }
             }
         });
     }
 
+    private void reserveTable() {
+        showLoader();
+        tableDo.reservedBy = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        if(from.equalsIgnoreCase(AppConstants.DineInNow)) {
+            tableDo.reservedAt = System.currentTimeMillis();
+        }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
+        databaseReference.child(tableDo.tableId).setValue(tableDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        placeOrder();
+                    }
+                });
+    }
     private void initialiseControls() {
         btnProceed      = findViewById(R.id.btnProceed);
         etName          = findViewById(R.id.etName);
@@ -157,6 +185,10 @@ public class PaymentActivity extends BaseActivity {
         orderDo.orderType = from;
         orderDo.paymentType = paymentType;
         orderDo.totalAmount = amount;
+        if(!from.equalsIgnoreCase(AppConstants.TakeOut)) {
+            orderDo.tableId = tableDo.tableId;
+            orderDo.tableNumber = tableDo.tableNumber;
+        }
         orderDo.orderStatus = AppConstants.Status_Pending;
         orderDo.menuItemDos = AppConstants.Cart_Items;
 
