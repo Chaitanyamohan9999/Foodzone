@@ -12,11 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.OrderDo;
@@ -28,6 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class OrdersHistoryActivity extends BaseActivity {
@@ -146,17 +146,38 @@ public class OrdersHistoryActivity extends BaseActivity {
         if(orderDos!= null && orderDos.size()>0) {
             ArrayList<OrderDo> filteredOrders = new ArrayList<>();
             for(int i=0;i<orderDos.size();i++) {
-                if (cbPending.isChecked()) {
+                if (cbPending.isChecked() && orderDos.get(i).orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
                     filteredOrders.add(orderDos.get(i));
                 }
-                if (cbAccepted.isChecked()) {
+                if (cbAccepted.isChecked() && orderDos.get(i).orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
                     filteredOrders.add(orderDos.get(i));
                 }
-                if (cbRejected.isChecked()) {
+                if (cbRejected.isChecked() && orderDos.get(i).orderStatus.equalsIgnoreCase(AppConstants.Status_Rejected)) {
                     filteredOrders.add(orderDos.get(i));
                 }
             }
-            orderHistoryAdapter.refreshAdapter(filteredOrders);
+            if(!cbPending.isChecked() && !cbAccepted.isChecked()  && !cbRejected.isChecked() ) {
+                if(orderDos!=null && orderDos.size() > 0){
+                    tvNoData.setVisibility(View.GONE);
+                    rvOrderHistory.setVisibility(View.VISIBLE);
+                    orderHistoryAdapter.refreshAdapter(orderDos);
+                }
+                else {
+                    tvNoData.setVisibility(View.VISIBLE);
+                    rvOrderHistory.setVisibility(View.GONE);
+                }
+            }
+            else {
+                if(filteredOrders!=null && filteredOrders.size() > 0){
+                    tvNoData.setVisibility(View.GONE);
+                    rvOrderHistory.setVisibility(View.VISIBLE);
+                    orderHistoryAdapter.refreshAdapter(filteredOrders);
+                }
+                else {
+                    tvNoData.setVisibility(View.VISIBLE);
+                    rvOrderHistory.setVisibility(View.GONE);
+                }
+            }
         }
     }
     @Override
