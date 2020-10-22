@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.SupportDo;
@@ -18,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+
+import androidx.annotation.NonNull;
 
 
 public class SupportActivity extends BaseActivity {
@@ -92,7 +92,7 @@ public class SupportActivity extends BaseActivity {
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Support);
         final String supportId = "Support_"+System.currentTimeMillis();
         String commentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+":"+Calendar.getInstance().get(Calendar.MINUTE)+"  "
-                +Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+AppConstants.decimalFormat.format(Calendar.getInstance().get(Calendar.MONTH)+1)
+                +Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+AppConstants.TwoDigitsNumber.format(Calendar.getInstance().get(Calendar.MONTH)+1)
                 + "-" +Calendar.getInstance().get(Calendar.YEAR);
         SupportDo supportDo = new SupportDo(supportId, userId, etComments.getText().toString().trim(), commentDate);
         databaseReference.child(supportId).setValue(supportDo)
