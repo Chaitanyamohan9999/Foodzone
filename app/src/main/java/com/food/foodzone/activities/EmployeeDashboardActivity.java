@@ -1,12 +1,28 @@
 package com.food.foodzone.activities;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.OrderDo;
+import com.food.foodzone.models.TableDo;
+import com.food.foodzone.utils.PreferenceUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
 
 public class EmployeeDashboardActivity extends BaseActivity {
 
@@ -44,11 +60,13 @@ public class EmployeeDashboardActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(EmployeeDashboardActivity.this, MenuListActivity.class);
-                intent.putExtra(AppConstants.From, AppConstants.Reservation);
+                intent.putExtra(AppConstants.From, AppConstants.ManageMenu);
                 startActivity(intent);
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
+        getData();
+        getOrders();
     }
 
     private void initialiseControls() {
@@ -58,7 +76,90 @@ public class EmployeeDashboardActivity extends BaseActivity {
     }
     @Override
     public void getData() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
+        showLoader();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                hideLoader();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    TableDo tableDo = postSnapshot.getValue(TableDo.class);
+                    Log.e("Get Data", tableDo.toString());
+                    if(tableDo.reservedAt<System.currentTimeMillis()){
+                        updateTableStatus(tableDo);
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                hideLoader();
+            }
+        });
+    }
+
+    private void updateTableStatus(final TableDo tableDo) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        tableDo.tableStatus = "";
+        tableDo.reservedBy = "";
+        tableDo.reservedAt = 0;
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
+        databaseReference.child(tableDo.tableId).setValue(tableDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        hideLoader();
+                        updateOrderStatus(tableDo);
+                    }
+                });
+    }
+
+    private void updateOrderStatus(final TableDo tableDo) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        if (orderDos!=null && orderDos.size()>0){
+            for (int i=0;i<orderDos.size();i++) {
+                if(tableDo.reservedAt<System.currentTimeMillis() && orderDos.get(i).tableId.equalsIgnoreCase(tableDo.tableId)) {
+                    final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
+                    databaseReference.child(orderDos.get(i).orderId).setValue(orderDos.get(i)).
+                            addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    hideLoader();
+                                }
+                            });
+                }
+//                else if() {// expired takeout orders
+//
+//                }
+            }
+
+        }
+    }
+
+    private ArrayList<OrderDo> orderDos;
+
+    private void getOrders() {
+        final String userId = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                hideLoader();
+                orderDos = new ArrayList<>();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    OrderDo orderDo = postSnapshot.getValue(OrderDo.class);
+                    Log.e("Get Data", orderDo.toString());
+                    orderDos.add(orderDo);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                hideLoader();
+            }
+        });
     }
 
     @Override
