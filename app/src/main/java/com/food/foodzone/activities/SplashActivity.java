@@ -1,5 +1,6 @@
 package com.food.foodzone.activities;
 
+
 import android.content.Intent;
 import android.os.Handler;
 import android.view.View;
@@ -8,7 +9,6 @@ import android.widget.LinearLayout;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.TableDo;
-import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -45,28 +45,6 @@ public class SplashActivity extends BaseActivity {
     @Override
     public void getData() {
 
-    }
-
-    private void createTable(final int i, String tableName, int capacity) {
-        showLoader();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
-        final String supportId = "Tables_"+i;
-        String commentDate = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+":"+Calendar.getInstance().get(Calendar.MINUTE)+"  "
-                +Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"-"+AppConstants.decimalFormat.format(Calendar.getInstance().get(Calendar.MONTH)+1)
-                + "-" +Calendar.getInstance().get(Calendar.YEAR);
-
-        TableDo tableDo = new TableDo(supportId, tableName, capacity, "", "");
-        databaseReference.child(supportId).setValue(tableDo)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        hideLoader();
-                        if(i==10) {
-                            moveToNext();
-                        }
-                    }
-                });
     }
 
     private void moveToNext() {
