@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
+import com.food.foodzone.models.TableDo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,10 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +42,7 @@ public class MenuListActivity extends BaseActivity {
     private Button btnContinue;
     private MenuListAdapter menuListAdapter;
     private FloatingActionButton fabAddItem;
-    private String from = "";
+    private TableDo tableDo;
 
     @Override
     public void initialise() {
@@ -56,16 +54,19 @@ public class MenuListActivity extends BaseActivity {
         ivMenu.setVisibility(View.GONE);
         tvTitle.setText("Menu");
         if (getIntent().hasExtra("From")){
-            from = getIntent().getStringExtra("From");
+            AppConstants.from = getIntent().getStringExtra("From");
+        }
+        if (getIntent().hasExtra("TableDo")){
+            tableDo = (TableDo) getIntent().getSerializableExtra("TableDo");
         }
         initialiseControls();
-        if(from.equalsIgnoreCase(AppConstants.Menu)) {
+        if(AppConstants.from.equalsIgnoreCase(AppConstants.Menu)) {
             flCart.setVisibility(View.GONE);
             fabAddItem.setVisibility(View.GONE);
             btnContinue.setVisibility(View.VISIBLE);
             btnContinue.setText("Close");
         }
-        else if(from.equalsIgnoreCase(AppConstants.ManageMenu)) {
+        else if(AppConstants.from.equalsIgnoreCase(AppConstants.ManageMenu)) {
             flCart.setVisibility(View.GONE);
             fabAddItem.setVisibility(View.VISIBLE);
             btnContinue.setVisibility(View.GONE);
@@ -91,13 +92,16 @@ public class MenuListActivity extends BaseActivity {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(from.equalsIgnoreCase(AppConstants.Menu)) {
+                if(AppConstants.from.equalsIgnoreCase(AppConstants.Menu)) {
                     finish();
                 }
                 else {
                     if (AppConstants.Cart_Items != null && AppConstants.Cart_Items.size() > 0) {
                         Intent intent = new Intent(MenuListActivity.this, CartListActivity.class);
-                        intent.putExtra("From", from);
+                        intent.putExtra("From", AppConstants.from);
+                        if(!AppConstants.from.equalsIgnoreCase(AppConstants.TakeOut)) {
+                            intent.putExtra("TableDo", tableDo);
+                        }
                         startActivity(intent);
                         overridePendingTransition(R.anim.enter, R.anim.exit);
                     } else {
@@ -251,11 +255,11 @@ public class MenuListActivity extends BaseActivity {
                 holder.tvMinus.setVisibility(View.INVISIBLE);
                 holder.tvPlus.setVisibility(View.INVISIBLE);
             }
-            if(from.equalsIgnoreCase(AppConstants.Menu)) {
+            if(AppConstants.from.equalsIgnoreCase(AppConstants.Menu)) {
                 holder.llAddToCart.setVisibility(View.GONE);
                 holder.ivDeleteItem.setVisibility(View.GONE);
             }
-            else if(from.equalsIgnoreCase(AppConstants.ManageMenu)) {
+            else if(AppConstants.from.equalsIgnoreCase(AppConstants.ManageMenu)) {
                 holder.llAddToCart.setVisibility(View.GONE);
                 holder.ivDeleteItem.setVisibility(View.VISIBLE);
             }
