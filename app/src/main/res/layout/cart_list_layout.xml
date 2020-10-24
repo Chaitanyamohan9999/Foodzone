@@ -34,6 +34,7 @@
                 android:padding="@dimen/margin_10">
 
                 <TextView
+                    android:id="@+id/tvItemsCount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -56,6 +57,7 @@
                 android:background="@color/black" />
 
             <LinearLayout
+                android:id="@+id/llDiscount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -63,10 +65,11 @@
                 android:padding="@dimen/margin_10">
 
                 <TextView
+                    android:id="@+id/tvDiscountLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Discount"
+                    android:text="Discount(2%)"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size_14" />
 
@@ -92,18 +95,19 @@
                 android:padding="@dimen/margin_10">
 
                 <TextView
+                    android:id="@+id/tvChargesLabel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Delivery Charges"
+                    android:text="Charges(15%)"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size_14" />
 
                 <TextView
-                    android:id="@+id/tvDeliveryCharges"
+                    android:id="@+id/tvCharges"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$0.35"
+                    android:text="$5.35"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size_14" />
             </LinearLayout>
@@ -134,9 +138,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="$29.00"
-                    android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14" />
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <View
