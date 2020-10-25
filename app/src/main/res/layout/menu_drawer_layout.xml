@@ -25,14 +25,14 @@
         android:background="@color/white" />
 
     <TextView
-        android:id="@+id/tvPendingOrders"
+        android:id="@+id/tvReservations"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_5"
         android:drawablePadding="@dimen/margin_10"
         android:gravity="center_vertical"
         android:padding="@dimen/margin_10"
-        android:text="Pending Orders"
+        android:text="Reservations"
         android:textColor="@color/white" />
 
     <View
