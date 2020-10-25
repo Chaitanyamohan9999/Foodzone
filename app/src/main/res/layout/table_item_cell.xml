@@ -33,43 +33,40 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/tvTableCapacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="@dimen/margin_10"
-                android:text="04"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/text_size_16"
-                android:textStyle="bold" />
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
             <ImageView
                 android:id="@+id/ivDeleteTable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/margin_10"
-                android:paddingRight="@dimen/margin_10"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_menu_delete"
-                android:visibility="visible"
                 app:tint="@color/colorPrimaryDark" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvTableName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:gravity="center"
-            android:padding="@dimen/margin_10"
-            android:text="Table1"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/text_size_16"
-            android:textStyle="normal" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTableName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Table Number : 01"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTableCapacity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Table Capacity : 04"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_16"
+                android:textStyle="normal" />
+        </LinearLayout>
     </FrameLayout>
 </androidx.cardview.widget.CardView>
