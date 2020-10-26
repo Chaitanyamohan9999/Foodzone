@@ -12,9 +12,11 @@ import java.util.Collections;
 
 public class AppConstants
 {
-	public static double FoodZone_Latitude              = 45.4912;
-	public static double FoodZone_Longitude              = -73.5863;
-	public static final double FoodZone_Area			= 100;
+	public static double FoodZone_Latitude               = 45.4912;
+	public static double FoodZone_Longitude              = -73.5864;
+	public static double FoodZone_Area                   = 100;
+	public static double Table_Reserve_Price             = 10;
+	public static double Table_Cancel_Price              = 10;
 
 	public static final String GILL_SANS_TYPE_FACE			= "Gill Sans";
 	public static final String MONTSERRAT_MEDIUM_TYPE_FACE  = "montserrat_medium";
@@ -107,15 +109,4 @@ public class AppConstants
 		return provinceList;
 	}
 
-	public static ArrayList<String> getCity() {
-		ArrayList<String> provinceList = new ArrayList<>();
-		cityList.add("Montreal");
-		cityList.add("Montmerency");
-		cityList.add("Ottawa");
-		cityList.add("Quebec city");
-		cityList.add("Laval");
-		Collections.sort(provinceList);
-		provinceList.add(0, "Select City");
-		return cityList;
-	}
 }
