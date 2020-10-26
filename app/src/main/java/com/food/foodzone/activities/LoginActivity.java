@@ -12,10 +12,15 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.*;
 import com.food.foodzone.utils.PreferenceUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,12 +42,14 @@ public class LoginActivity extends BaseActivity {
     private TextView tvForgotPassword, tvRegister, tvUserTypeLabel;
     private Spinner spUserRole;
     private String userType = "", userRole = "";
+    private FirebaseAuth auth;
 
     @Override
     public void initialise() {
         llLogin = inflater.inflate(R.layout.login_layout, null);
         addBodyView(llLogin);
         lockMenu();
+        auth = FirebaseAuth.getInstance();
         tvTitle.setText("Login");
         flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.GONE);
@@ -57,7 +64,7 @@ public class LoginActivity extends BaseActivity {
             llUserType.setVisibility(View.GONE);
             llForCustomer.setVisibility(View.VISIBLE);
             etEmail.setText("yamini@gmail.com");
-            etPassword.setText("1234567890");
+            etPassword.setText("123456");
         }
         else {
             tvUserTypeLabel.setVisibility(View.VISIBLE);
@@ -136,7 +143,25 @@ public class LoginActivity extends BaseActivity {
                 }
                 else {
                     if (isNetworkConnectionAvailable(LoginActivity.this)) {
-                        doLogin();
+                        if(userType.equalsIgnoreCase(AppConstants.Customer_Role)) {
+                            showLoader();
+                            auth.signInWithEmailAndPassword(etEmail.getText().toString().trim(), etPassword.getText().toString().trim())
+                                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            hideLoader();
+                                            if (task.isSuccessful()) {
+                                                doLogin();
+                                            }
+                                            else {
+                                                showAppCompatAlert("", getString(R.string.auth_failed), "Register", "Cancel", "AuthFailed", false);
+                                            }
+                                        }
+                                    });
+                        }
+                        else {
+                            doLogin();
+                        }
                     }
                     else {
                         showInternetDialog("Login");
@@ -237,5 +262,13 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void getData() {
 
+    }
+
+    @Override
+    public void onButtonYesClick(String from) {
+        super.onButtonYesClick(from);
+        if(from.equalsIgnoreCase("AuthFailed")){
+            tvRegister.performClick();
+        }
     }
 }
