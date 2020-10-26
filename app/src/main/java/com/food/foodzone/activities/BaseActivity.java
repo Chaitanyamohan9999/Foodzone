@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -26,16 +27,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.food.foodzone.BuildConfig;
-import com.food.foodzone.R;
-import com.food.foodzone.common.*;
-import com.food.foodzone.utils.PreferenceUtils;
-
-import java.util.regex.Pattern;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.food.foodzone.BuildConfig;
+import com.food.foodzone.R;
+import com.food.foodzone.common.AddToCartListener;
+import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.utils.PreferenceUtils;
+
+import java.util.regex.Pattern;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements AddToCartListener {
@@ -177,7 +179,7 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
     protected void employeeLeftMenu () {
         tvReservations.setVisibility(View.VISIBLE);
         tvOrdersHistory.setVisibility(View.GONE);
-        findViewById(R.id.vwPendingOrders).setVisibility(View.GONE);
+        findViewById(R.id.vwPendingOrders).setVisibility(View.VISIBLE);
         findViewById(R.id.vwOrdersHistory).setVisibility(View.GONE);
         tvOrders.setVisibility(View.VISIBLE);
         findViewById(R.id.vwOrders).setVisibility(View.VISIBLE);
@@ -271,6 +273,25 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
 
     public static BaseActivity getInstance() {
         return mInstance;
+    }
+
+    public boolean isFoodZoneArea(Location mLocation) {
+        if(mLocation!=null) {
+            double latitude1 = mLocation.getLatitude();
+            double longitude1 = mLocation.getLongitude();
+
+            Location locationA = new Location("UserLocation");
+            locationA.setLatitude(latitude1);
+            locationA.setLongitude(longitude1);
+
+            Location locationB = new Location("FoodZoneLocation");
+            locationB.setLatitude(AppConstants.FoodZone_Latitude);
+            locationB.setLongitude(AppConstants.FoodZone_Longitude);
+
+            return locationA.distanceTo(locationB) < AppConstants.FoodZone_Area;
+        }
+
+        return false;
     }
 
     public void showAppCompatAlert(String mTitle, String mMessage, String posButton, String negButton, final String from, boolean isCancelable) {
@@ -500,4 +521,3 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
         return pickupTime;
     }
 }
-
