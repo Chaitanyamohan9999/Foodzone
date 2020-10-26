@@ -71,9 +71,11 @@ public class TablesListActivity extends BaseActivity {
         }
         if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
             fabAddTable.setVisibility(View.GONE);
+            rgDineInType.setVisibility(View.VISIBLE);
             tvTitle.setText("Book Table");
         } else {
             fabAddTable.setVisibility(View.VISIBLE);
+            rgDineInType.setVisibility(View.GONE);
             tvTitle.setText("Tables List");
         }
         rvTables.setLayoutManager(new GridLayoutManager(TablesListActivity.this, 2, GridLayoutManager.VERTICAL, false));
@@ -109,18 +111,20 @@ public class TablesListActivity extends BaseActivity {
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                    !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-                showAppCompatAlert("GPS is settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+        if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                        !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                    showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+                }
+                else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
+                }
             }
             else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                ActivityCompat.requestPermissions(TablesListActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
             }
-        }
-        else {
-            ActivityCompat.requestPermissions(TablesListActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
         }
     }
 
@@ -145,7 +149,7 @@ public class TablesListActivity extends BaseActivity {
         }
         @Override
         public void onProviderDisabled(String provider) {
-            showAppCompatAlert("GPS is settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+            showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
         }
 
         @Override
@@ -153,8 +157,8 @@ public class TablesListActivity extends BaseActivity {
             mLocation = location;
         }
     };
-
     private Location mLocation;
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -163,10 +167,10 @@ public class TablesListActivity extends BaseActivity {
                     && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                         !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-                    showAppCompatAlert("GPS is settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+                    showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
                 }
                 else {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
                 }
             }
             else {
@@ -175,23 +179,6 @@ public class TablesListActivity extends BaseActivity {
         }
     }
 
-    public boolean isFoodZoneArea() {
-        if(mLocation!=null) {
-            double latitude1 = mLocation.getLatitude();
-            double longitude1 = mLocation.getLongitude();
-
-            Location locationA = new Location("UserLocation");
-            locationA.setLatitude(latitude1);
-            locationA.setLongitude(longitude1);
-
-            Location locationB = new Location("FoodZoneLocation");
-            locationB.setLatitude(AppConstants.FoodZone_Latitude);
-            locationB.setLongitude(AppConstants.FoodZone_Longitude);
-            return locationA.distanceTo(locationB) < AppConstants.FoodZone_Area;
-        }
-
-        return false;
-    }
     @Override
     public void getData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -208,7 +195,12 @@ public class TablesListActivity extends BaseActivity {
                     Log.e("Get Data", tableDo.toString());
                     tableDos.add(tableDo);
                 }
-//                        if(from.equalsIgnoreCase(AppConstants.DineIn)) {
+                if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+
+                }
+                else {
+
+                }
                 ArrayList<TableDo>  dineInTableDos = dineInNowTables(dineInType);
                 if(dineInTableDos != null && dineInTableDos.size() > 0){
                     tvNoData.setVisibility(View.GONE);
@@ -245,12 +237,17 @@ public class TablesListActivity extends BaseActivity {
 
     private ArrayList<TableDo> dineInNowTables(String dineInType) {
         ArrayList<TableDo> dineInFilteredTables = new ArrayList<>();
-        if(tableDos != null && tableDos.size() > 0){
-            for (int i=0;i<tableDos.size();i++) {
-                if(tableDos.get(i).tableType.equalsIgnoreCase(dineInType)) {
-                    dineInFilteredTables.add(tableDos.get(i));
+        if (AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+            if (tableDos != null && tableDos.size() > 0) {
+                for (int i = 0; i < tableDos.size(); i++) {
+                    if (tableDos.get(i).tableType.equalsIgnoreCase(dineInType)) {
+                        dineInFilteredTables.add(tableDos.get(i));
+                    }
                 }
             }
+        }
+        else {
+            return dineInFilteredTables = tableDos;
         }
         return dineInFilteredTables;
     }
@@ -284,6 +281,14 @@ public class TablesListActivity extends BaseActivity {
         else if (from.equalsIgnoreCase("EnableGPS")) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onButtonNoClick(String from) {
+        super.onButtonNoClick(from);
+        if(from.equalsIgnoreCase("EnableGPS")) {
+            finish();
         }
     }
 
@@ -367,7 +372,7 @@ public class TablesListActivity extends BaseActivity {
                             overridePendingTransition(R.anim.enter, R.anim.exit);
                         }
                         else if(dineInType.equalsIgnoreCase(AppConstants.DineInNow)) {
-                            if(isFoodZoneArea()) {
+                            if(isFoodZoneArea(mLocation)) {
                                 Intent intent = new Intent(TablesListActivity.this, MenuListActivity.class);
                                 intent.putExtra(AppConstants.From, dineInType);
                                 intent.putExtra("TableDo", tableDos.get(position));
