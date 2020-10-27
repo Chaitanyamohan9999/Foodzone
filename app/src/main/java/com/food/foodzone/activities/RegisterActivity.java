@@ -271,7 +271,7 @@ public class RegisterActivity extends BaseActivity {
             AppConstants.LoggedIn_User_Type = userType;
             Intent intent = null;
             if(userType.equalsIgnoreCase(AppConstants.Customer_Role)){
-                intent = new Intent(RegisterActivity.this, CustomerDashboardActivity.class);
+                intent = new Intent(RegisterActivity.this, LoginActivity.class);
             }
             else {
                 intent = new Intent(RegisterActivity.this, EmployeeDashboardActivity.class);
