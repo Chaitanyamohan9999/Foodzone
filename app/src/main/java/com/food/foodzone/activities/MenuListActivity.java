@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
+import com.food.foodzone.models.OrderDo;
 import com.food.foodzone.models.TableDo;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -39,10 +40,11 @@ public class MenuListActivity extends BaseActivity {
     private View llMenu;
     private RecyclerView rvMenuList;
     private TextView tvNoData;
-    private Button btnContinue;
+    private Button btnSkip, btnContinue;
     private MenuListAdapter menuListAdapter;
     private FloatingActionButton fabAddItem;
     private TableDo tableDo;
+    private OrderDo orderDo;
 
     @Override
     public void initialise() {
@@ -58,6 +60,9 @@ public class MenuListActivity extends BaseActivity {
         }
         if (getIntent().hasExtra("TableDo")){
             tableDo = (TableDo) getIntent().getSerializableExtra("TableDo");
+        }
+        if (getIntent().hasExtra("OrderDo")){
+            orderDo = (OrderDo) getIntent().getSerializableExtra("OrderDo");
         }
         initialiseControls();
         if(AppConstants.from.equalsIgnoreCase(AppConstants.Menu)) {
@@ -89,6 +94,28 @@ public class MenuListActivity extends BaseActivity {
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
+        if (AppConstants.from.equalsIgnoreCase(AppConstants.DineInLater)) {
+            btnSkip.setVisibility(View.VISIBLE);
+        }
+        else {
+            btnSkip.setVisibility(View.GONE);
+        }
+        btnSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (AppConstants.from.equalsIgnoreCase(AppConstants.DineInLater)) {
+                    AppConstants.Cart_Items.clear();
+                    Intent intent = new Intent(MenuListActivity.this, PaymentActivity.class);
+                    intent.putExtra("From", AppConstants.from);
+                    intent.putExtra("TableDo", tableDo);
+                    intent.putExtra("Amount", AppConstants.Table_Reserve_Price);
+                    intent.putExtra("PickupTime", "");
+                    intent.putExtra("PickupMessage", "");
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.enter, R.anim.exit);
+                }
+            }
+        });
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,6 +128,9 @@ public class MenuListActivity extends BaseActivity {
                         intent.putExtra("From", AppConstants.from);
                         if(!AppConstants.from.equalsIgnoreCase(AppConstants.TakeOut)) {
                             intent.putExtra("TableDo", tableDo);
+                        }
+                        if(AppConstants.from.equalsIgnoreCase("Reservations")) {
+                            intent.putExtra("OrderDo", orderDo);
                         }
                         startActivity(intent);
                         overridePendingTransition(R.anim.enter, R.anim.exit);
@@ -116,6 +146,7 @@ public class MenuListActivity extends BaseActivity {
     private void initialiseControls() {
         rvMenuList                  = llMenu.findViewById(R.id.rvMenuList);
         tvNoData                    = llMenu.findViewById(R.id.tvNoData);
+        btnSkip                     = llMenu.findViewById(R.id.btnSkip);
         btnContinue                 = llMenu.findViewById(R.id.btnContinue);
         fabAddItem                  = llMenu.findViewById(R.id.fabAddItem);
     }
