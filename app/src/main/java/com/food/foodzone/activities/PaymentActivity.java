@@ -34,6 +34,7 @@ public class PaymentActivity extends BaseActivity {
     private String paymentType = "Card", from = "", pickupTime = "", pickupMessage = "";
     private double amount;
     private TableDo tableDo;
+    private OrderDo mOrderDo;
 
     @Override
     public void initialise() {
@@ -50,6 +51,9 @@ public class PaymentActivity extends BaseActivity {
         }
         if (getIntent().hasExtra("TableDo")){
             tableDo = (TableDo) getIntent().getSerializableExtra("TableDo");
+        }
+        if (getIntent().hasExtra("OrderDo")){
+            mOrderDo = (OrderDo) getIntent().getSerializableExtra("OrderDo");
         }
         if (getIntent().hasExtra("From")){
             from = getIntent().getStringExtra("From");
@@ -185,12 +189,18 @@ public class PaymentActivity extends BaseActivity {
         orderDo.orderType = from;
         orderDo.paymentType = paymentType;
         orderDo.totalAmount = amount;
+        orderDo.orderStatus = AppConstants.Status_Pending;
+        orderDo.menuItemDos = AppConstants.Cart_Items;
+        if(from.equalsIgnoreCase("Reservations")){
+            orderDo.orderId = mOrderDo.orderId;
+            orderDo.pickupTime = mOrderDo.pickupTime;
+            orderDo.orderType = mOrderDo.orderType;
+            orderDo.pickupTime = mOrderDo.pickupTime;
+        }
         if(!from.equalsIgnoreCase(AppConstants.TakeOut)) {
             orderDo.tableId = tableDo.tableId;
             orderDo.tableNumber = tableDo.tableNumber;
         }
-        orderDo.orderStatus = AppConstants.Status_Pending;
-        orderDo.menuItemDos = AppConstants.Cart_Items;
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
