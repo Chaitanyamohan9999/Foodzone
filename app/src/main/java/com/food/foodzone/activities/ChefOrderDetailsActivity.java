@@ -145,33 +145,16 @@ public class ChefOrderDetailsActivity extends BaseActivity {
         else {
             tvOrderStatus.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
         }
+        llAddMenu.setVisibility(View.GONE);
         rvMenuList.setLayoutManager(new LinearLayoutManager(ChefOrderDetailsActivity.this));
         if(orderDo.menuItemDos != null && orderDo.menuItemDos.size()>0) {
             menuListAdapter = new MenuListAdapter(ChefOrderDetailsActivity.this, orderDo.menuItemDos);
             rvMenuList.setAdapter(menuListAdapter);
-            llAddMenu.setVisibility(View.GONE);
             rvMenuList.setVisibility(View.VISIBLE);
         }
         else {
-            if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
-                llAddMenu.setVisibility(View.VISIBLE);
-            }
-            else {
-                llAddMenu.setVisibility(View.GONE);
-            }
             rvMenuList.setVisibility(View.GONE);
         }
-        llAddMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ChefOrderDetailsActivity.this, MenuListActivity.class);
-                intent.putExtra(AppConstants.From, "Reservations");
-                intent.putExtra("OrderDo", orderDo);
-                intent.putExtra("TableDo", tableDo);
-                startActivityForResult(intent, 150);
-                overridePendingTransition(R.anim.enter, R.anim.exit);
-            }
-        });
     }
     @Override
     public void getData() {
