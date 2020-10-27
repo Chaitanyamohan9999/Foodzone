@@ -27,17 +27,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.food.foodzone.BuildConfig;
+import com.food.foodzone.R;
+import com.food.foodzone.common.*;
+import com.food.foodzone.utils.PreferenceUtils;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.regex.Pattern;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.food.foodzone.BuildConfig;
-import com.food.foodzone.R;
-import com.food.foodzone.common.AddToCartListener;
-import com.food.foodzone.common.AppConstants;
-import com.food.foodzone.utils.PreferenceUtils;
-
-import java.util.regex.Pattern;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements AddToCartListener {
@@ -322,6 +322,7 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
 
     public void onButtonYesClick(String from) {
         if (from.equalsIgnoreCase("Logout")){
+            FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(context, UserTypeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -521,3 +522,4 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
         return pickupTime;
     }
 }
+
