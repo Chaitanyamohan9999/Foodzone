@@ -12,6 +12,7 @@ import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.*;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,12 +29,14 @@ public class ForgotPasswordActivity extends BaseActivity {
     private View llGuestLogin;
     private Button btnSendNewPassword;
     private EditText etEmail;
+    private FirebaseAuth auth;
 
     @Override
     public void initialise() {
         llGuestLogin = inflater.inflate(R.layout.forgot_password_login, null);
         addBodyView(llGuestLogin);
         lockMenu();
+        auth = FirebaseAuth.getInstance();
         tvTitle.setText("Forgot Password");
         flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.VISIBLE);
@@ -76,6 +79,9 @@ public class ForgotPasswordActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         hideLoader();
                         sendMail(newPassword);//new password will come from backend
+                        if(auth!=null && auth.getCurrentUser()!=null){
+                            auth.getCurrentUser().updatePassword(newPassword);
+                        }
                     }
                 });
     }
