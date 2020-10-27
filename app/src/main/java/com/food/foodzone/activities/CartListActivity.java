@@ -17,6 +17,7 @@ import android.widget.TimePicker.OnTimeChangedListener;
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
+import com.food.foodzone.models.OrderDo;
 import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.RangeTimePickerDialog;
 import com.squareup.picasso.Picasso;
@@ -42,6 +43,7 @@ public class CartListActivity extends BaseActivity {
     private double totalAmount;
     private String from = "";
     private TableDo tableDo;
+    private OrderDo orderDo;
 
     @Override
     public void initialise() {
@@ -57,6 +59,9 @@ public class CartListActivity extends BaseActivity {
         }
         if (getIntent().hasExtra("TableDo")){
             tableDo = (TableDo) getIntent().getSerializableExtra("TableDo");
+        }
+        if (getIntent().hasExtra("OrderDo")){
+            orderDo = (OrderDo) getIntent().getSerializableExtra("OrderDo");
         }
         initialiseControls();
         rvCartList.setLayoutManager(new LinearLayoutManager(CartListActivity.this));
@@ -93,10 +98,12 @@ public class CartListActivity extends BaseActivity {
 
     private String pickupTime = "", pickupMessage = "";
     private void placeOrder() {
-        Intent intent = null;
-        intent = new Intent(CartListActivity.this, PaymentActivity.class);
+        Intent intent = new Intent(CartListActivity.this, PaymentActivity.class);
         if(!from.equalsIgnoreCase(AppConstants.TakeOut)) {
             intent.putExtra("TableDo", tableDo);
+        }
+        if(from.equalsIgnoreCase("Reservations")) {
+            intent.putExtra("OrderDo", orderDo);
         }
         intent.putExtra("From", from);
         intent.putExtra("Amount", totalAmount);
