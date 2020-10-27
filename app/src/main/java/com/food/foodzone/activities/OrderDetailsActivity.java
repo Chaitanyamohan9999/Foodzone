@@ -1,8 +1,15 @@
 package com.food.foodzone.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +38,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,9 +50,10 @@ public class OrderDetailsActivity extends BaseActivity {
     private TextView tvOrderId, tvAmount, tvCustomerName, tvPickupTime, tvCustomerPhone,
             tvCustomerEmail, tvPaymentType, tvOrderType, tvOrderStatus;
     private Button btnCancel, btnApprove;
-    private LinearLayout llPhone, llEmail, llPickup;
+    private LinearLayout llPhone, llEmail, llPickup, llAddMenu;
     private MenuListAdapter menuListAdapter;
     private OrderDo orderDo;
+    private TableDo tableDo;
 
     @Override
     public void initialise() {
@@ -58,6 +67,10 @@ public class OrderDetailsActivity extends BaseActivity {
         if(getIntent().hasExtra("OrderDo")) {
             orderDo = (OrderDo) getIntent().getSerializableExtra("OrderDo");
         }
+        if(getIntent().hasExtra("TableDo")) {
+            tableDo = (TableDo) getIntent().getSerializableExtra("TableDo");
+        }
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         initialiseControls();
         btnCancel.setVisibility(View.GONE);
         if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
@@ -65,13 +78,19 @@ public class OrderDetailsActivity extends BaseActivity {
                 if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)) {
                     btnApprove.setVisibility(View.VISIBLE);
                     btnApprove.setText("ARRIVE");
-                } else if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInNow)) {
-                    btnApprove.setVisibility(View.VISIBLE);
-                    btnApprove.setText("CANCEL");
-                } else {
+                }
+                else if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInNow)) {
                     btnApprove.setVisibility(View.VISIBLE);
                     btnApprove.setText("CANCEL");
                 }
+                else {
+                    btnApprove.setVisibility(View.VISIBLE);
+                    btnApprove.setText("CANCEL");
+                }
+            }
+            else if (orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
+                btnApprove.setVisibility(View.VISIBLE);
+                btnApprove.setText("CANCEL");
             }
             else {
                 btnApprove.setVisibility(View.GONE);
@@ -99,11 +118,16 @@ public class OrderDetailsActivity extends BaseActivity {
                 if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
                     if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
                         if(orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)) {
-                            actionOnOrder(AppConstants.Status_Started);
+                            if(isFoodZoneArea(mLocation)) {
+                                actionOnOrder(AppConstants.Status_Started);
+                            }
                         }
                         else {
                             actionOnOrder(AppConstants.Status_Cancelled);
                         }
+                    }
+                    else if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
+                        actionOnOrder(AppConstants.Status_Cancelled);
                     }
                 }
                 else {
@@ -147,7 +171,45 @@ public class OrderDetailsActivity extends BaseActivity {
                 }
             }
         });
+        if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)
+                && btnApprove.getText().toString().equalsIgnoreCase("Arrive")) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                        !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                    showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+                }
+                else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
+                }
+            }
+            else {
+                ActivityCompat.requestPermissions(OrderDetailsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
+            }
+        }
     }
+
+    private LocationManager locationManager;
+    private LocationListener locationListener = new LocationListener() {
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+            showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            mLocation = location;
+        }
+    };
+    private Location mLocation;
 
     private void initialiseControls() {
         tvOrderId                   = llDetails.findViewById(R.id.tvOrderId);
@@ -162,6 +224,7 @@ public class OrderDetailsActivity extends BaseActivity {
         llPhone                     = llDetails.findViewById(R.id.llPhone);
         llEmail                     = llDetails.findViewById(R.id.llEmail);
         llPickup                    = llDetails.findViewById(R.id.llPickup);
+        llAddMenu                   = llDetails.findViewById(R.id.llAddMenu);
         rvMenuList                  = llDetails.findViewById(R.id.rvMenuList);
         btnCancel                   = llDetails.findViewById(R.id.btnCancel);
         btnApprove                  = llDetails.findViewById(R.id.btnApprove);
@@ -190,15 +253,35 @@ public class OrderDetailsActivity extends BaseActivity {
             tvOrderStatus.setTextColor(context.getResources().getColor(android.R.color.holo_green_dark));
         }
         rvMenuList.setLayoutManager(new LinearLayoutManager(OrderDetailsActivity.this));
-        menuListAdapter = new MenuListAdapter(OrderDetailsActivity.this, orderDo.menuItemDos);
-        rvMenuList.setAdapter(menuListAdapter);
+        if(orderDo.menuItemDos != null && orderDo.menuItemDos.size()>0) {
+            menuListAdapter = new MenuListAdapter(OrderDetailsActivity.this, orderDo.menuItemDos);
+            rvMenuList.setAdapter(menuListAdapter);
+            llAddMenu.setVisibility(View.GONE);
+            rvMenuList.setVisibility(View.VISIBLE);
+        }
+        else {
+            llAddMenu.setVisibility(View.VISIBLE);
+            rvMenuList.setVisibility(View.GONE);
+        }
+        llAddMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OrderDetailsActivity.this, MenuListActivity.class);
+                intent.putExtra(AppConstants.From, "Reservations");
+                intent.putExtra("OrderDo", orderDo);
+                intent.putExtra("TableDo", tableDo);
+                startActivityForResult(intent, 150);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
+            }
+        });
     }
     @Override
     public void getData() {
 
     }
 
-    private void actionOnOrder(String orderAction) {
+
+    private void actionOnOrder(final String orderAction) {
         orderDo.orderStatus = orderAction;
         if (AppConstants.Status_Rejected.equalsIgnoreCase(orderAction)
                 || AppConstants.Status_Cancelled.equalsIgnoreCase(orderAction)){
@@ -215,7 +298,7 @@ public class OrderDetailsActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         hideLoader();
-                        showAppCompatAlert("", "The order has been Accepted successfully!", "OK", "", "AcceptOrder", false);
+                        showAppCompatAlert("", "The order has been "+orderAction+" successfully!", "OK", "", "AcceptOrder", false);
                     }
                 });
     }
@@ -267,7 +350,19 @@ public class OrderDetailsActivity extends BaseActivity {
     public void onButtonYesClick(String from) {
         super.onButtonYesClick(from);
         if(from.equalsIgnoreCase("AcceptOrder")) {
-            setResult(121);
+            setResult(5001);
+            finish();
+        }
+        else if (from.equalsIgnoreCase("EnableGPS")) {
+            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onButtonNoClick(String from) {
+        super.onButtonNoClick(from);
+        if(from.equalsIgnoreCase("EnableGPS")) {
             finish();
         }
     }
