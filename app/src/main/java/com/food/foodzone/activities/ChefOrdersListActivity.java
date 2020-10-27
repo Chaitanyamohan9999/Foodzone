@@ -7,15 +7,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
@@ -30,6 +25,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class ChefOrdersListActivity extends BaseActivity {
@@ -64,7 +65,7 @@ public class ChefOrdersListActivity extends BaseActivity {
         rbNow.setText("Reservations");
         rbLater.setText("TakeOut");
         fabAddTable.setVisibility(View.GONE);
-        rgDineInType.setVisibility(View.GONE);
+
         rvTables.setLayoutManager(new GridLayoutManager(ChefOrdersListActivity.this, 1, GridLayoutManager.VERTICAL, false));
         tablesListAdapter = new TablesListAdapter(ChefOrdersListActivity.this, new ArrayList<TableDo>());
         rvTables.setAdapter(tablesListAdapter);
@@ -302,8 +303,8 @@ public class ChefOrdersListActivity extends BaseActivity {
         }
         @Override
         public void onBindViewHolder(@NonNull TableHolder holder, final int position) {
-            holder.tvTableName.setText("Table Number : "+ AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableNumber));
-            holder.tvTableCapacity.setText("Table Capacity : "+ AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableCapacity));
+            holder.tvTableName.setText("Table Number : "+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableNumber));
+            holder.tvTableCapacity.setText("Table Capacity : "+AppConstants.TwoDigitsNumber.format(tableDos.get(position).tableCapacity));
             if(tableDos.get(position).tableType.equalsIgnoreCase(AppConstants.DineInNow)) {
 
             }
@@ -358,7 +359,7 @@ public class ChefOrdersListActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(@NonNull final OrderHolder holder, final int position) {
             holder.tvOrderId.setText(orderDos.get(position).orderId);
-            holder.tvAmount.setText("$"+ AppConstants.Decimal_Number.format(orderDos.get(position).totalAmount));
+            holder.tvAmount.setText("$"+AppConstants.Decimal_Number.format(orderDos.get(position).totalAmount));
             holder.tvCustomerName.setText("C.Name : "+orderDos.get(position).customerName);
             holder.tvPickupTime.setText(getPickupTime(orderDos.get(position).pickupTime));
             holder.tvCustomerPhone.setText(orderDos.get(position).customerPhone);;
@@ -374,7 +375,7 @@ public class ChefOrdersListActivity extends BaseActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ChefOrdersListActivity.this, OrderDetailsActivity.class);
+                    Intent intent = new Intent(ChefOrdersListActivity.this, ChefOrderDetailsActivity.class);
                     intent.putExtra("OrderDo", orderDos.get(position));
                     startActivityForResult(intent, 5001);
                     overridePendingTransition(R.anim.enter, R.anim.exit);
