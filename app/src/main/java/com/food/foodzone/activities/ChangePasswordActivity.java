@@ -12,6 +12,7 @@ import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,12 +27,14 @@ public class ChangePasswordActivity extends BaseActivity {
     private View llChangePwd;
     private Button btnSubmit;
     private EditText etCurrentPassword, etNewPassword, etRenterPassword;
+    private FirebaseAuth auth;
 
     @Override
     public void initialise() {
         llChangePwd = inflater.inflate(R.layout.change_password_layout, null);
         addBodyView(llChangePwd);
         lockMenu();
+        auth = FirebaseAuth.getInstance();
         ivBack.setVisibility(View.VISIBLE);
         ivMenu.setVisibility(View.GONE);
         llToolbar.setVisibility(View.VISIBLE);
@@ -82,7 +85,7 @@ public class ChangePasswordActivity extends BaseActivity {
         });
     }
 
-    private void changePassword(UserDo userDo){
+    private void changePassword(final UserDo userDo){
         showLoader();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Users);
@@ -92,6 +95,9 @@ public class ChangePasswordActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         hideLoader();
+                        if(auth!=null && auth.getCurrentUser()!=null){
+                            auth.getCurrentUser().updatePassword(userDo.password);
+                        }
                         showAppCompatAlert("", "Your password has been changed successfully!", "OK", "", "ChangePassword", false);
                     }
                 });
