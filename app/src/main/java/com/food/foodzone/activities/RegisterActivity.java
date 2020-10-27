@@ -13,6 +13,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
@@ -20,6 +21,8 @@ import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,12 +47,14 @@ public class RegisterActivity extends BaseActivity {
     private String country = "";
     private String province = "";
     private DatabaseReference mDatabase;
+    private FirebaseAuth auth;
 
     @Override
     public void initialise() {
         llSignup =  inflater.inflate(R.layout.register_layout, null);
         addBodyView(llSignup);
         lockMenu();
+        auth = FirebaseAuth.getInstance();
         tvTitle.setText("Register");
         flCart.setVisibility(View.GONE);
         ivBack.setVisibility(View.VISIBLE);
@@ -169,7 +174,20 @@ public class RegisterActivity extends BaseActivity {
                 }
                 else {
                     if(isNetworkConnectionAvailable(RegisterActivity.this)){
-                        doRegistration();
+                        showLoader();
+                        auth.createUserWithEmailAndPassword(etEmail.getText().toString().trim(), etPassword.getText().toString().trim())
+                                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        hideLoader();
+                                        if (task.isSuccessful()) {
+                                            doRegistration();
+                                        }
+                                        else {
+                                            Toast.makeText(RegisterActivity.this, "Authentication failed." + task.getException(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                     }
                     else {
                         showInternetDialog("Register");
