@@ -103,27 +103,27 @@ public class ReservationsListActivity extends BaseActivity {
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         showLoader();
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        hideLoader();
-                        tableDos = new ArrayList<>();
-                        for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                            TableDo tableDo = postSnapshot.getValue(TableDo.class);
-                            Log.e("Get Data", tableDo.toString());
-                            tableDos.add(tableDo);
-                        }
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                hideLoader();
+                tableDos = new ArrayList<>();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    TableDo tableDo = postSnapshot.getValue(TableDo.class);
+                    Log.e("Get Data", tableDo.toString());
+                    tableDos.add(tableDo);
+                }
 //                        if(from.equalsIgnoreCase(AppConstants.DineIn)) {
-                        getOrdersOnTable(null);
-                        ArrayList<TableDo> dineInTableDos = dineInNowTables(dineInType);
-                        if (dineInTableDos != null && dineInTableDos.size() > 0) {
-                            tvNoData.setVisibility(View.GONE);
-                            rvTables.setVisibility(View.VISIBLE);
-                            tablesListAdapter.refreshAdapter(dineInTableDos);
-                        }
-                        else {
-                            tvNoData.setVisibility(View.VISIBLE);
-                            rvTables.setVisibility(View.GONE);
-                        }
+                getOrdersOnTable(null);
+                ArrayList<TableDo> dineInTableDos = dineInNowTables(dineInType);
+                if (dineInTableDos != null && dineInTableDos.size() > 0) {
+                    tvNoData.setVisibility(View.GONE);
+                    rvTables.setVisibility(View.VISIBLE);
+                    tablesListAdapter.refreshAdapter(dineInTableDos);
+                }
+                else {
+                    tvNoData.setVisibility(View.VISIBLE);
+                    rvTables.setVisibility(View.GONE);
+                }
 //                        }
 //                        else {
 //                            if(tableDos != null && tableDos.size() > 0){
@@ -137,14 +137,14 @@ public class ReservationsListActivity extends BaseActivity {
 //                            }
 //                        }
 
-                    }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        hideLoader();
-                        Log.e(TAG, "Failed to reading email.", databaseError.toException());
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                hideLoader();
+                Log.e(TAG, "Failed to reading email.", databaseError.toException());
+            }
+        });
     }
 
 
