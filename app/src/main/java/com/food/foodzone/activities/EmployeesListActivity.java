@@ -9,9 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
-import com.food.foodzone.models.TableDo;
 import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.CircleImageView;
 import com.food.foodzone.utils.PreferenceUtils;
@@ -24,12 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class EmployeesListActivity extends BaseActivity {
@@ -55,6 +53,12 @@ public class EmployeesListActivity extends BaseActivity {
         employeeListAdapter = new EmployeeListAdapter(EmployeesListActivity.this, new ArrayList<UserDo>());
         rvEmployees.setAdapter(employeeListAdapter);
         getData();
+        if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Chef_Role)) {
+            fabAddEmployee.setVisibility(View.GONE);
+        }
+        else {
+            fabAddEmployee.setVisibility(View.VISIBLE);
+        }
         fabAddEmployee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,6 +167,12 @@ public class EmployeesListActivity extends BaseActivity {
             holder.tvEmpName.setText(userDos.get(position).name);
             holder.tvEmpPhone.setText("Phone : "+userDos.get(position).phone);
             holder.tvEmpEmail.setText("Email : "+userDos.get(position).email);
+            if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Chef_Role)) {
+                holder.ivDeleteEmp.setVisibility(View.GONE);
+            }
+            else {
+                holder.ivDeleteEmp.setVisibility(View.VISIBLE);
+            }
             holder.ivDeleteEmp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
