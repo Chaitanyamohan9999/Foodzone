@@ -58,22 +58,28 @@ public class CustomerDashboardActivity extends BaseActivity {
         tvTakeOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isFoodZoneArea(mLocation)) {
-                    if((AppConstants.from.equalsIgnoreCase(AppConstants.DineInNow)
-                            || AppConstants.from.equalsIgnoreCase(AppConstants.DineInLater))&&
-                            AppConstants.Cart_Items != null && AppConstants.Cart_Items.size() > 0) {
-                        showAppCompatAlert("", "Your previous cart items will be cleared, Do you want to proceed?", "Proceed", "Cancel", "TakeOut", false);
-                    }
-                    else {
-                        Intent intent = new Intent(CustomerDashboardActivity.this, MenuListActivity.class);
-                        intent.putExtra(AppConstants.From, AppConstants.TakeOut);
-                        startActivity(intent);
-                        overridePendingTransition(R.anim.enter, R.anim.exit);
-                    }
-                }
-                else {
-                    showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
-                }
+//                if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+//                        !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+//                    showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+//                }
+//                else {
+//                    if(isFoodZoneArea(mLocation)) {
+                        if((AppConstants.from.equalsIgnoreCase(AppConstants.DineInNow)
+                                || AppConstants.from.equalsIgnoreCase(AppConstants.DineInLater))&&
+                                AppConstants.Cart_Items != null && AppConstants.Cart_Items.size() > 0) {
+                            showAppCompatAlert("", "Your previous cart items will be cleared, Do you want to proceed?", "Proceed", "Cancel", "TakeOut", false);
+                        }
+                        else {
+                            Intent intent = new Intent(CustomerDashboardActivity.this, MenuListActivity.class);
+                            intent.putExtra(AppConstants.From, AppConstants.TakeOut);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.enter, R.anim.exit);
+                        }
+//                    }
+//                    else {
+//                        showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
+//                    }
+//                }
             }
         });
         tvMenu.setOnClickListener(new View.OnClickListener() {
@@ -85,19 +91,19 @@ public class CustomerDashboardActivity extends BaseActivity {
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
-        if (ActivityCompat.checkSelfPermission(CustomerDashboardActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(CustomerDashboardActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                    !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-                showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
-            }
-            else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
-            }
-        }
-        else {
-            ActivityCompat.requestPermissions(CustomerDashboardActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
-        }
+//        if (ActivityCompat.checkSelfPermission(CustomerDashboardActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+//                && ActivityCompat.checkSelfPermission(CustomerDashboardActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+//                    !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+//                showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+//            }
+//            else {
+//                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
+//            }
+//        }
+//        else {
+//            ActivityCompat.requestPermissions(CustomerDashboardActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
+//        }
     }
 
     private void initialiseControls() {
@@ -107,45 +113,44 @@ public class CustomerDashboardActivity extends BaseActivity {
         tvMenu                = llDashboard.findViewById(R.id.tvMenu);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 1210) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                        !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-                    showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
-                }
-                else {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
-                }
-            }
-            else {
-                ActivityCompat.requestPermissions(CustomerDashboardActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
-            }
-        }
-    }
-
-    private LocationListener locationListener = new LocationListener() {
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-            showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-            mLocation = location;
-        }
-    };
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if(requestCode == 1210) {
+//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+//                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+//                        !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+//                    showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+//                }
+//                else {
+//                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
+//                }
+//            }
+//            else {
+//                ActivityCompat.requestPermissions(CustomerDashboardActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
+//            }
+//        }
+//    }
+//    private LocationListener locationListener = new LocationListener() {
+//
+//        @Override
+//        public void onStatusChanged(String provider, int status, Bundle extras) {
+//        }
+//        @Override
+//        public void onProviderEnabled(String provider) {
+//
+//        }
+//        @Override
+//        public void onProviderDisabled(String provider) {
+//            showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+//        }
+//
+//        @Override
+//        public void onLocationChanged(Location location) {
+//            mLocation = location;
+//        }
+//    };
 
     @Override
     public void getData() {
@@ -164,10 +169,10 @@ public class CustomerDashboardActivity extends BaseActivity {
         if(from.equalsIgnoreCase(AppConstants.Exit)){
             finish();
         }
-        else if (from.equalsIgnoreCase("EnableGPS")) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-        }
+//        else if (from.equalsIgnoreCase("EnableGPS")) {
+//            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//            startActivity(intent);
+//        }
         else if(from.equalsIgnoreCase("DineIn")) {
             AppConstants.Cart_Items.clear();
             AppConstants.from = "";
