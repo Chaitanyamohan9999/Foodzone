@@ -183,7 +183,7 @@ public class OrdersHistoryActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 121 && resultCode == 121) {
+        if(requestCode == 5001 && resultCode == 5001) {
             getData();
         }
     }
@@ -230,7 +230,7 @@ public class OrdersHistoryActivity extends BaseActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(OrdersHistoryActivity.this, OrderDetailsActivity.class);
                     intent.putExtra("OrderDo", orderDos.get(position));
-                    startActivityForResult(intent, 121);
+                    startActivityForResult(intent, 5001);
                     overridePendingTransition(R.anim.enter, R.anim.exit);
                 }
             });
