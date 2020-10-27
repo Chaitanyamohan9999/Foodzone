@@ -54,7 +54,7 @@ public class OrderDetailsActivity extends BaseActivity {
     private MenuListAdapter menuListAdapter;
     private OrderDo orderDo;
     private TableDo tableDo;
-
+    
     @Override
     public void initialise() {
         llDetails = (LinearLayout) inflater.inflate(R.layout.order_details_layout, null);
@@ -78,6 +78,8 @@ public class OrderDetailsActivity extends BaseActivity {
                 if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)) {
                     btnApprove.setVisibility(View.VISIBLE);
                     btnApprove.setText("ARRIVE");
+                    btnCancel.setVisibility(View.VISIBLE);
+                    btnCancel.setText("CANCEL");
                 }
                 else if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInNow)) {
                     btnApprove.setVisibility(View.VISIBLE);
@@ -85,7 +87,9 @@ public class OrderDetailsActivity extends BaseActivity {
                 }
                 else {
                     btnApprove.setVisibility(View.VISIBLE);
-                    btnApprove.setText("CANCEL");
+                    btnApprove.setText("ARRIVE");
+                    btnCancel.setVisibility(View.VISIBLE);
+                    btnCancel.setText("CANCEL");
                 }
             }
             else if (orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
@@ -117,9 +121,13 @@ public class OrderDetailsActivity extends BaseActivity {
             public void onClick(View v) {
                 if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
                     if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
-                        if(orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)) {
+                        if(orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)
+                        || orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)) {
                             if(isFoodZoneArea(mLocation)) {
                                 actionOnOrder(AppConstants.Status_Started);
+                            }
+                            else {
+                                showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
                             }
                         }
                         else {
@@ -140,7 +148,12 @@ public class OrderDetailsActivity extends BaseActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionOnOrder(AppConstants.Status_Rejected);
+                if(btnCancel.getText().toString().equalsIgnoreCase(AppConstants.Status_Cancelled)) {
+                    actionOnOrder(AppConstants.Status_Cancelled);
+                }
+                else {
+                    actionOnOrder(AppConstants.Status_Rejected);
+                }
             }
         });
         llPhone.setOnClickListener(new View.OnClickListener() {
@@ -280,6 +293,25 @@ public class OrderDetailsActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 1210) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                        !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+                    showAppCompatAlert("GPS settings", "GPS is not enabled. Please enable your GPS, from settings menu?", "Enable", "Cancel", "EnableGPS", false);
+                }
+                else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 100, locationListener);
+                }
+            }
+            else {
+                ActivityCompat.requestPermissions(OrderDetailsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1210);
+            }
+        }
+    }
 
     private void actionOnOrder(final String orderAction) {
         orderDo.orderStatus = orderAction;
@@ -414,7 +446,7 @@ public class OrderDetailsActivity extends BaseActivity {
             holder.ivDeleteItem.setVisibility(View.GONE);
             holder.tvMinus.setVisibility(View.GONE);
             holder.tvPlus.setVisibility(View.GONE);
-
+            
         }
 
         @Override
@@ -447,5 +479,5 @@ public class OrderDetailsActivity extends BaseActivity {
             tvQty                       = itemView.findViewById(R.id.tvQty);
         }
     }
-
+    
 }
