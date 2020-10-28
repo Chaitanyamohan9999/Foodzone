@@ -110,6 +110,14 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".activities.ChefOrdersListActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ChefOrderDetailsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".activities.OrdersManageActivity"
             android:screenOrientation="portrait" />
 
