@@ -1,15 +1,8 @@
 package com.food.foodzone.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +31,6 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -72,8 +64,9 @@ public class ChefOrderDetailsActivity extends BaseActivity {
         }
         initialiseControls();
         btnCancel.setVisibility(View.GONE);
-        btnApprove.setVisibility(View.GONE);
+        btnApprove.setText("READY");
         bindData();
+        orderSeen();
         llPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +93,12 @@ public class ChefOrderDetailsActivity extends BaseActivity {
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(context, "No email clients installed.", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        btnApprove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionOnOrder();
             }
         });
     }
@@ -134,8 +133,8 @@ public class ChefOrderDetailsActivity extends BaseActivity {
             llPickup.setVisibility(View.GONE);
         }
         tvPickupTime.setText(getPickupTime(orderDo.pickupTime));
-        tvCustomerPhone.setText(orderDo.customerPhone);;
-        tvCustomerEmail.setText(orderDo.customerPhone);;
+        tvCustomerPhone.setText(orderDo.customerPhone);
+        tvCustomerEmail.setText(orderDo.customerEmail);
         tvPaymentType.setText(orderDo.paymentType);
         tvOrderType.setText(orderDo.orderType);
         tvOrderStatus.setText(orderDo.orderStatus);
@@ -162,14 +161,10 @@ public class ChefOrderDetailsActivity extends BaseActivity {
     }
 
 
-    private void actionOnOrder(final String orderAction) {
-        orderDo.orderStatus = orderAction;
-        if (AppConstants.Status_Rejected.equalsIgnoreCase(orderAction)
-                || AppConstants.Status_Cancelled.equalsIgnoreCase(orderAction)){
-            getTableByOrder(orderDo.tableId, "", 0);
-        }
-        else {
-            getTableByOrder(orderDo.tableId, orderAction, System.currentTimeMillis());
+    private void actionOnOrder() {
+        orderDo.orderStatus = AppConstants.Status_Ready;
+        if(!orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut) ){
+            getTableByOrder(orderDo.tableId, System.currentTimeMillis());
         }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
@@ -179,12 +174,24 @@ public class ChefOrderDetailsActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         hideLoader();
-                        showAppCompatAlert("", "The order has been "+orderAction+" successfully!", "OK", "", "AcceptOrder", false);
+                        showAppCompatAlert("", "The order has been readied", "OK", "", "ReadyOrder", false);
                     }
                 });
     }
 
-    private void getTableByOrder(final String tableId, final String tableStatus, final long actionTime) {
+    private void orderSeen() {
+        orderDo.orderSeen = "Y";
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
+        databaseReference.child(orderDo.orderId).setValue(orderDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    }
+                });
+    }
+
+    private void getTableByOrder(final String tableId, final long actionTime) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         showLoader();
@@ -192,12 +199,11 @@ public class ChefOrderDetailsActivity extends BaseActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 hideLoader();
-                ArrayList<TableDo> tableDos = new ArrayList<>();
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     TableDo tableDo = postSnapshot.getValue(TableDo.class);
                     Log.e("Get Data", tableDo.toString());
                     if (tableDo.tableId.equalsIgnoreCase(tableId)){
-                        updateStatus(tableDo, tableStatus, actionTime);
+                        updateStatus(tableDo, AppConstants.Status_Ready,  actionTime);
                         return;
                     }
                 }
@@ -230,22 +236,22 @@ public class ChefOrderDetailsActivity extends BaseActivity {
     @Override
     public void onButtonYesClick(String from) {
         super.onButtonYesClick(from);
-        if(from.equalsIgnoreCase("AcceptOrder")) {
+        if(from.equalsIgnoreCase("ReadyOrder")) {
             setResult(5001);
             finish();
-        }
-        else if (from.equalsIgnoreCase("EnableGPS")) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
         }
     }
 
     @Override
-    public void onButtonNoClick(String from) {
-        super.onButtonNoClick(from);
-        if(from.equalsIgnoreCase("EnableGPS")) {
-            finish();
-        }
+    public void finish() {
+        setResult(5001);
+        super.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(5001);
+        super.onBackPressed();
     }
 
     private static class MenuListAdapter extends RecyclerView.Adapter<MenuHolder> {
