@@ -20,8 +20,6 @@ import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.CustomDateTimePicker;
 import com.food.foodzone.utils.RangeTimePickerDialog;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,10 +32,11 @@ public class ScheduleTimeActivity extends BaseActivity {
     private View llSchedule;
     private TextView tvStartTime, tvEndTime, tvTerms;
     private Button btnProceed;
-    private Spinner spMembers;
+    private Spinner spMembers, spEndTime;
     private TableDo tableDo;
     private String from = "";
     private int noOfPeople;
+    private int noOfHour;
 
     @Override
     public void initialise() {
@@ -76,7 +75,7 @@ public class ScheduleTimeActivity extends BaseActivity {
         });
 
         final ArrayList<Integer> noOfPeopleList = new ArrayList<>();
-        for (int i=0;i<tableDo.tableCapacity;i++){
+        for (int i=1;i<tableDo.tableCapacity;i++){
             noOfPeopleList.add(i);
         }
         spMembers.setAdapter(new ArrayAdapter<Integer>(ScheduleTimeActivity.this, R.layout.spinner_dropdown, noOfPeopleList){
@@ -99,16 +98,44 @@ public class ScheduleTimeActivity extends BaseActivity {
 
             }
         });
+        final ArrayList<String> noOfHours = new ArrayList<>();
+        noOfHours.add("Select No.of Hours");
+        noOfHours.add("1 Hour");
+        noOfHours.add("2 Hours");
+        noOfHours.add("3 Hours");
+        spEndTime.setAdapter(new ArrayAdapter<String>(ScheduleTimeActivity.this, R.layout.spinner_dropdown, noOfHours){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(ScheduleTimeActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(""+noOfHours.get(position));
+                return row;
+            }
+        });
+        spEndTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position >0){
+                    noOfHour = position;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         btnProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(tvStartTime.getText().toString().equalsIgnoreCase("")) {
                     Toast.makeText(context, "Please select start date/time", Toast.LENGTH_SHORT).show();
                 }
-                else if(tvEndTime.getText().toString().equalsIgnoreCase("")) {
+//                else if(tvEndTime.getText().toString().equalsIgnoreCase("")) {
+                else if(noOfHour < 1) {
                     Toast.makeText(context, "Please select end time", Toast.LENGTH_SHORT).show();
                 }
-                else if(noOfPeople <1) {
+                else if(noOfPeople < 1) {
                     Toast.makeText(context, "Please number of people", Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -128,6 +155,7 @@ public class ScheduleTimeActivity extends BaseActivity {
         tvEndTime                           = llSchedule.findViewById(R.id.tvEndTime);
         tvTerms                             = llSchedule.findViewById(R.id.tvTerms);
         spMembers                           = llSchedule.findViewById(R.id.spMembers);
+        spEndTime                           = llSchedule.findViewById(R.id.spEndTime);
         btnProceed                          = llSchedule.findViewById(R.id.btnProceed);
     }
 
