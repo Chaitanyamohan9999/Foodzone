@@ -20,6 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
@@ -36,12 +42,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 
 public class OrderDetailsActivity extends BaseActivity {
 
@@ -54,7 +54,7 @@ public class OrderDetailsActivity extends BaseActivity {
     private MenuListAdapter menuListAdapter;
     private OrderDo orderDo;
     private TableDo tableDo;
-    
+
     @Override
     public void initialise() {
         llDetails = (LinearLayout) inflater.inflate(R.layout.order_details_layout, null);
@@ -122,12 +122,12 @@ public class OrderDetailsActivity extends BaseActivity {
                 if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
                     if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
                         if(orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)
-                        || orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)) {
+                                || orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)) {
                             if(isFoodZoneArea(mLocation)) {
                                 actionOnOrder(AppConstants.Status_Started);
                             }
                             else {
-                                showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
+                                showAppCompatAlert("", "You are not in FoodZone area to pick your order.", "Ok", "", "", false);
                             }
                         }
                         else {
@@ -148,7 +148,7 @@ public class OrderDetailsActivity extends BaseActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(btnCancel.getText().toString().equalsIgnoreCase(AppConstants.Status_Cancelled)) {
+                if(btnCancel.getText().toString().equalsIgnoreCase("Cancel")) {
                     actionOnOrder(AppConstants.Status_Cancelled);
                 }
                 else {
@@ -273,7 +273,12 @@ public class OrderDetailsActivity extends BaseActivity {
             rvMenuList.setVisibility(View.VISIBLE);
         }
         else {
-            llAddMenu.setVisibility(View.VISIBLE);
+            if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
+                llAddMenu.setVisibility(View.VISIBLE);
+            }
+            else {
+                llAddMenu.setVisibility(View.GONE);
+            }
             rvMenuList.setVisibility(View.GONE);
         }
         llAddMenu.setOnClickListener(new View.OnClickListener() {
@@ -446,7 +451,7 @@ public class OrderDetailsActivity extends BaseActivity {
             holder.ivDeleteItem.setVisibility(View.GONE);
             holder.tvMinus.setVisibility(View.GONE);
             holder.tvPlus.setVisibility(View.GONE);
-            
+
         }
 
         @Override
@@ -479,5 +484,5 @@ public class OrderDetailsActivity extends BaseActivity {
             tvQty                       = itemView.findViewById(R.id.tvQty);
         }
     }
-    
+
 }
