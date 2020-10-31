@@ -1,6 +1,7 @@
 package com.food.foodzone.activities;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,13 +18,19 @@ import com.food.foodzone.models.TableDo;
 import com.food.foodzone.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 
 public class PaymentActivity extends BaseActivity {
 
+    private static final String TAG = "PaymentActivity";
     private View llPayments;
     private Button btnProceed;
     private EditText etName, etCardNumber, etExpiryDate, etCVV;
@@ -99,7 +106,7 @@ public class PaymentActivity extends BaseActivity {
                             placeOrder();
                         }
                         else {
-                            reserveTable();
+                            isTableReserved(tableDo);
                         }
                     }
                 }
@@ -108,7 +115,7 @@ public class PaymentActivity extends BaseActivity {
                         placeOrder();
                     }
                     else {
-                        reserveTable();
+                        isTableReserved(tableDo);
                     }
                 }
             }
@@ -119,9 +126,9 @@ public class PaymentActivity extends BaseActivity {
         showLoader();
         tableDo.reservedBy = preferenceUtils.getStringFromPreference(PreferenceUtils.UserId, "");
         if(from.equalsIgnoreCase(AppConstants.DineInNow)) {
-            tableDo.reservedAt = System.currentTimeMillis();
+            tableDo.reservedAt = System.currentTimeMillis()+3600000;// adding 1 hour
+            tableDo.reservedFor = 1; // 1 hour
         }
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         databaseReference.child(tableDo.tableId).setValue(tableDo).
@@ -189,6 +196,7 @@ public class PaymentActivity extends BaseActivity {
         orderDo.orderType = from;
         orderDo.paymentType = paymentType;
         orderDo.totalAmount = amount;
+        orderDo.reservedAt = System.currentTimeMillis();
         orderDo.orderStatus = AppConstants.Status_Pending;
         orderDo.menuItemDos = AppConstants.Cart_Items;
         if(from.equalsIgnoreCase("Reservations")){
@@ -200,8 +208,8 @@ public class PaymentActivity extends BaseActivity {
         if(!from.equalsIgnoreCase(AppConstants.TakeOut)) {
             orderDo.tableId = tableDo.tableId;
             orderDo.tableNumber = tableDo.tableNumber;
+            orderDo.reservedAt = tableDo.reservedAt;
         }
-
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
         showLoader();
@@ -213,6 +221,39 @@ public class PaymentActivity extends BaseActivity {
                         showAppCompatAlert("", "Your order has been placed successfully!", "OK", "", "PlaceOrder", false);
                     }
                 });
+
+    }
+
+    private void isTableReserved(final TableDo bookingTableDo) {
+        showLoader();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                hideLoader();
+                boolean isTableReserved = false;
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    TableDo tableDo = postSnapshot.getValue(TableDo.class);
+                    if(tableDo.tableId.equalsIgnoreCase(bookingTableDo.tableId)
+                            && !tableDo.reservedBy.equalsIgnoreCase("")) {
+                        isTableReserved = true;
+                        break;
+                    }
+                }
+                if(isTableReserved) {
+                    showAppCompatAlert("", "Sorry, this table is already reserved. Please choose another table", "Ok", "", "", false);
+                }
+                else {
+                    reserveTable();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                hideLoader();
+                Log.e(TAG, "Failed to reading email.", databaseError.toException());
+            }
+        });
     }
 
     @Override
