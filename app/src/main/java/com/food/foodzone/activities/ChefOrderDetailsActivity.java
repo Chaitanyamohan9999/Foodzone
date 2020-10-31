@@ -46,6 +46,7 @@ public class ChefOrderDetailsActivity extends BaseActivity {
     private MenuListAdapter menuListAdapter;
     private OrderDo orderDo;
     private TableDo tableDo;
+    private boolean isNeedToRefresh;
 
     @Override
     public void initialise() {
@@ -66,7 +67,19 @@ public class ChefOrderDetailsActivity extends BaseActivity {
         btnCancel.setVisibility(View.GONE);
         btnApprove.setText("READY");
         bindData();
-        orderSeen();
+        if(orderDo.orderSeen.equalsIgnoreCase("")) {
+            isNeedToRefresh = true;
+            orderSeen();
+        }
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isNeedToRefresh){
+                    setResult(5001);
+                }
+                finish();
+            }
+        });
         llPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,7 +187,7 @@ public class ChefOrderDetailsActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         hideLoader();
-                        showAppCompatAlert("", "The order has been readied", "OK", "", "ReadyOrder", false);
+                        showAppCompatAlert("", "The order is ready", "OK", "", "ReadyOrder", false);
                     }
                 });
     }
@@ -222,6 +235,7 @@ public class ChefOrderDetailsActivity extends BaseActivity {
         if(actionTime == 0) {
             tableDo.reservedBy = "";
             tableDo.reservedAt = 0;
+            tableDo.reservedFor = 0;
         }
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         databaseReference.child(tableDo.tableId).setValue(tableDo).
@@ -243,14 +257,10 @@ public class ChefOrderDetailsActivity extends BaseActivity {
     }
 
     @Override
-    public void finish() {
-        setResult(5001);
-        super.finish();
-    }
-
-    @Override
     public void onBackPressed() {
-        setResult(5001);
+        if(isNeedToRefresh){
+            setResult(5001);
+        }
         super.onBackPressed();
     }
 
@@ -301,7 +311,7 @@ public class ChefOrderDetailsActivity extends BaseActivity {
             holder.ivDeleteItem.setVisibility(View.GONE);
             holder.tvMinus.setVisibility(View.GONE);
             holder.tvPlus.setVisibility(View.GONE);
-            
+
         }
 
         @Override
@@ -334,5 +344,5 @@ public class ChefOrderDetailsActivity extends BaseActivity {
             tvQty                       = itemView.findViewById(R.id.tvQty);
         }
     }
-    
+
 }
