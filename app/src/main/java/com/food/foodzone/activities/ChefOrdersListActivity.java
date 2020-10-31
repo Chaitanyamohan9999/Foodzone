@@ -11,12 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.OrderDo;
@@ -28,6 +22,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
 public class ChefOrdersListActivity extends BaseActivity {
@@ -93,7 +93,14 @@ public class ChefOrdersListActivity extends BaseActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     OrderDo orderDo = postSnapshot.getValue(OrderDo.class);
                     Log.e("Get Data", orderDo.toString());
-                    if (orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Arrived)) {
+                    if (orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)
+                            && (orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)
+                            || orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Arrived)
+                            || orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted))) {
+                        orderDos.add(orderDo);
+                    }
+                    if (!orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)
+                            && orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Arrived)) {
                         orderDos.add(orderDo);
                     }
                 }
