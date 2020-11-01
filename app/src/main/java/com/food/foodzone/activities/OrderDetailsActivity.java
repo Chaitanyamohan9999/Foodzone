@@ -20,12 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.MenuItemDo;
@@ -41,6 +35,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class OrderDetailsActivity extends BaseActivity {
@@ -93,8 +93,12 @@ public class OrderDetailsActivity extends BaseActivity {
                 }
             }
             else if (orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
+//                btnApprove.setVisibility(View.VISIBLE);
+//                btnApprove.setText("CANCEL");
                 btnApprove.setVisibility(View.VISIBLE);
-                btnApprove.setText("CANCEL");
+                btnApprove.setText("ARRIVE");
+                btnCancel.setVisibility(View.VISIBLE);
+                btnCancel.setText("CANCEL");
             }
             else {
                 btnApprove.setVisibility(View.GONE);
@@ -124,10 +128,15 @@ public class OrderDetailsActivity extends BaseActivity {
                         if(orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)
                                 || orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)) {
                             if(isFoodZoneArea(mLocation)) {
-                                actionOnOrder(AppConstants.Status_Started);
+                                if(orderDo.menuItemDos != null && orderDo.menuItemDos.size()>0) {
+                                    actionOnOrder(AppConstants.Status_Arrived);
+                                }
+                                else {
+                                    showAppCompatAlert("", "Please add menu items", "Add Menu", "Cancel", "AddMenu", false);
+                                }
                             }
                             else {
-                                showAppCompatAlert("", "You are not in FoodZone area to pick your order.", "Ok", "", "", false);
+                                showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
                             }
                         }
                         else {
@@ -135,7 +144,17 @@ public class OrderDetailsActivity extends BaseActivity {
                         }
                     }
                     else if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
-                        actionOnOrder(AppConstants.Status_Cancelled);
+                        if(isFoodZoneArea(mLocation)) {
+                            if(orderDo.menuItemDos != null && orderDo.menuItemDos.size()>0) {
+                                actionOnOrder(AppConstants.Status_Arrived);
+                            }
+                            else {
+                                showAppCompatAlert("", "Please add menu items", "Add Menu", "Cancel", "AddMenu", false);
+                            }
+                        }
+                        else {
+                            showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
+                        }
                     }
                 }
                 else {
@@ -254,8 +273,8 @@ public class OrderDetailsActivity extends BaseActivity {
             llPickup.setVisibility(View.GONE);
         }
         tvPickupTime.setText(getPickupTime(orderDo.pickupTime));
-        tvCustomerPhone.setText(orderDo.customerPhone);;
-        tvCustomerEmail.setText(orderDo.customerPhone);;
+        tvCustomerPhone.setText(orderDo.customerPhone);
+        tvCustomerEmail.setText(orderDo.customerEmail);
         tvPaymentType.setText(orderDo.paymentType);
         tvOrderType.setText(orderDo.orderType);
         tvOrderStatus.setText(orderDo.orderStatus);
@@ -273,8 +292,14 @@ public class OrderDetailsActivity extends BaseActivity {
             rvMenuList.setVisibility(View.VISIBLE);
         }
         else {
-            if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {
-                llAddMenu.setVisibility(View.VISIBLE);
+            if(orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)
+                    || orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
+                if(AppConstants.LoggedIn_User_Type.equalsIgnoreCase(AppConstants.Customer_Role)) {
+                    llAddMenu.setVisibility(View.VISIBLE);
+                }
+                else {
+                    llAddMenu.setVisibility(View.INVISIBLE);
+                }
             }
             else {
                 llAddMenu.setVisibility(View.GONE);
@@ -323,9 +348,11 @@ public class OrderDetailsActivity extends BaseActivity {
         if (AppConstants.Status_Rejected.equalsIgnoreCase(orderAction)
                 || AppConstants.Status_Cancelled.equalsIgnoreCase(orderAction)){
             getTableByOrder(orderDo.tableId, "", 0);
+            orderDo.reservedAt = 0;
         }
         else {
-            getTableByOrder(orderDo.tableId, orderAction, System.currentTimeMillis());
+            orderDo.reservedAt = System.currentTimeMillis();
+            getTableByOrder(orderDo.tableId, orderAction, orderDo.reservedAt);
         }
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
@@ -372,6 +399,7 @@ public class OrderDetailsActivity extends BaseActivity {
         if(actionTime == 0) {
             tableDo.reservedBy = "";
             tableDo.reservedAt = 0;
+            tableDo.reservedFor = 0;
         }
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         databaseReference.child(tableDo.tableId).setValue(tableDo).
@@ -393,6 +421,9 @@ public class OrderDetailsActivity extends BaseActivity {
         else if (from.equalsIgnoreCase("EnableGPS")) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
+        }
+        else if (from.equalsIgnoreCase("AddMenu")) {
+            llAddMenu.performClick();
         }
     }
 
