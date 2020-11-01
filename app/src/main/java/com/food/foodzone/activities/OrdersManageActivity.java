@@ -9,10 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.OrderDo;
@@ -24,6 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class OrdersManageActivity extends BaseActivity {
@@ -81,8 +81,10 @@ public class OrdersManageActivity extends BaseActivity {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     OrderDo orderDo = postSnapshot.getValue(OrderDo.class);
                     Log.e("Get Data", orderDo.toString());
-                    if(userId.equalsIgnoreCase(orderDo.customerId)) {
-                        orderDos.add(orderDo);
+                    if (!orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Completed)) {
+                        if(userId.equalsIgnoreCase(orderDo.customerId)) {
+                            orderDos.add(orderDo);
+                        }
                     }
                 }
                 if(orderDos!=null && orderDos.size() > 0){
@@ -133,7 +135,7 @@ public class OrdersManageActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(@NonNull final OrderHolder holder, final int position) {
             holder.tvOrderId.setText(orderDos.get(position).orderId);
-            holder.tvAmount.setText("$"+ AppConstants.Decimal_Number.format(orderDos.get(position).totalAmount));
+            holder.tvAmount.setText("$"+AppConstants.Decimal_Number.format(orderDos.get(position).totalAmount));
             holder.tvCustomerName.setText("C.Name : "+orderDos.get(position).customerName);
             holder.tvPickupTime.setText(getPickupTime(orderDos.get(position).pickupTime));
             holder.tvCustomerPhone.setText(orderDos.get(position).customerPhone);;
