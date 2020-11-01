@@ -124,7 +124,7 @@ public class AddTableActivity extends BaseActivity {
         String tableId = "T"+System.currentTimeMillis();
         int tableNumber = Integer.parseInt(etTableNumber.getText().toString().trim());
         int tableCapacity = Integer.parseInt(etTableCapacity.getText().toString().trim());
-        final TableDo tableDo = new TableDo(tableId, tableNumber, dineInType, tableCapacity, "", 0, "");
+        final TableDo tableDo = new TableDo(tableId, tableNumber, dineInType, tableCapacity, "", 0, 0, "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         databaseReference.child(tableId).setValue(tableDo).
