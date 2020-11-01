@@ -70,8 +70,8 @@ public class LoginActivity extends BaseActivity {
             tvUserTypeLabel.setVisibility(View.VISIBLE);
             llUserType.setVisibility(View.VISIBLE);
             llForCustomer.setVisibility(View.GONE);
-            etEmail.setText("yaminireddy@gmail.com");
-            etPassword.setText("yamini");
+            etEmail.setText("chaithanya@gmail.com");
+            etPassword.setText("123456Aa");
         }
         final ArrayList<String> userRolesList = new ArrayList<>();
         userRolesList.add("Select User Role");
@@ -206,6 +206,9 @@ public class LoginActivity extends BaseActivity {
                             Intent intent = null;
                             if(loggedInUser.equalsIgnoreCase(AppConstants.Customer_Role)) {
                                 intent = new Intent(LoginActivity.this, CustomerDashboardActivity.class);
+                            }
+                            else if(loggedInUser.equalsIgnoreCase(AppConstants.Chef_Role)) {
+                                intent = new Intent(LoginActivity.this, ChefOrdersListActivity.class);
                             }
                             else {
                                 intent = new Intent(LoginActivity.this, EmployeeDashboardActivity.class);
