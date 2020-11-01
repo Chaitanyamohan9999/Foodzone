@@ -56,7 +56,7 @@ public class CustomDateTimePicker implements View.OnClickListener {
     public View getDateTimePickerLayout() {
         LinearLayout.LayoutParams linear_match_wrap = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         LinearLayout.LayoutParams linear_wrap_wrap = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                                                                                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams.WRAP_CONTENT);
         FrameLayout.LayoutParams frame_match_wrap = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams button_params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
 
@@ -214,7 +214,7 @@ public class CustomDateTimePicker implements View.OnClickListener {
                 calendar_date = Calendar.getInstance();
 
             calendar_date.set(calendar_date.get(Calendar.YEAR), calendar_date.get(Calendar.MONTH),
-                              calendar_date.get(Calendar.DAY_OF_MONTH), hourIn24Format, minute);
+                    calendar_date.get(Calendar.DAY_OF_MONTH), hourIn24Format, minute);
             is24HourView = false;
         }
     }
@@ -237,21 +237,21 @@ public class CustomDateTimePicker implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case SET_DATE:
-            btn_setTime.setEnabled(true);
-            btn_setDate.setEnabled(false);
+                btn_setTime.setEnabled(true);
+                btn_setDate.setEnabled(false);
 
-            if (viewSwitcher.getCurrentView() != datePicker) {
-                viewSwitcher.showPrevious();
-            }
-            break;
+                if (viewSwitcher.getCurrentView() != datePicker) {
+                    viewSwitcher.showPrevious();
+                }
+                break;
 
-        case SET_TIME:
-            btn_setTime.setEnabled(false);
-            btn_setDate.setEnabled(true);
-            if (viewSwitcher.getCurrentView() == datePicker) {
-                viewSwitcher.showNext();
-            }
-            break;
+            case SET_TIME:
+                btn_setTime.setEnabled(false);
+                btn_setDate.setEnabled(true);
+                if (viewSwitcher.getCurrentView() == datePicker) {
+                    viewSwitcher.showNext();
+                }
+                break;
 
 
             case SET:
