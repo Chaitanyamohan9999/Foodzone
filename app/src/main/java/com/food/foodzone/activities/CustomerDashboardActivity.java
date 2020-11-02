@@ -64,17 +64,17 @@ public class CustomerDashboardActivity extends BaseActivity {
 //                }
 //                else {
 //                    if(isFoodZoneArea(mLocation)) {
-                        if((AppConstants.from.equalsIgnoreCase(AppConstants.DineInNow)
-                                || AppConstants.from.equalsIgnoreCase(AppConstants.DineInLater))&&
-                                AppConstants.Cart_Items != null && AppConstants.Cart_Items.size() > 0) {
-                            showAppCompatAlert("", "Your previous cart items will be cleared, Do you want to proceed?", "Proceed", "Cancel", "TakeOut", false);
-                        }
-                        else {
-                            Intent intent = new Intent(CustomerDashboardActivity.this, MenuListActivity.class);
-                            intent.putExtra(AppConstants.From, AppConstants.TakeOut);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.enter, R.anim.exit);
-                        }
+                if((AppConstants.from.equalsIgnoreCase(AppConstants.DineInNow)
+                        || AppConstants.from.equalsIgnoreCase(AppConstants.DineInLater))&&
+                        AppConstants.Cart_Items != null && AppConstants.Cart_Items.size() > 0) {
+                    showAppCompatAlert("", "Your previous cart items will be cleared, Do you want to proceed?", "Proceed", "Cancel", "TakeOut", false);
+                }
+                else {
+                    Intent intent = new Intent(CustomerDashboardActivity.this, MenuListActivity.class);
+                    intent.putExtra(AppConstants.From, AppConstants.TakeOut);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.enter, R.anim.exit);
+                }
 //                    }
 //                    else {
 //                        showAppCompatAlert("", "You are not in FoodZone area to reserve a table now.", "Ok", "", "", false);
