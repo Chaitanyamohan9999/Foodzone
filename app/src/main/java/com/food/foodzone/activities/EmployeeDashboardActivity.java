@@ -104,6 +104,7 @@ public class EmployeeDashboardActivity extends BaseActivity {
         tableDo.tableStatus = "";
         tableDo.reservedBy = "";
         tableDo.reservedAt = 0;
+        tableDo.reservedFor = 0;
         final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Tables);
         databaseReference.child(tableDo.tableId).setValue(tableDo).
                 addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -137,6 +138,17 @@ public class EmployeeDashboardActivity extends BaseActivity {
         }
     }
 
+    private void updateOrder(OrderDo orderDo) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseReference = database.getReference(AppConstants.Table_Orders);
+        databaseReference.child(orderDo.orderId).setValue(orderDo).
+                addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                    }
+                });
+    }
+
     private ArrayList<OrderDo> orderDos;
 
     private void getOrders() {
@@ -152,6 +164,12 @@ public class EmployeeDashboardActivity extends BaseActivity {
                     OrderDo orderDo = postSnapshot.getValue(OrderDo.class);
                     Log.e("Get Data", orderDo.toString());
                     orderDos.add(orderDo);
+                    long curTime = System.currentTimeMillis();
+                    if (orderDo.reservedAt < curTime) {
+                        orderDo.reservedAt = curTime;
+                        orderDo.orderStatus = AppConstants.Status_Completed;
+                        updateOrder(orderDo);
+                    }
                 }
             }
 
