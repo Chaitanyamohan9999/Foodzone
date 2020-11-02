@@ -140,6 +140,7 @@ public class ScheduleTimeActivity extends BaseActivity {
                 }
                 else {
                     tableDo.reservedAt = calendar.getTimeInMillis();
+                    tableDo.reservedFor = noOfHour;
                     Intent intent = new Intent(ScheduleTimeActivity.this, MenuListActivity.class);
                     intent.putExtra(AppConstants.From, from);
                     intent.putExtra("TableDo", tableDo);
