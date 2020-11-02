@@ -9,13 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
+import com.food.foodzone.models.TableDo;
 import com.food.foodzone.models.UserDo;
 import com.food.foodzone.utils.CircleImageView;
 import com.food.foodzone.utils.PreferenceUtils;
@@ -28,6 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class EmployeesListActivity extends BaseActivity {
