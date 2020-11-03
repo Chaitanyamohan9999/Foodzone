@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.food.foodzone.R;
 import com.food.foodzone.common.AppConstants;
 import com.food.foodzone.models.SupportDo;
@@ -18,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+
+import androidx.annotation.NonNull;
 
 
 public class SupportActivity extends BaseActivity {
@@ -105,4 +105,5 @@ public class SupportActivity extends BaseActivity {
                     }
                 });
     }
+
 }
