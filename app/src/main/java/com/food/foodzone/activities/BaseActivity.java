@@ -50,7 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
     public FrameLayout llToolbar, flCart;
     public LinearLayout llDrawerLayoutPrent, llDrawerLayout, llBody;
     public DrawerLayout dlCareer;
-    public ImageView ivBack, ivMenu;
+    public ImageView ivBack, ivMenu, ivRefresh;
     public TextView tvCartCount, tvTitle;
     private TextView tvOrders, tvReservations, tvOrdersHistory, tvProfile, tvChangePassword, tvSupport, tvLogout, tvVersion;
     public static BaseActivity mInstance;
@@ -58,7 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(R.layout.find_base_layout);
+        setContentView(R.layout.foodzone_base_layout);
         mInstance = this;
         inflater = getLayoutInflater();
         context = BaseActivity.this;
@@ -74,6 +74,7 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
         tvVersion.setText("Version : "+ BuildConfig.VERSION_NAME);
         ivMenu.setVisibility(View.INVISIBLE);
         ivBack.setVisibility(View.INVISIBLE);
+        ivRefresh.setVisibility(View.GONE);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,6 +191,20 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
         tvVersion.setVisibility(View.VISIBLE);
     }
 
+    protected void chefLeftMenu() {
+        tvReservations.setVisibility(View.GONE);
+        tvOrdersHistory.setVisibility(View.GONE);
+        findViewById(R.id.vwPendingOrders).setVisibility(View.GONE);
+        findViewById(R.id.vwOrdersHistory).setVisibility(View.GONE);
+        tvOrders.setVisibility(View.GONE);
+        findViewById(R.id.vwOrders).setVisibility(View.GONE);
+        tvProfile.setVisibility(View.VISIBLE);
+        tvChangePassword.setVisibility(View.VISIBLE);
+        tvSupport.setVisibility(View.VISIBLE);
+        tvLogout.setVisibility(View.VISIBLE);
+        tvVersion.setVisibility(View.VISIBLE);
+    }
+
     protected void customerLeftMenu() {
         tvReservations.setVisibility(View.VISIBLE);
         tvOrdersHistory.setVisibility(View.VISIBLE);
@@ -226,6 +241,7 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
         flCart                      = findViewById(R.id.flCart);
         ivBack                      = findViewById(R.id.ivBack);
         ivMenu                      = findViewById(R.id.ivMenu);
+        ivRefresh                   = findViewById(R.id.ivRefresh);
         tvTitle                     = findViewById(R.id.tvTitle);
         tvCartCount                 = findViewById(R.id.tvCartCount);
         tvOrders                    = findViewById(R.id.tvOrders);
@@ -522,4 +538,3 @@ public abstract class BaseActivity extends AppCompatActivity implements AddToCar
         return pickupTime;
     }
 }
-
