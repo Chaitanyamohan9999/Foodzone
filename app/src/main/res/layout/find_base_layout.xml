@@ -74,6 +74,16 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </FrameLayout>
+
+        <ImageView
+            android:id="@+id/ivRefresh"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="right|center"
+            android:src="@android:drawable/ic_popup_sync"
+            android:visibility="gone"
+            app:tint="@color/white" />
+
     </FrameLayout>
 
     <androidx.drawerlayout.widget.DrawerLayout
