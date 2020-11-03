@@ -1,50 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/margin_5"
-    android:orientation="vertical"
+    android:visibility="visible"
+    app:cardCornerRadius="@dimen/margin_5"
     app:cardElevation="@dimen/margin_5">
 
     <LinearLayout
+        android:id="@+id/llOrderCell"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/margin_5">
+        android:background="@android:color/darker_gray"
+        android:padding="@dimen/margin_10">
 
         <ImageView
+            android:id="@+id/ivOrderType"
             android:layout_width="@dimen/margin_100"
             android:layout_height="@dimen/margin_100"
+            android:scaleType="fitXY"
             android:src="@drawable/table_icon" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/margin_5"
             android:layout_weight="1"
-            android:layout_margin="@dimen/margin_10"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvTableName"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Table Number : 01"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/text_size_16"
-                android:layout_marginTop="@dimen/margin_5"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvTableCapacity"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order Id : "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvOrderId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="21545454"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llPickupTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Table Capacity : 04"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/text_size_16"
-                android:textStyle="normal" />
+                android:layout_marginTop="@dimen/margin_5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="P.Time : "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tvPickupTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="17:10:2020 17.60"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order Type : "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tvOrderType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order Type"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llOrderStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_5"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status : "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tvOrderStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pending"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:textSize="@dimen/text_size_14"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
