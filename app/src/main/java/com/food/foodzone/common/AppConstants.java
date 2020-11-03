@@ -12,8 +12,8 @@ import java.util.Collections;
 
 public class AppConstants
 {
-	public static double FoodZone_Latitude               = 45.4912;
-	public static double FoodZone_Longitude              = -73.5864;
+	public static double FoodZone_Latitude               = 17.033688333333334;
+	public static double FoodZone_Longitude              = 79.09896833333333;
 	public static double FoodZone_Area                   = 100;
 	public static double Table_Reserve_Price             = 10;
 	public static double Table_Cancel_Price              = 10;
@@ -54,11 +54,14 @@ public class AppConstants
 	public static final String TakeOut   					 = "TakeOut";
 	public static final String Menu     					 = "Menu";
 	public static final String ManageMenu     				 = "ManageMenu";
+
 	public static final String Status_Pending     			 = "Pending";
-	public static final String Status_Started      			 = "Started";
+	public static final String Status_Completed      		 = "Completed";
 	public static final String Status_Rejected     			 = "Rejected";
 	public static final String Status_Cancelled     	     = "Cancelled";
 	public static final String Status_Accepted       	     = "Accepted";
+	public static final String Status_Arrived       	     = "Arrived";
+	public static final String Status_Ready		       	     = "Ready";
 
 	public static ArrayList<MenuItemDo> Cart_Items			= new ArrayList<>();
 
