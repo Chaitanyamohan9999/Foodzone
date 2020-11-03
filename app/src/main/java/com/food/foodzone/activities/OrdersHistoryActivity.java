@@ -216,7 +216,7 @@ public class OrdersHistoryActivity extends BaseActivity {
             holder.tvCustomerName.setText("C.Name : "+orderDos.get(position).customerName);
             holder.tvPickupTime.setText(getPickupTime(orderDos.get(position).pickupTime));
             holder.tvCustomerPhone.setText(orderDos.get(position).customerPhone);;
-            holder.tvPaymentType.setText(orderDos.get(position).paymentType);
+            holder.tvPaymentType.setText("Payment : "+orderDos.get(position).paymentType);
             holder.tvOrderType.setText(orderDos.get(position).orderType);
             holder.tvOrderStatus.setText(orderDos.get(position).orderStatus);
             if(orderDos.get(position).orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)) {

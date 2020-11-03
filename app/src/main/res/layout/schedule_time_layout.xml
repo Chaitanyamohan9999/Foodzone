@@ -46,29 +46,40 @@
         android:text="End Time"
         android:textColor="@color/black" />
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/llHours"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_10"
         android:layout_marginTop="@dimen/margin_5"
         android:layout_marginRight="@dimen/margin_10"
         android:background="@drawable/edit_text_bg"
-        android:padding="@dimen/margin_10">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/margin_5">
 
         <TextView
             android:id="@+id/tvEndTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="End Time"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimaryDark"
+            android:visibility="gone" />
+
+        <Spinner
+            android:id="@+id/spEndTime"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:entries="@array/hours" />
 
         <ImageView
             android:layout_width="@dimen/margin_20"
             android:layout_height="@dimen/margin_20"
-            android:layout_gravity="right|center"
             android:rotation="270"
             android:src="@drawable/back_arrow" />
-    </FrameLayout>
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
