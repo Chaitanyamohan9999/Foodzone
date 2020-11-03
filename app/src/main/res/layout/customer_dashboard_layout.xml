@@ -14,7 +14,7 @@
         android:layout_gravity="center|top"
         android:gravity="center_horizontal"
         android:padding="@dimen/margin_10"
-        android:text="Hi Chaitanya, Welcome to Food Zone"
+        android:text="Hi Yamini, Welcome to Food Zone"
         android:textAllCaps="true"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/text_size_14"
@@ -52,7 +52,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="DineIn / Reservation"
+                    android:text="Dine In"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="30sp"
                     android:textStyle="bold" />
@@ -99,6 +99,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/margin_20"
             android:layout_weight="1"
+            android:visibility="gone"
             app:cardCornerRadius="@dimen/margin_10"
             app:elevation="@dimen/margin_10">
 
