@@ -63,8 +63,8 @@ public class LoginActivity extends BaseActivity {
             tvUserTypeLabel.setVisibility(View.GONE);
             llUserType.setVisibility(View.GONE);
             llForCustomer.setVisibility(View.VISIBLE);
-            etEmail.setText("yamini@gmail.com");
-            etPassword.setText("123456");
+            etEmail.setText("chaitanyamohan09@gmail.com");
+            etPassword.setText("1234567890");
         }
         else {
             tvUserTypeLabel.setVisibility(View.VISIBLE);
