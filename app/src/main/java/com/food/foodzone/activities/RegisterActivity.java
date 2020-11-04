@@ -37,15 +37,16 @@ import androidx.annotation.Nullable;
 public class RegisterActivity extends BaseActivity {
 
     private View llSignup;
-    private EditText etName, etEmail, etPhone, etCity, etPassword, etRenterPassword;
+    private EditText etName, etEmail, etPhone, etPassword, etRenterPassword;
     private RadioGroup rgGender;
     private RadioButton rbFemale, rbMale;
     private Button btnRegister;
-    private Spinner spCountry, spProvince;
+    private Spinner spCountry, spProvince, spCity;
     private String gender = "";
     private String userType = "";
     private String country = "";
     private String province = "";
+    private String City = "";
     private DatabaseReference mDatabase;
     private FirebaseAuth auth;
 
@@ -103,6 +104,33 @@ public class RegisterActivity extends BaseActivity {
 
             }
         });
+
+        final ArrayList<String> cityList = AppConstants.getCityList();
+        spCity.setAdapter(new ArrayAdapter<String>(RegisterActivity.this, R.layout.spinner_dropdown, cityList){
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View row = LayoutInflater.from(RegisterActivity.this).inflate(R.layout.spinner_dropdown, parent, false);
+                final TextView tvDropdown = (TextView)row.findViewById(R.id.tvDropdown);
+                tvDropdown.setText(cityList.get(position));
+                return row;
+            }
+        });
+        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if(position > 0){
+                    City = cityList.get(position);
+                }
+                else {
+                    City = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         final ArrayList<String> provinceList = AppConstants.getProvince();
         spProvince.setAdapter(new ArrayAdapter<String>(RegisterActivity.this, R.layout.spinner_dropdown, provinceList){
             @Override
@@ -151,8 +179,8 @@ public class RegisterActivity extends BaseActivity {
                 else if(country.equalsIgnoreCase("")){
                     showErrorMessage("Please select country");
                 }
-                else if(etCity.getText().toString().equalsIgnoreCase("")){
-                    showErrorMessage("Please enter city");
+                else if(City.equalsIgnoreCase("")){
+                    showErrorMessage("Please select City");
                 }
                 else if(province.equalsIgnoreCase("")){
                     showErrorMessage("Please select province");
@@ -208,7 +236,8 @@ public class RegisterActivity extends BaseActivity {
         etPhone                             = llSignup.findViewById(R.id.etPhone);
         spCountry                            = llSignup.findViewById(R.id.spCountry);
         spProvince                          = llSignup.findViewById(R.id.spProvince);
-        etCity                              = llSignup.findViewById(R.id.etCity);
+        spCity                               = llSignup.findViewById(R.id.spCity);
+        
         etPassword                          = llSignup.findViewById(R.id.etPassword);
         etRenterPassword                    = llSignup.findViewById(R.id.etRenterPassword);
         btnRegister                          = llSignup.findViewById(R.id.btnRegister);
@@ -249,7 +278,7 @@ public class RegisterActivity extends BaseActivity {
 
     private void insertIntoDB(String userId, DatabaseReference databaseReference){
         final UserDo userDo = new UserDo(userId, etName.getText().toString().trim(), etEmail.getText().toString().trim(),
-                etPhone.getText().toString().trim(), country, province, etCity.getText().toString().trim(), gender,
+                etPhone.getText().toString().trim(), country, province, City, gender,
                 etPassword.getText().toString().trim(), "", userType);
 
         databaseReference.child(userId).setValue(userDo).
