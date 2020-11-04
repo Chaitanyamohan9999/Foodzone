@@ -23,6 +23,7 @@
     <color name="green">#43E249</color>
     <color name="dark_green">#689F38</color>
     <color name="gray_new">#BFC1C5</color>
+    <color name="unread_bg_color">#FFC3CE</color>
 
     <color name="text_hint_color">#BDC1D0</color>
     <color name="profile_text_color">#5D6376</color>
