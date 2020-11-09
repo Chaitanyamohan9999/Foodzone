@@ -39,6 +39,7 @@ public class AppConstants {
 	public static final String Table_Tables = "Tables";
 	public static final String Table_Item = "Items";
 	public static final String Table_Orders = "Orders";
+	public static final String Table_Payments = "Payments";
 
 	public static final String Profiles_Storage_Path = "Profiles/";
 	public static final String Food_Storage_Path = "Food/";
@@ -123,6 +124,41 @@ public class AppConstants {
 		Collections.sort(cityList);
 		cityList.add(0, "Select City");
 		return cityList;
+	}
+
+	public static ArrayList<String> getMonths() {
+		ArrayList<String> monthsList = new ArrayList<>();
+		monthsList.add("Month");
+		monthsList.add("01");
+		monthsList.add("02");
+		monthsList.add("03");
+		monthsList.add("04");
+		monthsList.add("05");
+		monthsList.add("06");
+		monthsList.add("07");
+		monthsList.add("08");
+		monthsList.add("09");
+		monthsList.add("10");
+		monthsList.add("11");
+		monthsList.add("12");
+		return monthsList;
+	}
+
+	public static ArrayList<String> getYears() {
+		ArrayList<String> yearsList = new ArrayList<>();
+		yearsList.add("Year");
+		yearsList.add("2020");
+		yearsList.add("2021");
+		yearsList.add("2022");
+		yearsList.add("2023");
+		yearsList.add("2024");
+		yearsList.add("2025");
+		yearsList.add("2026");
+		yearsList.add("2027");
+		yearsList.add("2028");
+		yearsList.add("2029");
+		yearsList.add("2030");
+		return yearsList;
 	}
 }
 

@@ -111,20 +111,38 @@
             android:gravity="left"
             android:text="Card Number" />
 
-        <EditText
-            android:id="@+id/etCardNumber"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_bg"
-            android:hint="Card Number"
-            android:imeOptions="actionNext"
-            android:inputType="number"
-            android:letterSpacing="0.4"
-            android:maxLength="16"
-            android:padding="10dp"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_16" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etCardNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Card Number"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:digits="0123456789 "
+                android:letterSpacing="0.4"
+                android:maxLength="19"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:longClickable="false"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_size_16" />
+
+            <ImageView
+                android:id="@+id/ivCardType"
+                android:layout_width="@dimen/margin_50"
+                android:layout_height="match_parent"
+                android:padding="@dimen/margin_5"
+                android:src="@drawable/visa_icon" />
+        </LinearLayout>
 
 
         <TextView
@@ -135,10 +153,66 @@
             android:gravity="left"
             android:text="Date" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_bg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingRight="@dimen/margin_5">
+
+                <Spinner
+                    android:id="@+id/spMonth"
+                    android:layout_width="@dimen/margin_100"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:entries="@array/months" />
+
+                <ImageView
+                    android:layout_width="@dimen/margin_20"
+                    android:layout_height="@dimen/margin_20"
+                    android:rotation="270"
+                    android:src="@drawable/back_arrow" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:layout_weight="1"
+                android:background="@drawable/edit_text_bg"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingRight="@dimen/margin_5">
+
+                <Spinner
+                    android:id="@+id/spYear"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:entries="@array/years" />
+
+                <ImageView
+                    android:layout_width="@dimen/margin_20"
+                    android:layout_height="@dimen/margin_20"
+                    android:rotation="270"
+                    android:src="@drawable/back_arrow" />
+            </LinearLayout>
+
+        </LinearLayout>
+
         <EditText
             android:id="@+id/etExpiryDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="@drawable/edit_text_bg"
             android:hint="@string/expiry_date"
             android:imeOptions="actionNext"
@@ -147,7 +221,8 @@
             android:maxLength="6"
             android:padding="10dp"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="match_parent"
