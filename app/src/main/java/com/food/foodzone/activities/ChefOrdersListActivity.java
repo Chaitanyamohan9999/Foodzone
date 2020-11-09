@@ -99,7 +99,13 @@ public class ChefOrdersListActivity extends BaseActivity {
                             || orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted))) {
                         orderDos.add(orderDo);
                     }
-                    if (!orderDo.orderType.equalsIgnoreCase(AppConstants.TakeOut)
+                    else if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInNow)
+                            && (orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Pending)
+                            || orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Arrived))
+                            || orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Accepted)) {
+                        orderDos.add(orderDo);
+                    }
+                    else if (orderDo.orderType.equalsIgnoreCase(AppConstants.DineInLater)
                             && orderDo.orderStatus.equalsIgnoreCase(AppConstants.Status_Arrived)) {
                         orderDos.add(orderDo);
                     }
