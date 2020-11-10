@@ -25,7 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+/**OrdersManageActivity is uses to display the orders history information to the customers**/
 public class OrdersManageActivity extends BaseActivity {
 
     private static final String TAG = "CartList";

@@ -3,7 +3,7 @@ package com.food.foodzone;
 import android.app.Application;
 
 import com.google.firebase.FirebaseApp;
-
+/**FoodZoneApplication  class is uses to initialize firebase**/
 public class FoodZoneApplication extends Application {
 
     @Override

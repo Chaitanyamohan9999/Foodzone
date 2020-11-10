@@ -3,7 +3,7 @@ package com.food.foodzone.activities;
 import android.view.View;
 
 import com.food.foodzone.R;
-
+/**TableReserveDetailsActivity is uses to dispaly table_reserve_details layout**/
 public class TableReserveDetailsActivity extends BaseActivity {
 
     private View llReserve;

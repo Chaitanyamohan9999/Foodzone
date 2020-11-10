@@ -1,5 +1,5 @@
 package com.food.foodzone.models;
-
+/**UserDo is a pojo class**/
 public class UserDo extends BaseDo {
 
     public String userId = "";

@@ -37,7 +37,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+/**TablesListActivity is uses to display tables_list_layout **/
 public class TablesListActivity extends BaseActivity {
 
     private static final String TAG = "TablesList";

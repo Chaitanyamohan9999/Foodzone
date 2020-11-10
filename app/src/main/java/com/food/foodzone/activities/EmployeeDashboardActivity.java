@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-
+/**EmployeeDashboardActivity is uses to display employee_dashboard_layout **/
 public class EmployeeDashboardActivity extends BaseActivity {
 
     private View llDashboard;

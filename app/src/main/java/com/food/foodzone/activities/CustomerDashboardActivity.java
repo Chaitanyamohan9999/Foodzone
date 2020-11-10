@@ -19,7 +19,7 @@ import com.food.foodzone.utils.PreferenceUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-
+/**CustomerDashboardActivity is uses to display the customer_dashboard_layout**/
 public class CustomerDashboardActivity extends BaseActivity {
 
     private View llDashboard;

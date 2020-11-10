@@ -26,7 +26,7 @@ import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+/**ScheduleTimeActivity is uses to diplay the schedule_time_layout for the customers to reserve tables **/
 public class ScheduleTimeActivity extends BaseActivity {
 
     private View llSchedule;

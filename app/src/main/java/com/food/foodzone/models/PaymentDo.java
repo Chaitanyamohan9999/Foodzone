@@ -1,5 +1,5 @@
 package com.food.foodzone.models;
-
+/**PaymentDo is a pojo classes **/
 public class PaymentDo extends BaseDo {
 
     public String paymentId = "";

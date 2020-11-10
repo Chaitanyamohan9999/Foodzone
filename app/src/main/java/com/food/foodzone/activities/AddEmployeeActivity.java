@@ -30,7 +30,10 @@ import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+/**
+* AddEmployeeActivity is uses to add employess into firebase and this activity is used by only manager.
+*
+* **/
 
 public class AddEmployeeActivity extends BaseActivity {
 

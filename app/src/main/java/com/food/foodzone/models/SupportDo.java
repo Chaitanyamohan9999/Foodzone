@@ -1,5 +1,5 @@
 package com.food.foodzone.models;
-
+/**SupportDo is a pojo class**/
 public class SupportDo extends BaseDo {
 
     public String supportId = "";

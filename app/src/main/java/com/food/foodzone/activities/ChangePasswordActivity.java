@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
-
+/**ChangePasswordActivity is uses to change password of all three users(manager,customer,chef)**/
 public class ChangePasswordActivity extends BaseActivity {
 
     private static final String TAG = "ChangePasswor";

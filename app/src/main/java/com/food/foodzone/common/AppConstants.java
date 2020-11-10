@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class AppConstants {
-	public static double FoodZone_Latitude = 17.033688333333334;
-	public static double FoodZone_Longitude = 79.09896833333333;
+	public static double FoodZone_Latitude = 45.491408;
+	public static double FoodZone_Longitude = -73.584575;
 	public static double FoodZone_Area = 100;
 	public static double Table_Reserve_Price = 10;
 	public static double Table_Cancel_Price = 10;

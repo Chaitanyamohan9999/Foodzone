@@ -1,5 +1,5 @@
 package com.food.foodzone.models;
-
+/**TableDo is a pojo class**/
 public class TableDo extends BaseDo {
 
     public String tableId = "";

@@ -28,7 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+/**OrdersHistoryActivity is uses to store the orders history information of the customers in the firebase**/
 
 public class OrdersHistoryActivity extends BaseActivity {
 

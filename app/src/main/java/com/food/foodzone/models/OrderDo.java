@@ -1,7 +1,7 @@
 package com.food.foodzone.models;
 
 import java.util.ArrayList;
-
+/**OrderDo is a pojo class **/
 public class OrderDo extends BaseDo {
 
     public String orderId = "";

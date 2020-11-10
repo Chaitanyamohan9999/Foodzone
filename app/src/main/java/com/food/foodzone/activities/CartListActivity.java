@@ -29,7 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+/**CartListActivity is uses to add the menuitems to cart and is used by only customer**/
 
 public class CartListActivity extends BaseActivity {
 

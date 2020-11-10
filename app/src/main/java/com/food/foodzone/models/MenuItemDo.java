@@ -1,5 +1,5 @@
 package com.food.foodzone.models;
-
+/**MenuItemDo is a pojo class **/
 public class MenuItemDo extends BaseDo {
 
     public String itemId = "";

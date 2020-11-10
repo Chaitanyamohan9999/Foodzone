@@ -34,7 +34,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+/**ChefOrderDetailsActivity is used to display order information **/
 public class ChefOrderDetailsActivity extends BaseActivity {
 
     private LinearLayout llDetails;

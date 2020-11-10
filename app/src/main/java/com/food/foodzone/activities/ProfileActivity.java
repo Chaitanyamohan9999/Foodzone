@@ -36,7 +36,7 @@ import java.io.File;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-
+/**ProfileActivity is uses to show the profie details and updation of profile to all users(employees,customers,chef)**/
 public class ProfileActivity extends BaseActivity {
 
     private static final String TAG = "ProfileActivity";

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
-
+/**AddTableActivity is uses for adding dinein and reservation tables based on table type to firebase and it is used by only manager **/
 
 public class AddTableActivity extends BaseActivity {
 

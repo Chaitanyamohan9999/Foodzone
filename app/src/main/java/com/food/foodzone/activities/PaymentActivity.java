@@ -39,7 +39,7 @@ import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+/**PaymentActivity is uses to do the payments based on validations given**/
 public class PaymentActivity extends BaseActivity {
 
     private static final String TAG = "PaymentActivity";

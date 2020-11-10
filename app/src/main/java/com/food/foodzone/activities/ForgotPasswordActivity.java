@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
-
+/**ForgotPasswordActivity is uses to generate mail for users used by all three users(employee,customer,chef)**/
 public class ForgotPasswordActivity extends BaseActivity {
 
     private static final String TAG = "ForgotPassword";
