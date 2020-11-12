@@ -25,7 +25,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**OrdersManageActivity is uses to display the orders history information to the customers**/
+/** Manager can see list of Reservation/Takeout order whcih are placed by all the customers. Manager can Accept or Rejcet the order here */
+
 public class OrdersManageActivity extends BaseActivity {
 
     private static final String TAG = "CartList";

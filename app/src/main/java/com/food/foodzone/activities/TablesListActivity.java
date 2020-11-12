@@ -37,7 +37,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**TablesListActivity is uses to display tables_list_layout **/
+/** This is the screen for displaying list of tables information which are added by manager. User can filter the tables by selcting the Now or Later radio buttons. And user can delete the tables*/
+
 public class TablesListActivity extends BaseActivity {
 
     private static final String TAG = "TablesList";

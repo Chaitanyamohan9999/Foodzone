@@ -30,7 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-/**EmployeesListActivity is uses to display employees list for manager only**/
+/** This is the screen for displaying list of employees of restaurent which are added by the manager. And manager can delete the employees */
 
 public class EmployeesListActivity extends BaseActivity {
 

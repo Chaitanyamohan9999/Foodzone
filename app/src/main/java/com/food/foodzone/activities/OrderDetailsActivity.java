@@ -41,7 +41,8 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-/**OrderDetailsActivity is uses to display the orders information**/
+/** Shows the order details of the particular order which is selected from order list. */
+
 
 public class OrderDetailsActivity extends BaseActivity {
 

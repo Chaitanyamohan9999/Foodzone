@@ -38,8 +38,9 @@ import java.util.regex.Pattern;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-/**BaseActivity is the main activity  in which all the common methods are written and used by all other activities to implement inheritance**/
-
+/** BaseAcivity is an abstract class with initialise() and getData() abtract methods.
+ This is super class for remainig activities in the application.
+ Here to maintain comon methods and varoiables. */
 public abstract class BaseActivity extends AppCompatActivity implements AddToCartListener {
 
     public Context context;

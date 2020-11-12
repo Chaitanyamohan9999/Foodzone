@@ -28,7 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-/**ChefOrdersListActivity is uses to display all the orders placed by customers**/
+/** Chef can see the all the orders which are ready to surve. */
+
 
 public class ChefOrdersListActivity extends BaseActivity {
 

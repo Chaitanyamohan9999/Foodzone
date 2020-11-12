@@ -17,7 +17,7 @@ import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 
-/**SplashActivity is uses to show splas screen **/
+/** Launcher activity in the application */
 public class SplashActivity extends BaseActivity {
 
     private LinearLayout llSplash;

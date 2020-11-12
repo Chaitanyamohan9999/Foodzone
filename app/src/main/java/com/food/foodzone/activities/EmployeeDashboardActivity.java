@@ -23,7 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-/**EmployeeDashboardActivity is uses to display employee_dashboard_layout **/
+/** After succesful login by the manager this screen will be landing like home page. Which contains Manage Employee, Manage Tables and Manage Menu features. */
+
 public class EmployeeDashboardActivity extends BaseActivity {
 
     private View llDashboard;

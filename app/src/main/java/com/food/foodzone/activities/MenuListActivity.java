@@ -32,7 +32,8 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-/**MenuListActivity is uses to display the menu items**/
+/** This is the screen for displaying list of menu items information which are added by manager. */
+
 
 public class MenuListActivity extends BaseActivity {
 

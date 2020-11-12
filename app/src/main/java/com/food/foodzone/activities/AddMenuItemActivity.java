@@ -43,7 +43,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 
-/**AddMenuItemActivity is uses for adding menu items to firebase and it is used by only manager**/
+/** This activity will be accessed by the manager to adding the new menu items by proving the required information along with item photo. */
 public class AddMenuItemActivity extends BaseActivity {
 
     private static final String TAG = "AddTable";

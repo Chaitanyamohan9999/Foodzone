@@ -19,7 +19,8 @@ import com.food.foodzone.utils.PreferenceUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-/**CustomerDashboardActivity is uses to display the customer_dashboard_layout**/
+/** After successful login by the customer this screen will landing. It is like home page for customer. Which contains DineIn and TakeOut feature. */
+
 public class CustomerDashboardActivity extends BaseActivity {
 
     private View llDashboard;

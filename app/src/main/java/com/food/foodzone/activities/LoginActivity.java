@@ -32,7 +32,7 @@ import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-/**LoginActivity is uses to check the authentication of users in firebase**/
+/** User(customer or employee) enters the credentials to login into application. */
 public class LoginActivity extends BaseActivity {
 
     private View llLogin;

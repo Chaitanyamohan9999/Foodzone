@@ -33,7 +33,8 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-/**RegisterActivity is uses to create a user account in firebase for all the users(employees,customers,chef)**/
+/** To login into application customer has to register here. Customer has to provide the required information in the input fields. */
+
 public class RegisterActivity extends BaseActivity {
 
     private View llSignup;

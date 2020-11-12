@@ -29,7 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-/**ReservationsListActivity is uses to display the reservation**/
+/**  Customer can see the list of Reservation which are placed by himself/herself. */
 
 public class ReservationsListActivity extends BaseActivity {
 

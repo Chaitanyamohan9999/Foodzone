@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
-/**SupportActivity is uses to store the data and to show the support_layout**/
+/** If User needs any technical supporrt user can raise the queries here */
 
 public class SupportActivity extends BaseActivity {
 

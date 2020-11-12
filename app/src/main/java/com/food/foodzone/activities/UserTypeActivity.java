@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.food.foodzone.R;
 import com.food.foodzone.common.*;
 
-/**UserTypeActivity is uses to display  user_type_layout in which user can navigate to customer login screen or employee login screen**/
+/** A sceen for user type selection either customer or Employee. */
 public class UserTypeActivity extends BaseActivity {
 
     private View llUserType;
